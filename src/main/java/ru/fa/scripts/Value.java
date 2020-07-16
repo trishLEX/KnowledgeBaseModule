@@ -6,17 +6,19 @@ import java.util.Objects;
 
 public class Value {
 
-    private int id;
+    private long id;
     private String strId;
     private JsonNode content;
+    private ValueType type;
 
-    public Value(int id, String strId, JsonNode content) {
+    public Value(long id, String strId, JsonNode content, ValueType type) {
         this.id = id;
         this.strId = strId;
         this.content = content;
+        this.type = type;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -26,6 +28,10 @@ public class Value {
 
     public JsonNode getContent() {
         return content;
+    }
+
+    public ValueType getType() {
+        return type;
     }
 
     @Override

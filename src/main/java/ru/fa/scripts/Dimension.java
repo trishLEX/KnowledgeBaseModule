@@ -4,24 +4,27 @@ import java.util.Objects;
 
 public class Dimension {
 
-    private int id;
+    private long id;
+    private int level;
     private String strId;
     private String label;
     private DimensionType dimensionType;
     private DimensionSubType dimensionSubType;
-    private Integer parentId;
+    private Long parentId;
     private String question;
 
     public Dimension(
-            int id,
+            long id,
+            int level,
             String strId,
             String label,
             DimensionType dimensionType,
             DimensionSubType dimensionSubType,
-            Integer parentId,
+            Long parentId,
             String question
     ) {
         this.id = id;
+        this.level = level;
         this.strId = strId;
         this.label = label;
         this.dimensionType = dimensionType;
@@ -30,8 +33,12 @@ public class Dimension {
         this.question = question;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     public String getStrId() {
@@ -50,7 +57,7 @@ public class Dimension {
         return dimensionSubType;
     }
 
-    public Integer getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 

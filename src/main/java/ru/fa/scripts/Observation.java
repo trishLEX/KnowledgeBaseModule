@@ -1,23 +1,28 @@
 package ru.fa.scripts;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Observation {
 
-    private int id;
+    private long id;
     private String strId;
     private Set<Dimension> dimensions;
     private Set<Value> values;
+    private Map<DimensionSubType, Dimension> dimensionMap;
 
-    public Observation(int id, String strId, Set<Dimension> dimensions, Set<Value> values) {
+    public Observation(long id, String strId, Set<Dimension> dimensions, Set<Value> values) {
         this.id = id;
         this.strId = strId;
         this.dimensions = dimensions;
         this.values = values;
+        this.dimensionMap = dimensions.stream().collect(Collectors.toMap(Dimension::getDimensionSubType, Function.identity()));
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -27,6 +32,14 @@ public class Observation {
 
     public Set<Dimension> getDimensions() {
         return dimensions;
+    }
+
+    public Map<DimensionSubType, Dimension> getDimensionMap() {
+        return dimensionMap;
+    }
+
+    public Dimension getDimension(DimensionSubType dimensionSubType) {
+        return dimensionMap.get(dimensionSubType);
     }
 
     public Set<Value> getValues() {

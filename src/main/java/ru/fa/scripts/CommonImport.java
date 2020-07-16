@@ -21,14 +21,7 @@ import java.util.stream.Stream;
 public class CommonImport {
 
     public static void importData(String sheet, DimensionType dimensionType, int startId, String stopStrId) throws Exception {
-        DataSource dataSource = DataSourceBuilder.create()
-                .driverClassName("org.postgresql.Driver")
-                .password("0212")
-                .username("postgres")
-                .url("jdbc:postgresql://localhost:5432/kn_base")
-                .build();
-        NamedParameterJdbcTemplate namedJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-
+        NamedParameterJdbcTemplate namedJdbcTemplate = createNamedJdbcTemplate();
         XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("E:\\Sorry\\Documents\\IdeaProjects\\KnBase\\src\\main\\resources\\ru\\fa\\OWL_content.xlsm"));
         XSSFSheet operationKind = owlContent.getSheet(sheet);
         Iterator<Row> rows = operationKind.rowIterator();
@@ -83,8 +76,11 @@ public class CommonImport {
             namedJdbcTemplate.update(
                     "" +
                             "insert into dimension\n" +
-                            "(id, str_id, label, broader, type, subtype, question)\n" +
-                            "values (:id, :strId, :label, :broader, :type, :subtype, :question)",
+                            "(id, str_id, label, broader, type, subtype, question, level)\n" +
+                            "values (:id, :strId, :label, :broader, :type, :subtype, :question, :level)\n" +
+                            "on conflict (id) do update set\n" +
+                            "(str_id, label, broader, type, subtype, question, level) = \n" +
+                            "(:strId, :label, :broader, :type, :subtype, :question, :level)",
                     new MapSqlParameterSource()
                             .addValue("id", id)
                             .addValue("strId", strId)
@@ -93,12 +89,23 @@ public class CommonImport {
                             .addValue("type", dimensionType.name())
                             .addValue("subtype", dimensionSubType.name())
                             .addValue("question", question)
+                            .addValue("level", index)
             );
             i++;
         }
     }
 
-    private static String owlIdToStrId(String owlId) {
+    public static NamedParameterJdbcTemplate createNamedJdbcTemplate() {
+        DataSource dataSource = DataSourceBuilder.create()
+                .driverClassName("org.postgresql.Driver")
+                .password("0212")
+                .username("postgres")
+                .url("jdbc:postgresql://localhost:5432/kn_base")
+                .build();
+        return new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    public static String owlIdToStrId(String owlId) {
         return owlId.replace("_", "");
     }
 
