@@ -25,7 +25,7 @@ public class CommonImport {
 
     public static void importData(String sheet, DimensionType dimensionType, int startId, String stopStrId) throws Exception {
         NamedParameterJdbcTemplate namedJdbcTemplate = createNamedJdbcTemplate();
-        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("E:\\Sorry\\Documents\\IdeaProjects\\KnBase\\src\\main\\resources\\ru\\fa\\OWL_content.xlsm"));
+        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("src/main/resources/ru/fa/OWL_content.xlsm"));
         XSSFSheet operationKind = owlContent.getSheet(sheet);
         Iterator<Row> rows = operationKind.rowIterator();
         int i = startId;
