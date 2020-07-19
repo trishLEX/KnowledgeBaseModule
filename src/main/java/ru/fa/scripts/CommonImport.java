@@ -1,5 +1,7 @@
 package ru.fa.scripts;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -14,10 +16,14 @@ import java.io.FileInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -178,5 +184,55 @@ public class CommonImport {
                 .setChildrenIds(Arrays.asList((Long[]) rs.getArray("narrower").getArray()))
                 .setQuestion(rs.getString("question"))
                 .build();
+    }
+
+    public static List<Observation> getAllObservations(NamedParameterJdbcTemplate namedJdbcTemplate) {
+        List<Long> obsIds = namedJdbcTemplate.queryForList(
+                "select id from observation",
+                Collections.emptyMap(),
+                Long.class
+        );
+
+        Map<Long, Set<Dimension>> obsDimensions = new HashMap<>();
+        Map<Long, Set<Value>> obsValues = new HashMap<>();
+        for (long obsId : obsIds) {
+            Set<Dimension> dimensions = new HashSet<>(namedJdbcTemplate.query(
+                    "select * from dimension d join observation_dimension od on d.id = od.dimension_id where observation_id = :obsId",
+                    new MapSqlParameterSource("obsId", obsId),
+                    CommonImport::mapDimension
+            ));
+            obsDimensions.put(obsId, dimensions);
+
+            Set<Value> values = new HashSet<>(namedJdbcTemplate.query(
+                    "select * from value v join observation_value ov on v.id = ov.value_id where observation_id = :obsId",
+                    new MapSqlParameterSource("obsId", obsId),
+                    CommonImport::mapValue
+            ));
+            obsValues.put(obsId, values);
+        }
+
+        return namedJdbcTemplate.query(
+                "select * from observation",
+                Collections.emptyMap(),
+                (rs, rn) -> new Observation(
+                        rs.getLong("id"),
+                        rs.getString("str_id"),
+                        obsDimensions.get(rs.getLong("id")),
+                        obsValues.get(rs.getLong("id"))
+                )
+        );
+    }
+
+    public static Value mapValue(ResultSet rs, int rn) throws SQLException {
+        try {
+            return new Value(
+                    rs.getLong("id"),
+                    rs.getString("str_id"),
+                    new ObjectMapper().readTree(rs.getString("content")),
+                    ValueType.valueOf(rs.getString("type"))
+            );
+        } catch (JsonProcessingException e) {
+            throw new IllegalStateException(e);
+        }
     }
 }

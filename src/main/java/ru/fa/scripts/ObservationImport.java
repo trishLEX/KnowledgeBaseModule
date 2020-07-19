@@ -1,7 +1,5 @@
 package ru.fa.scripts;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -15,12 +13,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.io.FileInputStream;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -273,80 +267,14 @@ public class ObservationImport {
         return namedJdbcTemplate.query(
                 "select * from value where str_id = :strId and type = :type",
                 new MapSqlParameterSource("strId", strId).addValue("type", type.name()),
-                ObservationImport::mapValue
+                CommonImport::mapValue
         ).stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No value with id: " + strId + " and type: " + type));
     }
 
-    private static List<Dimension> findDimensionByIds(Collection<Long> ids, NamedParameterJdbcTemplate namedJdbcTemplate) {
-        return namedJdbcTemplate.query(
-                "select * from dimension where id in (:ids)",
-                new MapSqlParameterSource("ids", ids),
-                CommonImport::mapDimension
-        );
-    }
-
-    private static List<Value> findValuesByIds(Collection<Long> ids, NamedParameterJdbcTemplate namedJdbcTemplate) {
-        return namedJdbcTemplate.query(
-                "select * from value where id in (:ids)",
-                new MapSqlParameterSource("ids", ids),
-                ObservationImport::mapValue
-        );
-    }
-
-    private static Value mapValue(ResultSet rs, int rn) throws SQLException {
-        try {
-            return new Value(
-                    rs.getLong("id"),
-                    rs.getString("str_id"),
-                    new ObjectMapper().readTree(rs.getString("content")),
-                    ValueType.valueOf(rs.getString("type"))
-            );
-        } catch (JsonProcessingException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    private static List<Observation> getAllObservations(NamedParameterJdbcTemplate namedJdbcTemplate) {
-        List<Long> obsIds = namedJdbcTemplate.queryForList(
-                "select id from observation",
-                Collections.emptyMap(),
-                Long.class
-        );
-
-        Map<Long, Set<Dimension>> obsDimensions = new HashMap<>();
-        Map<Long, Set<Value>> obsValues = new HashMap<>();
-        for (long obsId : obsIds) {
-            Set<Dimension> dimensions = new HashSet<>(namedJdbcTemplate.query(
-                    "select * from dimension d join observation_dimension od on d.id = od.dimension_id where observation_id = :obsId",
-                    new MapSqlParameterSource("obsId", obsId),
-                    CommonImport::mapDimension
-            ));
-            obsDimensions.put(obsId, dimensions);
-
-            Set<Value> values = new HashSet<>(namedJdbcTemplate.query(
-                    "select * from value v join observation_value ov on v.id = ov.value_id where observation_id = :obsId",
-                    new MapSqlParameterSource("obsId", obsId),
-                    ObservationImport::mapValue
-            ));
-            obsValues.put(obsId, values);
-        }
-
-        return namedJdbcTemplate.query(
-                "select * from observation",
-                Collections.emptyMap(),
-                (rs, rn) -> new Observation(
-                        rs.getLong("id"),
-                        rs.getString("str_id"),
-                        obsDimensions.get(rs.getLong("id")),
-                        obsValues.get(rs.getLong("id"))
-                )
-        );
-    }
-
-    public static List<ObservationConflict> validateObservation(Observation observation, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        List<Observation> observations = getAllObservations(namedParameterJdbcTemplate);
+    private static List<ObservationConflict> validateObservation(Observation observation, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        List<Observation> observations = CommonImport.getAllObservations(namedParameterJdbcTemplate);
         Map<Observation, Set<Dimension>> intersections = observations.stream()
                 .filter(o -> isPotentialIntersect(o, observation))
                 .map(o -> Pair.of(o, createIntersection(o, observation, namedParameterJdbcTemplate)))
@@ -415,13 +343,6 @@ public class ObservationImport {
             Dimension lowerDimValue = node1.getDimension(topConcept);
             Dimension higherDimValue = node2.getDimension(topConcept);
 
-//            if (lowerDimValue == null) {
-//                lowerDimValue = new Dimension(topConcept.getTopConceptNode(), topConcept, 0);
-//            }
-//            if (higherDimValue == null) {
-//                higherDimValue = new DimensionValueNode(topConcept.getTopConceptNode(), topConcept, 0);
-//            }
-
             if (lowerDimValue.getLevel() < higherDimValue.getLevel()) {
                 Dimension temp = lowerDimValue;
                 lowerDimValue = higherDimValue;
@@ -447,8 +368,6 @@ public class ObservationImport {
             Dimension dimension,
             NamedParameterJdbcTemplate namedJdbcTemplate
     ) {
-        List<Dimension> result = new ArrayList<>();
-
         List<Long> parentIds = namedJdbcTemplate.queryForList(
                 "select search_dimension_parents(:dimId)",
                 new MapSqlParameterSource("dimId", dimension.getId()),
