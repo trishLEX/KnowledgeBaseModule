@@ -1,12 +1,10 @@
 package ru.fa.scripts;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -263,7 +261,7 @@ public class ObservationImport {
         return namedJdbcTemplate.query(
                 "select * from dimension where str_id = :strId",
                 new MapSqlParameterSource("strId", strId),
-                ObservationImport::mapDimension
+                CommonImport::mapDimension
         ).stream()
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("No dimension with id " + strId));
@@ -285,7 +283,7 @@ public class ObservationImport {
         return namedJdbcTemplate.query(
                 "select * from dimension where id in (:ids)",
                 new MapSqlParameterSource("ids", ids),
-                ObservationImport::mapDimension
+                CommonImport::mapDimension
         );
     }
 
@@ -294,19 +292,6 @@ public class ObservationImport {
                 "select * from value where id in (:ids)",
                 new MapSqlParameterSource("ids", ids),
                 ObservationImport::mapValue
-        );
-    }
-
-    private static Dimension mapDimension(ResultSet rs, int rn) throws SQLException {
-        return new Dimension(
-                rs.getLong("id"),
-                rs.getInt("level"),
-                rs.getString("str_id"),
-                rs.getString("label"),
-                DimensionType.valueOf(rs.getString("type")),
-                DimensionSubType.valueOf(rs.getString("subtype")),
-                rs.getLong("broader"),
-                rs.getString("question")
         );
     }
 
@@ -336,7 +321,7 @@ public class ObservationImport {
             Set<Dimension> dimensions = new HashSet<>(namedJdbcTemplate.query(
                     "select * from dimension d join observation_dimension od on d.id = od.dimension_id where observation_id = :obsId",
                     new MapSqlParameterSource("obsId", obsId),
-                    ObservationImport::mapDimension
+                    CommonImport::mapDimension
             ));
             obsDimensions.put(obsId, dimensions);
 
@@ -473,7 +458,7 @@ public class ObservationImport {
         return namedJdbcTemplate.query(
                 "select * from dimension where id in (:ids)",
                 new MapSqlParameterSource("ids", parentIds),
-                ObservationImport::mapDimension
+                CommonImport::mapDimension
         );
     }
 }

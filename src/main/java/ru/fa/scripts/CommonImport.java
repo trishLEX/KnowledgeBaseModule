@@ -11,6 +11,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -160,5 +163,20 @@ public class CommonImport {
             default:
                 return null;
         }
+    }
+
+    public static Dimension mapDimension(ResultSet rs, int rn) throws SQLException {
+        return Dimension.newBuilder()
+                .setId(rs.getLong("id"))
+                .setLevel(rs.getInt("level"))
+                .setStrId(rs.getString("str_id"))
+                .setLabel(rs.getString("label"))
+                .setDimensionType(DimensionType.valueOf(rs.getString("type")))
+                .setDimensionSubType(DimensionSubType.valueOf(rs.getString("subtype")))
+                .setParentId(rs.getLong("broader"))
+                .setAllChildrenIds(Arrays.asList((Long[]) rs.getArray("all_narrower").getArray()))
+                .setChildrenIds(Arrays.asList((Long[]) rs.getArray("narrower").getArray()))
+                .setQuestion(rs.getString("question"))
+                .build();
     }
 }
