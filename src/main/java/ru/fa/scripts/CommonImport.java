@@ -10,6 +10,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.fa.model.DimensionSubType;
+import ru.fa.model.DimensionType;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;

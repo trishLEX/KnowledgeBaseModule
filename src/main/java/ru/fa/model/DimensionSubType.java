@@ -1,4 +1,4 @@
-package ru.fa.scripts;
+package ru.fa.model;
 
 public enum DimensionSubType {
     

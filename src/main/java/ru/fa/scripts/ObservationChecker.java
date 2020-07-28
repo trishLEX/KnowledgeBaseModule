@@ -2,6 +2,7 @@ package ru.fa.scripts;
 
 import org.apache.jena.atlas.lib.Pair;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.fa.model.DimensionSubType;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,4 @@
-package ru.fa.scripts;
-
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.DimensionType;
+package ru.fa.model;
 
 import java.util.List;
 import java.util.Objects;
@@ -64,18 +61,8 @@ public class Dimension {
         return childrenIds;
     }
 
-    public Dimension setChildrenIds(List<Long> childrenIds) {
-        this.childrenIds = childrenIds;
-        return this;
-    }
-
     public List<Long> getAllChildrenIds() {
         return allChildrenIds;
-    }
-
-    public Dimension setAllChildrenIds(List<Long> allChildrenIds) {
-        this.allChildrenIds = allChildrenIds;
-        return this;
     }
 
     public String getQuestion() {
@@ -169,7 +156,7 @@ public class Dimension {
             return this;
         }
 
-        public Builder setQuestion(String question) {
+        public Dimension.Builder setQuestion(String question) {
             this.question = question;
             return this;
         }

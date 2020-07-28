@@ -1,5 +1,7 @@
 package ru.fa.scripts;
 
+import ru.fa.model.DimensionType;
+
 public class OperationPlaceBankImport {
 
     public static void main(String[] args) throws Exception {
