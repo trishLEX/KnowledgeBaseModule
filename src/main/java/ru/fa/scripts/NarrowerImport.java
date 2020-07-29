@@ -6,6 +6,7 @@ import com.google.common.collect.Multimap;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import ru.fa.util.ArraySql;
 
 import java.sql.JDBCType;
 import java.util.ArrayList;
@@ -39,12 +40,16 @@ public class NarrowerImport {
             root.setAllChildrenIds(allChilds);
         }
 
-        SqlParameterSource[] params = idMap.values().stream().map(
-                entry -> new MapSqlParameterSource()
-                        .addValue("all_children", ArraySql.create(entry.getAllChildrenIds(), JDBCType.BIGINT))
-                        .addValue("children", ArraySql.create(entry.getChildrenIds(), JDBCType.BIGINT))
-                        .addValue("id", entry.getId())
-        ).toArray(MapSqlParameterSource[]::new);
+        SqlParameterSource[] params = idMap.values()
+                .stream()
+                .map(d -> d.getAllChildrenIds() == null ? d.setAllChildrenIds(Collections.emptyList()) : d)
+                .map(d -> d.getChildrenIds() == null ? d.setChildrenIds(Collections.emptyList()) : d)
+                .map(
+                        entry -> new MapSqlParameterSource()
+                                .addValue("all_children", ArraySql.create(entry.getAllChildrenIds(), JDBCType.BIGINT))
+                                .addValue("children", ArraySql.create(entry.getChildrenIds(), JDBCType.BIGINT))
+                                .addValue("id", entry.getId())
+                ).toArray(MapSqlParameterSource[]::new);
 
 
         namedJdbcTemplate.batchUpdate(

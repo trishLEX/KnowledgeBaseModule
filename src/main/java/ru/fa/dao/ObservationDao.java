@@ -25,16 +25,22 @@ public class ObservationDao {
 
     private static final String GET_OBSERVATION_IDS_BY_DIMENSIONS = "" +
             "select observation_id\n" +
-            "from observation_dimension_v2 od\n" +
-            "where obs_dimension_id in (\n" +
-            "    select id\n" +
-            "    from dimension\n" +
-            "    where id in (:ids)\n" +
-            "    union\n" +
-            "    select unnest(all_narrower) child_id\n" +
-            "    from dimension\n" +
-            "    where id in (:ids))\n" +
-            "group by observation_id, dimension_id\n";
+            "from (\n" +
+            "         select observation_id, array_agg(dimension_id) obs_array\n" +
+            "         from observation_dimension\n" +
+            "         group by observation_id\n" +
+            ") obs\n" +
+            "where obs_array <@ (\n" +
+            "    select array_agg(id)\n" +
+            "    from (\n" +
+            "             select id\n" +
+            "             from dimension\n" +
+            "             where id in (:ids)\n" +
+            "             union\n" +
+            "             select unnest(all_narrower) child_id\n" +
+            "             from dimension\n" +
+            "             where id in (:ids)\n" +
+            ") as aggregated);";
 
     private static final String GET_OBSERVATIONS_BY_IDS = "" +
             "select dimension_id, observation_id, obs_dimension_id, dimension_subtype\n" +

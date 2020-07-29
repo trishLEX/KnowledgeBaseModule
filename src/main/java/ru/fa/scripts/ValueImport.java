@@ -48,7 +48,7 @@ public class ValueImport {
     public static void main(String[] args) throws Exception {
         NamedParameterJdbcTemplate namedJdbcTemplate = createNamedJdbcTemplate();
 
-        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("E:\\Sorry\\Documents\\IdeaProjects\\KnBase\\src\\main\\resources\\ru\\fa\\OWL_content.xlsm"));
+        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("src/main/resources/ru/fa/OWL_content.xlsm"));
 
         int id = 1;
         for (String valuesSheet : VALUES_SHEETS) {

@@ -32,7 +32,7 @@ public class ObservationImport {
     public static void main(String[] args) throws Exception {
         NamedParameterJdbcTemplate namedJdbcTemplate = createNamedJdbcTemplate();
 
-        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("E:\\Sorry\\Documents\\IdeaProjects\\KnBase\\src\\main\\resources\\ru\\fa\\OWL_content.xlsm"));
+        XSSFWorkbook owlContent = new XSSFWorkbook(new FileInputStream("src/main/resources/ru/fa/OWL_content.xlsm"));
         XSSFSheet operationKind = owlContent.getSheet("Observations");
 
         HashMultimap<String, Dimension> cards = getCardsDimensions(owlContent, namedJdbcTemplate);
@@ -53,14 +53,7 @@ public class ObservationImport {
                             row.getCell(0).getStringCellValue()
                     ).replace("O", "")
             );
-            if (obsNum <= 2010) {
-                id++;
-                if (id % 100 == 0) {
-                    System.out.println("ID " + id);
-                }
-                continue;
-            }
-            String strId = row.getCell(0).getStringCellValue();
+            String strId = owlIdToStrId(row.getCell(0).getStringCellValue());
             Set<Dimension> clientsDimensions = clients.get(row.getCell(1).getStringCellValue());
             Set<Dimension> cardsDimensions = cards.get(row.getCell(2).getStringCellValue());
             Dimension opKind = findDimensionById(row.getCell(3).getStringCellValue(), namedJdbcTemplate);

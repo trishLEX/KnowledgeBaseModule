@@ -12,12 +12,12 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import ru.fa.model.DimensionSubType;
 import ru.fa.model.DimensionType;
+import ru.fa.util.ArraySql;
 
 import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -182,8 +182,8 @@ public class CommonImport {
                 .setDimensionType(DimensionType.valueOf(rs.getString("type")))
                 .setDimensionSubType(DimensionSubType.valueOf(rs.getString("subtype")))
                 .setParentId(rs.getLong("broader"))
-                .setAllChildrenIds(Arrays.asList((Long[]) rs.getArray("all_narrower").getArray()))
-                .setChildrenIds(Arrays.asList((Long[]) rs.getArray("narrower").getArray()))
+                .setAllChildrenIds(ArraySql.getList(rs.getArray("all_narrower")))
+                .setChildrenIds(ArraySql.getList(rs.getArray("narrower")))
                 .setQuestion(rs.getString("question"))
                 .build();
     }
