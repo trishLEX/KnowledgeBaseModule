@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GraphvizExport {
 
@@ -27,13 +29,26 @@ public class GraphvizExport {
 
         NamedParameterJdbcTemplate namedJdbcTemplate = CommonImport.createNamedJdbcTemplate();
         List<Dimension> dimensions = namedJdbcTemplate.query(
-                "select * from dimension",
+                "" +
+                        "select * from dimension where id in (select distinct dimension_id\n" +
+                        "from observation_dimension_v2 od\n" +
+                        "where observation_id in (1696, 949, 2876, 2878))",
                 Collections.emptyMap(),
                 CommonImport::mapDimension
         );
 
+        Set<Long> dimIds = dimensions.stream().map(Dimension::getId).collect(Collectors.toSet());
+        dimensions.forEach(
+                d -> d.setChildrenIds(
+                        d.getChildrenIds()
+                                .stream()
+                                .filter(dimIds::contains)
+                                .collect(Collectors.toList())
+                )
+        );
+
         List<Long> observationDims = namedJdbcTemplate.queryForList(
-                "select dimension_id from observation_dimension where observation_id = :obsId",
+                "select dimension_id from observation_dimension where observation_id in (1696, 949, 2876, 2878)",
                 new MapSqlParameterSource("obsId", observationId),
                 Long.class
         );

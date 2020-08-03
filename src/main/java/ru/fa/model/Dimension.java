@@ -1,9 +1,11 @@
 package ru.fa.model;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
-public class Dimension {
+@ParametersAreNonnullByDefault
+public class Dimension implements Comparable<Dimension> {
 
     private long id;
     private int level;
@@ -83,14 +85,26 @@ public class Dimension {
     }
 
     @Override
+    public int compareTo(Dimension o) {
+        if (dimensionSubType != o.dimensionSubType) {
+            throw new IllegalArgumentException("Different subtypes: " + this + " and " + o);
+        }
+
+        return -Integer.compare(level, o.level);
+    }
+
+    @Override
     public String toString() {
         return "Dimension{" +
                 "id=" + id +
+                ", level=" + level +
                 ", strId='" + strId + '\'' +
                 ", label='" + label + '\'' +
                 ", dimensionType=" + dimensionType +
                 ", dimensionSubType=" + dimensionSubType +
                 ", parentId=" + parentId +
+                ", childrenIds=" + childrenIds +
+                ", allChildrenIds=" + allChildrenIds +
                 ", question='" + question + '\'' +
                 '}';
     }

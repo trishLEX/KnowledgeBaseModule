@@ -13,6 +13,7 @@ import ru.fa.model.DimensionSubType;
 import ru.fa.model.ValueSubType;
 import ru.fa.util.CustomCollectors;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -42,14 +43,24 @@ public class QuestionService {
             //todo create answer
             return new QuestionResponse.Answer();
         } else {
-            Multimap<DimensionSubType, Long> subTypesToClarify =
+            Multimap<DimensionSubType, Long> subTypesToClarifyRaw =
                     observationDao.getDimensionSubTypesToClarify(observationIds);
             Map<Long, Dimension> dimensionMap = dimensionDao.getDimensionsById(
                     Sets.union(
-                            Sets.newHashSet(subTypesToClarify.values()),
+                            Sets.newHashSet(subTypesToClarifyRaw.values()),
                             Sets.newHashSet(dimensions.values())
                     )
             );
+
+
+
+            Multimap<DimensionSubType, Dimension> subtypesToClarify = subTypesToClarifyRaw
+                    .entries()
+                    .stream()
+                    .collect(CustomCollectors.toLinkedHashMultimap(
+                            Map.Entry::getKey,
+                            entry -> dimensionMap.get(entry.getValue())
+                    ));
             Map<DimensionSubType, Dimension> inputDimensions = dimensions.entrySet()
                     .stream()
                     .collect(Collectors.toMap(
@@ -57,26 +68,54 @@ public class QuestionService {
                             entry -> dimensionMap.get(entry.getValue()))
                     );
 
-            Multimap<DimensionSubType, Dimension> dimensionsToClarify = subTypesToClarify
-                    .entries()
-                    .stream()
-                    .collect(CustomCollectors.toLinkedHashMultimap(
-                            Map.Entry::getKey,
-                            entry -> dimensionMap.get(entry.getValue())
-                    ));
-            dimensionsToClarify = filterDimensions(dimensionsToClarify, inputDimensions);
-            if (dimensionsToClarify.isEmpty()) {
-                throw new IllegalStateException("WTF");
-            }
 
-            DimensionSubType subtypeToClarify = dimensionsToClarify.entries()
-                    .stream()
-                    .findFirst()
-                    .orElseThrow()
-                    .getKey();
+            DimensionSubType subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
             String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
             return new QuestionResponse.Question(question, subtypeToClarify);
         }
+    }
+
+    private DimensionSubType getDimensionSubtypeToClarify(
+            Multimap<DimensionSubType, Dimension> subtypesToClarify,
+            Map<DimensionSubType, Dimension> inputDimensions
+    ) {
+        //todo проверить что keySet -- LinkedHashSet
+        for (DimensionSubType subType : subtypesToClarify.keySet()) {
+            List<Dimension> upper = new ArrayList<>();
+            List<Dimension> equals = new ArrayList<>();
+            List<Dimension> lower = new ArrayList<>();
+            Dimension input = inputDimensions.get(subType);
+
+            if (input.getAllChildrenIds().isEmpty()) {
+                continue;
+            }
+
+            for (Dimension dimension : subtypesToClarify.get(subType)) {
+                switch (dimension.compareTo(input)) {
+                    case -1:
+                        lower.add(dimension);
+                        break;
+                    case 0:
+                        equals.add(dimension);
+                        break;
+                    case 1:
+                        upper.add(dimension);
+                        break;
+                    default:
+                        throw new IllegalStateException();
+                }
+            }
+
+            if (upper.isEmpty() && equals.isEmpty() && !lower.isEmpty()
+                    || upper.isEmpty() && !equals.isEmpty() && !lower.isEmpty()
+                    || !upper.isEmpty() && equals.isEmpty() && !lower.isEmpty()
+                    || !upper.isEmpty() && !equals.isEmpty() && !lower.isEmpty()
+            ) {
+                return subType;
+            }
+        }
+
+        throw new IllegalStateException("WTF");
     }
 
     private Multimap<DimensionSubType, Dimension> filterDimensions(
@@ -98,7 +137,9 @@ public class QuestionService {
                 .sorted(Comparator.comparingLong(Dimension::getLevel))
                 .collect(Collectors.toList());
 
-        sortedByLevel.removeIf(d -> d.getLevel() <= inputDimension.getLevel() || !isOnOneBranch(d, inputDimension));
+        sortedByLevel.removeIf(
+                d -> (d.getLevel() <= inputDimension.getLevel() /* todo странновато || !isOnOneBranch(d, inputDimension)*/) && !d.equals(inputDimension)
+        );
         for (int i = 0; i < sortedByLevel.size() - 1; i++) {
             Dimension current = sortedByLevel.get(i);
             List<Dimension> other = sortedByLevel.subList(i + 1, sortedByLevel.size());

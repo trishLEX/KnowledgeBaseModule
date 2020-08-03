@@ -24,23 +24,30 @@ import java.util.Set;
 public class ObservationDao {
 
     private static final String GET_OBSERVATION_IDS_BY_DIMENSIONS = "" +
-            "select observation_id\n" +
+            "select observation_id, array_agg(dimension_subtype)\n" +
             "from (\n" +
-            "         select observation_id, array_agg(dimension_id) obs_array\n" +
-            "         from observation_dimension\n" +
-            "         group by observation_id\n" +
-            ") obs\n" +
-            "where obs_array <@ (\n" +
-            "    select array_agg(id)\n" +
+            "         select observation_id,\n" +
+            "                dimension_subtype,\n" +
+            "                array_agg(obs_dimension_id order by obs_dimension_id) dim_ids\n" +
+            "         from observation_dimension_v2\n" +
+            "         group by observation_id, dimension_subtype\n" +
+            "     ) as obs\n" +
+            "join (\n" +
+            "    select subtype, array_agg(id order by id) dim_ids\n" +
             "    from (\n" +
-            "             select id\n" +
+            "             select id, subtype\n" +
             "             from dimension\n" +
             "             where id in (:ids)\n" +
             "             union\n" +
-            "             select unnest(all_narrower) child_id\n" +
+            "             select unnest(all_narrower) child_id, subtype\n" +
             "             from dimension\n" +
             "             where id in (:ids)\n" +
-            ") as aggregated);";
+            "         ) unioned\n" +
+            "    group by subtype\n" +
+            ") as ids\n" +
+            "on obs.dimension_subtype = ids.subtype and obs.dim_ids && ids.dim_ids\n" +
+            "group by observation_id\n" +
+            "having cardinality(array_agg(dimension_subtype)) = (select count(1) from dimension_subtype);";
 
     private static final String GET_OBSERVATIONS_BY_IDS = "" +
             "select dimension_id, observation_id, obs_dimension_id, dimension_subtype\n" +
