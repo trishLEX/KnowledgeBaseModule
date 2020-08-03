@@ -1,12 +1,15 @@
 package ru.fa.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.fa.model.Dimension;
 import ru.fa.model.DimensionSubType;
 import ru.fa.model.DimensionType;
+import ru.fa.util.ArraySql;
 
+import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -15,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,8 +42,31 @@ public class DimensionDao {
             "from dimension\n" +
             "where str_id in (:strIds)";
 
+    private static final String UPDATE_DIMENSION = "" +
+            "update dimension\n" +
+            "set\n" +
+            "   str_id = :strId,\n" +
+            "   label = :label,\n" +
+            "   broader = :broader,\n" +
+            "   type = :type,\n" +
+            "   subtype = :subtype,\n" +
+            "   question = :question,\n" +
+            "   level = :level,\n" +
+            "   all_narrower = :allNarrower,\n" +
+            "   narrower = :narrower\n" +
+            "where id = :id";
+
+    private static final String CREATE_DIMENSION = "" +
+            "insert into dimension\n" +
+            "(str_id, label, broader, type, subtype, question, level, all_narrower, narrower)\n" +
+            "values\n" +
+            "(:strId, :label, :broader, :type, :subtype, :question, :level, :allNarrower, :narrower)";
+
+    private static final String DELETE_DIMENSION = "delete from dimension where id = :id";
+
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
+    @Autowired
     public DimensionDao(NamedParameterJdbcTemplate namedJdbcTemplate) {
         this.namedJdbcTemplate = namedJdbcTemplate;
     }
@@ -58,6 +85,16 @@ public class DimensionDao {
                 new MapSqlParameterSource("ids", ids),
                 DimensionDao::mapDimension
         ).stream().collect(Collectors.toMap(Dimension::getId, Function.identity()));
+    }
+
+    public Dimension getDimensionById(long id) {
+        return namedJdbcTemplate.query(
+                GET_DIMENSIONS_BY_ID,
+                new MapSqlParameterSource("ids", Collections.singletonList(id)),
+                DimensionDao::mapDimension
+        ).stream()
+                .findFirst()
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public String getQuestionById(long id) {
@@ -96,6 +133,46 @@ public class DimensionDao {
                 }
         );
         return dimensions;
+    }
+
+    public void updateDimension(Dimension dimension) {
+        namedJdbcTemplate.update(
+                UPDATE_DIMENSION,
+                new MapSqlParameterSource()
+                        .addValue("id", dimension.getId())
+                        .addValue("strId", dimension.getStrId())
+                        .addValue("label", dimension.getLabel())
+                        .addValue("broader", dimension.getParentId())
+                        .addValue("type", dimension.getDimensionType().name())
+                        .addValue("subtype", dimension.getDimensionType().name())
+                        .addValue("question", dimension.getQuestion())
+                        .addValue("level", dimension.getLevel())
+                        .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
+        );
+    }
+
+    public void createDimension(Dimension dimension) {
+        namedJdbcTemplate.update(
+                CREATE_DIMENSION,
+                new MapSqlParameterSource()
+                        .addValue("strId", dimension.getStrId())
+                        .addValue("label", dimension.getLabel())
+                        .addValue("broader", dimension.getParentId())
+                        .addValue("type", dimension.getDimensionType().name())
+                        .addValue("subtype", dimension.getDimensionType().name())
+                        .addValue("question", dimension.getQuestion())
+                        .addValue("level", dimension.getLevel())
+                        .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
+        );
+    }
+
+    public void deleteDimension(long id) {
+        namedJdbcTemplate.update(
+                DELETE_DIMENSION,
+                new MapSqlParameterSource("id", id)
+        );
     }
 
     private static Dimension mapDimension(ResultSet rs, int rn) throws SQLException {

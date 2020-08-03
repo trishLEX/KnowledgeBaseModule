@@ -1,5 +1,6 @@
 package ru.fa.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.DimensionDao;
 import ru.fa.dto.QuestionRequest;
@@ -12,6 +13,7 @@ public class DimensionService {
 
     private final DimensionDao dimensionDao;
 
+    @Autowired
     public DimensionService(DimensionDao dimensionDao) {
         this.dimensionDao = dimensionDao;
     }
