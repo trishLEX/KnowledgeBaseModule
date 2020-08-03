@@ -26,12 +26,15 @@ public class QuestionController {
 
     @PostMapping("question")
     public QuestionResponse processQuestion(@RequestBody QuestionRequest questionRequest) {
+        Map<DimensionSubType, Long> dimensions = getDimensions(questionRequest);
+        return questionService.processNotEmptyQuestion(questionRequest.getValueSubType(), dimensions);
+    }
+
+    private Map<DimensionSubType, Long> getDimensions(QuestionRequest questionRequest) {
         if (questionRequest.getDimensions().isEmpty()) {
-            //todo
-            throw new UnsupportedOperationException("TODO");
+            return dimensionService.getRequestDimensions();
         } else {
-            Map<DimensionSubType, Long> dimensions = dimensionService.getRequestDimensions(questionRequest);
-            return questionService.processNotEmptyQuestion(questionRequest.getValueSubType(), dimensions);
+            return dimensionService.getRequestDimensions(questionRequest);
         }
     }
 }

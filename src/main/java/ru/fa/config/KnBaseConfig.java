@@ -2,6 +2,7 @@ package ru.fa.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -12,18 +13,17 @@ import javax.sql.DataSource;
 public class KnBaseConfig {
 
     @Bean
-    public DataSource dataSource() {
-//        DataSource dataSource = DataSourceBuilder.create()
-//                .driverClassName("org.postgresql.Driver")
-//                .password("0212")
-//                .username("postgres")
-//                .url("jdbc:postgresql://localhost:5432/kn_base")
-//                .build();
+    public DataSource dataSource(
+            @Value("${knbase.db.driver}") String driverClassName,
+            @Value("${knbase.db.user}") String user,
+            @Value("${knbase.db.password}") String password,
+            @Value("${knbase.db.url}") String url
+    ) {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setDriverClassName("org.postgresql.Driver");
-        hikariConfig.setPassword("0212");
-        hikariConfig.setUsername("postgres");
-        hikariConfig.setJdbcUrl("jdbc:postgresql://localhost:5432/kn_base");
+        hikariConfig.setDriverClassName(driverClassName);
+        hikariConfig.setUsername(user);
+        hikariConfig.setPassword(password);
+        hikariConfig.setJdbcUrl(url);
 
         return new HikariDataSource(hikariConfig);
     }

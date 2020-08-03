@@ -1,6 +1,7 @@
 package ru.fa.service;
 
 import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import ru.fa.dao.ObservationDao;
 import ru.fa.dto.QuestionResponse;
 import ru.fa.model.Dimension;
 import ru.fa.model.DimensionSubType;
+import ru.fa.model.Value;
 import ru.fa.model.ValueSubType;
 import ru.fa.util.CustomCollectors;
 
@@ -34,14 +36,17 @@ public class QuestionService {
     }
 
     public QuestionResponse processNotEmptyQuestion(ValueSubType valueSubType, Map<DimensionSubType, Long> dimensions) {
-        //todo здесь косяк, observation'ов меньше не становится
-        Set<Long> observationIds = observationDao.getObservationsIdsByDimensions(dimensions.values());
+        Set<Long> observationIds = getObservationIds(dimensions);
 
         if (observationIds.isEmpty()) {
             throw new IllegalStateException("Can't find observation for dimensions " + dimensions);
         } else if (observationIds.size() == 1) {
-            //todo create answer
-            return new QuestionResponse.Answer();
+            Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
+            return new QuestionResponse.Answer(
+                    value.getStrId(),
+                    value.getContent().asText(),
+                    valueSubType
+            );
         } else {
             Multimap<DimensionSubType, Long> subTypesToClarifyRaw =
                     observationDao.getDimensionSubTypesToClarify(observationIds);
@@ -51,8 +56,6 @@ public class QuestionService {
                             Sets.newHashSet(dimensions.values())
                     )
             );
-
-
 
             Multimap<DimensionSubType, Dimension> subtypesToClarify = subTypesToClarifyRaw
                     .entries()
@@ -68,17 +71,29 @@ public class QuestionService {
                             entry -> dimensionMap.get(entry.getValue()))
                     );
 
-
-            DimensionSubType subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
-            String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
-            return new QuestionResponse.Question(question, subtypeToClarify);
+            try {
+                DimensionSubType subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
+                String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
+                return new QuestionResponse.Question(question, subtypeToClarify);
+            } catch (ObservationConflictException e) {
+                throw new IllegalStateException("Observations " + observationIds + " have conflicts");
+            }
         }
+    }
+
+    private Set<Long> getObservationIds(Map<DimensionSubType, Long> dimensions) {
+        Set<Long> observationIds = observationDao.checkExactObservation(dimensions.values());
+        if (observationIds.size() == 1) {
+            return observationIds;
+        }
+
+        return observationDao.getObservationsIdsByDimensions(dimensions.values());
     }
 
     private DimensionSubType getDimensionSubtypeToClarify(
             Multimap<DimensionSubType, Dimension> subtypesToClarify,
             Map<DimensionSubType, Dimension> inputDimensions
-    ) {
+    ) throws ObservationConflictException {
         //todo проверить что keySet -- LinkedHashSet
         for (DimensionSubType subType : subtypesToClarify.keySet()) {
             List<Dimension> upper = new ArrayList<>();
@@ -115,49 +130,6 @@ public class QuestionService {
             }
         }
 
-        throw new IllegalStateException("WTF");
-    }
-
-    private Multimap<DimensionSubType, Dimension> filterDimensions(
-            Multimap<DimensionSubType, Dimension> dimensionsToClarify,
-            Map<DimensionSubType, Dimension> inputDimensions
-    ) {
-        Multimap<DimensionSubType, Dimension> result = LinkedHashMultimap.create();
-        for (DimensionSubType dimensionSubType : dimensionsToClarify.keySet()) {
-            if (!isOnOneBranch(dimensionsToClarify.get(dimensionSubType), inputDimensions.get(dimensionSubType))) {
-                result.putAll(dimensionSubType, dimensionsToClarify.get(dimensionSubType));
-            }
-        }
-
-        return result;
-    }
-
-    private boolean isOnOneBranch(Collection<Dimension> dimensions, Dimension inputDimension) {
-        List<Dimension> sortedByLevel = dimensions.stream()
-                .sorted(Comparator.comparingLong(Dimension::getLevel))
-                .collect(Collectors.toList());
-
-        sortedByLevel.removeIf(
-                d -> (d.getLevel() <= inputDimension.getLevel() /* todo странновато || !isOnOneBranch(d, inputDimension)*/) && !d.equals(inputDimension)
-        );
-        for (int i = 0; i < sortedByLevel.size() - 1; i++) {
-            Dimension current = sortedByLevel.get(i);
-            List<Dimension> other = sortedByLevel.subList(i + 1, sortedByLevel.size());
-            if (!dimensionContainsOther(current, other)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean dimensionContainsOther(Dimension dimension, List<Dimension> dimensions) {
-        List<Long> ids = dimensions.stream()
-                .map(Dimension::getId)
-                .collect(Collectors.toList());
-        return dimension.getAllChildrenIds().containsAll(ids);
-    }
-
-    private boolean isOnOneBranch(Dimension one, Dimension another) {
-        return one.getAllChildrenIds().contains(another.getId()) || another.getAllChildrenIds().contains(one.getId());
+        throw new ObservationConflictException("Seems to be conflicts of observations");
     }
 }

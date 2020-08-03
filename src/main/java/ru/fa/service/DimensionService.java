@@ -24,4 +24,8 @@ public class DimensionService {
         topConcepts.putAll(dimensions);
         return topConcepts;
     }
+
+    public Map<DimensionSubType, Long> getRequestDimensions() {
+        return dimensionDao.getDimensionsTopConcepts();
+    }
 }

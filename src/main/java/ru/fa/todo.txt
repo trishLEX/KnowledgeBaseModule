@@ -1,8 +1,8 @@
 todo сделайть тестовую схему
 todo перейти на Set в AllChildrenIds
 todo сделайть индексы под запросы
-todo перейти на fk в таблицах dimension и observation_dimension_v2 на id в таблице dimension_subtype
+todo перейти на fk в таблицах dimension и observation_dimension_v2 на id в таблице dimension_subtype ???
 todo перейти со строковых dimension value в запросе на числовые id
 todo удалить старый класс Observation и переименовать ObservationDimension
 todo перейти на просто String вместо enum'ов dimension_type и dimension_subtype
-todo убрать дозаполнение запроса до top concept'ов
+todo убрать дозаполнение запроса до top concept'ов ???
