@@ -1,17 +1,17 @@
 package ru.fa.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import java.util.Objects;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public class Value {
 
     private long id;
     private String strId;
     private JsonNode content;
-    private ValueType type;
+    private String type;
 
-    public Value(long id, String strId, JsonNode content, ValueType type) {
+    public Value(long id, String strId, JsonNode content, String type) {
         this.id = id;
         this.strId = strId;
         this.content = content;
@@ -30,7 +30,7 @@ public class Value {
         return content;
     }
 
-    public ValueType getType() {
+    public String getType() {
         return type;
     }
 

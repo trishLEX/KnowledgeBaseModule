@@ -1,8 +1,6 @@
 package ru.fa.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.ValueSubType;
 
 public abstract class QuestionResponse {
 
@@ -23,9 +21,9 @@ public abstract class QuestionResponse {
         private String question;
 
         @JsonProperty("dimension_subtype")
-        private DimensionSubType dimensionSubType;
+        private String dimensionSubType;
 
-        public Question(String question, DimensionSubType dimensionSubType) {
+        public Question(String question, String dimensionSubType) {
             super(QuestionResponseType.QUESTION);
             this.question = question;
             this.dimensionSubType = dimensionSubType;
@@ -35,7 +33,7 @@ public abstract class QuestionResponse {
             return question;
         }
 
-        public DimensionSubType getDimensionSubType() {
+        public String getDimensionSubType() {
             return dimensionSubType;
         }
     }
@@ -49,9 +47,9 @@ public abstract class QuestionResponse {
         private String content;
 
         @JsonProperty("value_subtype")
-        private ValueSubType valueSubType;
+        private String valueSubType;
 
-        public Answer(String strId, String content, ValueSubType valueSubType) {
+        public Answer(String strId, String content, String valueSubType) {
             super(QuestionResponseType.QUESTION);
             this.strId = strId;
             this.content = content;
@@ -66,7 +64,7 @@ public abstract class QuestionResponse {
             return content;
         }
 
-        public ValueSubType getValueSubType() {
+        public String getValueSubType() {
             return valueSubType;
         }
     }

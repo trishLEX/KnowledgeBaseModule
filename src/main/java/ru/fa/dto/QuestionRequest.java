@@ -1,31 +1,29 @@
 package ru.fa.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.ValueSubType;
-
 import java.beans.ConstructorProperties;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class QuestionRequest {
 
     @JsonProperty("value_subtype")
-    private ValueSubType valueSubType;
+    private String valueSubType;
 
     @JsonProperty("dimensions")
-    private Map<DimensionSubType, String> dimensions;
+    private Map<String, String> dimensions;
 
     @ConstructorProperties({"value_subtype", "dimensions"})
-    public QuestionRequest(ValueSubType valueSubType, Map<DimensionSubType, String> dimensions) {
+    public QuestionRequest(String valueSubType, Map<String, String> dimensions) {
         this.valueSubType = valueSubType;
         this.dimensions = dimensions;
     }
 
-    public ValueSubType getValueSubType() {
+    public String getValueSubType() {
         return valueSubType;
     }
 
-    public Map<DimensionSubType, String> getDimensions() {
+    public Map<String, String> getDimensions() {
         return dimensions;
     }
 

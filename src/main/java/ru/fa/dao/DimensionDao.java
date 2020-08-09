@@ -1,13 +1,5 @@
 package ru.fa.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import ru.fa.model.Dimension;
-import ru.fa.model.DimensionSubType;
-import ru.fa.util.ArraySql;
-
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +12,13 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.fa.model.Dimension;
+import ru.fa.util.ArraySql;
 
 @Repository
 public class DimensionDao {
@@ -104,14 +103,14 @@ public class DimensionDao {
         );
     }
 
-    public Map<DimensionSubType, Long> getDimensionsTopConcepts() {
-        Map<DimensionSubType, Long> topConcepts = new HashMap<>();
+    public Map<String, Long> getDimensionsTopConcepts() {
+        Map<String, Long> topConcepts = new HashMap<>();
         namedJdbcTemplate.query(
                 GET_DIMENSIONS_TOP_CONCEPTS,
                 Collections.emptyMap(),
                 rs -> {
                     topConcepts.put(
-                            DimensionSubType.valueOf(rs.getString("subtype")),
+                            rs.getString("subtype"),
                             rs.getLong("id")
                     );
                 }
@@ -119,14 +118,14 @@ public class DimensionDao {
         return topConcepts;
     }
 
-    public Map<DimensionSubType, Long> getDimensionsValuesByStrIds(Collection<String> strIds) {
-        Map<DimensionSubType, Long> dimensions = new HashMap<>();
+    public Map<String, Long> getDimensionsValuesByStrIds(Collection<String> strIds) {
+        Map<String, Long> dimensions = new HashMap<>();
         namedJdbcTemplate.query(
                 GET_DIMENSION_IDS_BY_STR_IDS,
                 new MapSqlParameterSource("strIds", strIds),
                 rs -> {
                     dimensions.put(
-                            DimensionSubType.valueOf(rs.getString("subtype")),
+                            rs.getString("subtype"),
                             rs.getLong("id")
                     );
                 }

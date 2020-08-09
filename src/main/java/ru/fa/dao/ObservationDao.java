@@ -1,27 +1,22 @@
 package ru.fa.dao;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.Value;
-import ru.fa.model.ValueSubType;
-import ru.fa.model.ValueType;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.fa.model.Value;
 
 @Repository
 public class ObservationDao {
@@ -99,14 +94,14 @@ public class ObservationDao {
         return result;
     }
 
-    public Multimap<DimensionSubType, Long> getDimensionSubTypesToClarify(Collection<Long> observationIds) {
-        Multimap<DimensionSubType, Long> result = LinkedHashMultimap.create();
+    public Multimap<String, Long> getDimensionSubTypesToClarify(Collection<Long> observationIds) {
+        Multimap<String , Long> result = LinkedHashMultimap.create();
         namedJdbcTemplate.query(
                 GET_DIMENSION_SUBTYPES_TO_CLARIFY,
                 new MapSqlParameterSource("observationIds", observationIds),
                 rs -> {
                     result.putAll(
-                            DimensionSubType.valueOf(rs.getString("dimension_subtype")),
+                            rs.getString("dimension_subtype"),
                             Arrays.asList((Long[]) rs.getArray("dimensions").getArray())
                     );
                 }
@@ -124,7 +119,7 @@ public class ObservationDao {
         );
     }
 
-    public Value getObservationValue(long observationId, ValueSubType valueSubType) {
+    public Value getObservationValue(long observationId, String valueSubType) {
         return namedJdbcTemplate.query(
                 GET_OBSERVATION_VALUE,
                 new MapSqlParameterSource()
@@ -141,7 +136,7 @@ public class ObservationDao {
                 rs.getLong("id"),
                 rs.getString("str_id"),
                 readTreeUnchecked(rs.getString("content")),
-                ValueType.valueOf(rs.getString("type"))
+                rs.getString("type")
         );
     }
 

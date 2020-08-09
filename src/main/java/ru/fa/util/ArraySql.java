@@ -1,7 +1,5 @@
 package ru.fa.util;
 
-import org.springframework.jdbc.support.SqlValue;
-
 import java.sql.Array;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
@@ -10,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nullable;
+
+import org.springframework.jdbc.support.SqlValue;
 
 public class ArraySql<T> implements SqlValue {
     private final T[] array;

@@ -283,3 +283,15 @@ from (
 ) as ids
               on obs.dimension_subtype = ids.subtype and obs.dim_ids && ids.dim_ids
 group by observation_id;
+
+insert into observation_dimension_v2 (observation_id, dimension_id, obs_dimension_id, dimension_subtype)
+select observation_id, dimension_id, obs_dimension_id, subtype
+from (
+         select observation_id as observation_id, dimension_id as dimension_id, unnest(all_narrower) as obs_dimension_id, subtype
+         from observation_dimension od
+                  join dimension d on d.id = od.dimension_id
+         union
+         select observation_id as observation_id, dimension_id as dimension_id, dimension_id as obs_dimension_id, subtype
+         from observation_dimension od
+                  join dimension d on d.id = od.dimension_id
+     ) as ins;

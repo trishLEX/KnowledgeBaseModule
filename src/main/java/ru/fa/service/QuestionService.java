@@ -1,8 +1,13 @@
 package ru.fa.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,18 +15,8 @@ import ru.fa.dao.DimensionDao;
 import ru.fa.dao.ObservationDao;
 import ru.fa.dto.QuestionResponse;
 import ru.fa.model.Dimension;
-import ru.fa.model.DimensionSubType;
 import ru.fa.model.Value;
-import ru.fa.model.ValueSubType;
 import ru.fa.util.CustomCollectors;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -35,7 +30,7 @@ public class QuestionService {
         this.dimensionDao = dimensionDao;
     }
 
-    public QuestionResponse processNotEmptyQuestion(ValueSubType valueSubType, Map<DimensionSubType, Long> dimensions) {
+    public QuestionResponse processNotEmptyQuestion(String valueSubType, Map<String, Long> dimensions) {
         Set<Long> observationIds = getObservationIds(dimensions);
 
         if (observationIds.isEmpty()) {
@@ -48,7 +43,7 @@ public class QuestionService {
                     valueSubType
             );
         } else {
-            Multimap<DimensionSubType, Long> subTypesToClarifyRaw =
+            Multimap<String, Long> subTypesToClarifyRaw =
                     observationDao.getDimensionSubTypesToClarify(observationIds);
             Map<Long, Dimension> dimensionMap = dimensionDao.getDimensionsById(
                     Sets.union(
@@ -57,14 +52,14 @@ public class QuestionService {
                     )
             );
 
-            Multimap<DimensionSubType, Dimension> subtypesToClarify = subTypesToClarifyRaw
+            Multimap<String, Dimension> subtypesToClarify = subTypesToClarifyRaw
                     .entries()
                     .stream()
                     .collect(CustomCollectors.toLinkedHashMultimap(
                             Map.Entry::getKey,
                             entry -> dimensionMap.get(entry.getValue())
                     ));
-            Map<DimensionSubType, Dimension> inputDimensions = dimensions.entrySet()
+            Map<String, Dimension> inputDimensions = dimensions.entrySet()
                     .stream()
                     .collect(Collectors.toMap(
                             Map.Entry::getKey,
@@ -72,7 +67,7 @@ public class QuestionService {
                     );
 
             try {
-                DimensionSubType subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
+                String subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
                 String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
                 return new QuestionResponse.Question(question, subtypeToClarify);
             } catch (ObservationConflictException e) {
@@ -81,7 +76,7 @@ public class QuestionService {
         }
     }
 
-    private Set<Long> getObservationIds(Map<DimensionSubType, Long> dimensions) {
+    private Set<Long> getObservationIds(Map<String, Long> dimensions) {
         Set<Long> observationIds = observationDao.checkExactObservation(dimensions.values());
         if (observationIds.size() == 1) {
             return observationIds;
@@ -90,12 +85,12 @@ public class QuestionService {
         return observationDao.getObservationsIdsByDimensions(dimensions.values());
     }
 
-    private DimensionSubType getDimensionSubtypeToClarify(
-            Multimap<DimensionSubType, Dimension> subtypesToClarify,
-            Map<DimensionSubType, Dimension> inputDimensions
+    private String getDimensionSubtypeToClarify(
+            Multimap<String, Dimension> subtypesToClarify,
+            Map<String, Dimension> inputDimensions
     ) throws ObservationConflictException {
         //todo проверить что keySet -- LinkedHashSet
-        for (DimensionSubType subType : subtypesToClarify.keySet()) {
+        for (String subType : subtypesToClarify.keySet()) {
             List<Dimension> upper = new ArrayList<>();
             List<Dimension> equals = new ArrayList<>();
             List<Dimension> lower = new ArrayList<>();

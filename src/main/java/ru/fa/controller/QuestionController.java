@@ -1,16 +1,15 @@
 package ru.fa.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fa.dto.QuestionRequest;
 import ru.fa.dto.QuestionResponse;
-import ru.fa.model.DimensionSubType;
 import ru.fa.service.DimensionService;
 import ru.fa.service.QuestionService;
-
-import java.util.Map;
 
 @RestController
 public class QuestionController {
@@ -26,11 +25,11 @@ public class QuestionController {
 
     @PostMapping("question")
     public QuestionResponse processQuestion(@RequestBody QuestionRequest questionRequest) {
-        Map<DimensionSubType, Long> dimensions = getDimensions(questionRequest);
+        Map<String, Long> dimensions = getDimensions(questionRequest);
         return questionService.processNotEmptyQuestion(questionRequest.getValueSubType(), dimensions);
     }
 
-    private Map<DimensionSubType, Long> getDimensions(QuestionRequest questionRequest) {
+    private Map<String, Long> getDimensions(QuestionRequest questionRequest) {
         if (questionRequest.getDimensions().isEmpty()) {
             return dimensionService.getRequestDimensions();
         } else {

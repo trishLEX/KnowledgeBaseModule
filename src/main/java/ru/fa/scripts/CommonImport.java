@@ -1,22 +1,5 @@
 package ru.fa.scripts;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.DimensionType;
-import ru.fa.model.Value;
-import ru.fa.model.ValueType;
-import ru.fa.util.ArraySql;
-
-import javax.sql.DataSource;
 import java.io.FileInputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -30,6 +13,23 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import javax.sql.DataSource;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.fa.model.DimensionSubType;
+import ru.fa.model.DimensionType;
+import ru.fa.model.Value;
+import ru.fa.util.ArraySql;
 
 public class CommonImport {
 
@@ -233,7 +233,7 @@ public class CommonImport {
                     rs.getLong("id"),
                     rs.getString("str_id"),
                     new ObjectMapper().readTree(rs.getString("content")),
-                    ValueType.valueOf(rs.getString("type"))
+                    rs.getString("type")
             );
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);

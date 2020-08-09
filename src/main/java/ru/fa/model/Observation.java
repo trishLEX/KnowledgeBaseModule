@@ -7,9 +7,9 @@ public class Observation {
 
     private long id;
     private String strId;
-    private Map<DimensionSubType, Dimension> dimensionMap;
+    private Map<String, Dimension> dimensionMap;
 
-    public Observation(long id, String strId, Map<DimensionSubType, Dimension> dimensionMap) {
+    public Observation(long id, String strId, Map<String, Dimension> dimensionMap) {
         this.id = id;
         this.strId = strId;
         this.dimensionMap = dimensionMap;
@@ -23,7 +23,7 @@ public class Observation {
         return strId;
     }
 
-    public Map<DimensionSubType, Dimension> getDimensionMap() {
+    public Map<String, Dimension> getDimensionMap() {
         return dimensionMap;
     }
 

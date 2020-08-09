@@ -5,13 +5,13 @@ public class ObservationDimension {
     private long dimensionId;
     private long observationId;
     private long observationDimensionId;
-    private DimensionSubType dimensionSubType;
+    private String dimensionSubType;
 
     public ObservationDimension(
             long dimensionId,
             long observationId,
             long observationDimensionId,
-            DimensionSubType dimensionSubType
+            String dimensionSubType
     ) {
         this.dimensionId = dimensionId;
         this.observationId = observationId;
@@ -31,7 +31,7 @@ public class ObservationDimension {
         return observationDimensionId;
     }
 
-    public DimensionSubType getDimensionSubType() {
+    public String getDimensionSubType() {
         return dimensionSubType;
     }
 }

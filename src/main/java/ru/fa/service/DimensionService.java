@@ -1,12 +1,11 @@
 package ru.fa.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.DimensionDao;
 import ru.fa.dto.QuestionRequest;
-import ru.fa.model.DimensionSubType;
-
-import java.util.Map;
 
 @Service
 public class DimensionService {
@@ -18,16 +17,16 @@ public class DimensionService {
         this.dimensionDao = dimensionDao;
     }
 
-    public Map<DimensionSubType, Long> getRequestDimensions(QuestionRequest questionRequest) {
-        Map<DimensionSubType, Long> topConcepts = dimensionDao.getDimensionsTopConcepts();
-        Map<DimensionSubType, Long> dimensions = dimensionDao.getDimensionsValuesByStrIds(
+    public Map<String, Long> getRequestDimensions(QuestionRequest questionRequest) {
+        Map<String, Long> topConcepts = dimensionDao.getDimensionsTopConcepts();
+        Map<String, Long> dimensions = dimensionDao.getDimensionsValuesByStrIds(
                 questionRequest.getDimensions().values()
         );
         topConcepts.putAll(dimensions);
         return topConcepts;
     }
 
-    public Map<DimensionSubType, Long> getRequestDimensions() {
+    public Map<String, Long> getRequestDimensions() {
         return dimensionDao.getDimensionsTopConcepts();
     }
 }
