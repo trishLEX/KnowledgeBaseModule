@@ -11,8 +11,8 @@ public class Dimension implements Comparable<Dimension> {
     private int level;
     private String strId;
     private String label;
-    private DimensionType dimensionType;
-    private DimensionSubType dimensionSubType;
+    private String dimensionType;
+    private String dimensionSubType;
     private Long parentId;
     private List<Long> childrenIds;
     private List<Long> allChildrenIds;
@@ -47,11 +47,11 @@ public class Dimension implements Comparable<Dimension> {
         return label;
     }
 
-    public DimensionType getDimensionType() {
+    public String getDimensionType() {
         return dimensionType;
     }
 
-    public DimensionSubType getDimensionSubType() {
+    public String getDimensionSubType() {
         return dimensionSubType;
     }
 
@@ -86,7 +86,7 @@ public class Dimension implements Comparable<Dimension> {
 
     @Override
     public int compareTo(Dimension o) {
-        if (dimensionSubType != o.dimensionSubType) {
+        if (!dimensionSubType.equals(o.dimensionSubType)) {
             throw new IllegalArgumentException("Different subtypes: " + this + " and " + o);
         }
 
@@ -118,8 +118,8 @@ public class Dimension implements Comparable<Dimension> {
         private int level;
         private String strId;
         private String label;
-        private DimensionType dimensionType;
-        private DimensionSubType dimensionSubType;
+        private String dimensionType;
+        private String dimensionSubType;
         private Long parentId;
         private List<Long> childrenIds;
         private List<Long> allChildrenIds;
@@ -145,12 +145,12 @@ public class Dimension implements Comparable<Dimension> {
             return this;
         }
 
-        public Builder setDimensionType(DimensionType dimensionType) {
+        public Builder setDimensionType(String dimensionType) {
             this.dimensionType = dimensionType;
             return this;
         }
 
-        public Builder setDimensionSubType(DimensionSubType dimensionSubType) {
+        public Builder setDimensionSubType(String dimensionSubType) {
             this.dimensionSubType = dimensionSubType;
             return this;
         }

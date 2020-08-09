@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.fa.model.Dimension;
 import ru.fa.model.DimensionSubType;
-import ru.fa.model.DimensionType;
 import ru.fa.util.ArraySql;
 
 import java.sql.JDBCType;
@@ -143,8 +142,8 @@ public class DimensionDao {
                         .addValue("strId", dimension.getStrId())
                         .addValue("label", dimension.getLabel())
                         .addValue("broader", dimension.getParentId())
-                        .addValue("type", dimension.getDimensionType().name())
-                        .addValue("subtype", dimension.getDimensionType().name())
+                        .addValue("type", dimension.getDimensionType())
+                        .addValue("subtype", dimension.getDimensionSubType())
                         .addValue("question", dimension.getQuestion())
                         .addValue("level", dimension.getLevel())
                         .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
@@ -159,8 +158,8 @@ public class DimensionDao {
                         .addValue("strId", dimension.getStrId())
                         .addValue("label", dimension.getLabel())
                         .addValue("broader", dimension.getParentId())
-                        .addValue("type", dimension.getDimensionType().name())
-                        .addValue("subtype", dimension.getDimensionType().name())
+                        .addValue("type", dimension.getDimensionType())
+                        .addValue("subtype", dimension.getDimensionSubType())
                         .addValue("question", dimension.getQuestion())
                         .addValue("level", dimension.getLevel())
                         .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
@@ -181,8 +180,8 @@ public class DimensionDao {
                 .setLevel(rs.getInt("level"))
                 .setStrId(rs.getString("str_id"))
                 .setLabel(rs.getString("label"))
-                .setDimensionType(DimensionType.valueOf(rs.getString("type")))
-                .setDimensionSubType(DimensionSubType.valueOf(rs.getString("subtype")))
+                .setDimensionType(rs.getString("type"))
+                .setDimensionSubType(rs.getString("subtype"))
                 .setParentId(rs.getLong("broader"))
                 .setAllChildrenIds(Arrays.asList((Long[]) rs.getArray("all_narrower").getArray()))
                 .setChildrenIds(Arrays.asList((Long[]) rs.getArray("narrower").getArray()))

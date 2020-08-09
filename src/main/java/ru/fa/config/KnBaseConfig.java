@@ -17,13 +17,15 @@ public class KnBaseConfig {
             @Value("${knbase.db.driver}") String driverClassName,
             @Value("${knbase.db.user}") String user,
             @Value("${knbase.db.password}") String password,
-            @Value("${knbase.db.url}") String url
+            @Value("${knbase.db.url}") String url,
+            @Value("${knbase.db.connectionInitSql}") String initSql
     ) {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setDriverClassName(driverClassName);
         hikariConfig.setUsername(user);
         hikariConfig.setPassword(password);
         hikariConfig.setJdbcUrl(url);
+        hikariConfig.setConnectionInitSql(initSql);
 
         return new HikariDataSource(hikariConfig);
     }

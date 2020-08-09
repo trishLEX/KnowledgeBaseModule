@@ -7,13 +7,13 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.StandardEnvironment;
 
 @SpringBootApplication
-public class Main extends SpringBootServletInitializer {
+public class TestMain extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(Main.class);
+        SpringApplication app = new SpringApplication(TestMain.class);
 
         ConfigurableEnvironment env = new StandardEnvironment();
-        env.setActiveProfiles("production");
+        env.setActiveProfiles("testing");
         app.setEnvironment(env);
 
         app.run(args);
