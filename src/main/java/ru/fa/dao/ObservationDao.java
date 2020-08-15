@@ -85,7 +85,7 @@ public class ObservationDao {
             "where observation_id = :observationId and value_subtype = :valueSubtype";
 
     private static final String GET_OBSERVATION_BY_IDS = "" +
-            "select o.id, o.str_id, od.dimension_id\n" +
+            "select id, str_id, dimension_id\n" +
             "from observation o\n" +
             "join observation_dimension od on o.id = od.observation_id\n" +
             "where o.id in (:ids)";
@@ -159,8 +159,8 @@ public class ObservationDao {
                 GET_OBSERVATION_BY_IDS,
                 new MapSqlParameterSource("ids", ids),
                 rs -> {
-                    strIds.put(rs.getLong("o.id"), rs.getString("o.str_id"));
-                    dimIds.put(rs.getLong("o.id"), rs.getLong("od.dimension_id"));
+                    strIds.put(rs.getLong("id"), rs.getString("str_id"));
+                    dimIds.put(rs.getLong("id"), rs.getLong("dimension_id"));
                 }
         );
 

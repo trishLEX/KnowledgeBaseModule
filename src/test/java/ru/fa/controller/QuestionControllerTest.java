@@ -1,4 +1,4 @@
-package ru.fa.service;
+package ru.fa.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import ru.fa.dto.QuestionRequest;
 
 import java.util.Map;
 
-class QuestionServiceTest extends FunctionalTest {
+class QuestionControllerTest extends FunctionalTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
