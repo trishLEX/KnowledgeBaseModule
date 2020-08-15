@@ -1,15 +1,15 @@
 package ru.fa.util;
 
+import org.springframework.jdbc.support.SqlValue;
+
+import javax.annotation.Nullable;
 import java.sql.Array;
 import java.sql.JDBCType;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-
-import javax.annotation.Nullable;
-
-import org.springframework.jdbc.support.SqlValue;
 
 public class ArraySql<T> implements SqlValue {
     private final T[] array;
@@ -24,13 +24,13 @@ public class ArraySql<T> implements SqlValue {
         return new ArraySql<>(array, type);
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
-    public static <T> ArraySql<T> create(@Nullable List<T> list, JDBCType type) {
-        if (list == null) {
+    @SuppressWarnings("unchecked")
+    public static <T> ArraySql<T> create(@Nullable Collection<T> collection, JDBCType type) {
+        if (collection == null) {
             return null;
         }
-        return new ArraySql<>(list.toArray((T[]) new Object[list.size()]), type);
+        return new ArraySql<>(collection.toArray((T[]) new Object[collection.size()]), type);
     }
 
     @Nullable
@@ -39,7 +39,6 @@ public class ArraySql<T> implements SqlValue {
         if (array == null) {
             return null;
         }
-
         return Arrays.asList((T[]) array.getArray());
     }
 

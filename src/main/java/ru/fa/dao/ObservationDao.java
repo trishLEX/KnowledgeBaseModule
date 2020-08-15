@@ -1,22 +1,31 @@
 package ru.fa.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.fa.model.Dimension;
+import ru.fa.model.Observation;
 import ru.fa.model.Value;
+import ru.fa.util.ArraySql;
+
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Repository
 public class ObservationDao {
@@ -66,8 +75,8 @@ public class ObservationDao {
             "select observation_id\n" +
             "from observation_dimension_v2\n" +
             "group by observation_id\n" +
-            "having array_agg(dimension_id) @> (:ids)\n" +
-            "   and array_agg(dimension_id) <@ (:ids)";
+            "having array_agg(dimension_id) @> :ids\n" +
+            "   and array_agg(dimension_id) <@ :ids";
 
     private static final String GET_OBSERVATION_VALUE = "" +
             "select id, str_id, content, type\n" +
@@ -75,13 +84,25 @@ public class ObservationDao {
             "join observation_value ov on v.id = ov.value_id\n" +
             "where observation_id = :observationId and value_subtype = :valueSubtype";
 
+    private static final String GET_OBSERVATION_BY_IDS = "" +
+            "select o.id, o.str_id, od.dimension_id\n" +
+            "from observation o\n" +
+            "join observation_dimension od on o.id = od.observation_id\n" +
+            "where o.id in (:ids)";
+
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final ObjectMapper objectMapper;
+    private final DimensionDao dimensionDao;
 
     @Autowired
-    public ObservationDao(NamedParameterJdbcTemplate namedJdbcTemplate, ObjectMapper objectMapper) {
+    public ObservationDao(
+            NamedParameterJdbcTemplate namedJdbcTemplate,
+            ObjectMapper objectMapper,
+            DimensionDao dimensionDao
+    ) {
         this.namedJdbcTemplate = namedJdbcTemplate;
         this.objectMapper = objectMapper;
+        this.dimensionDao = dimensionDao;
     }
 
     public Set<Long> getObservationsIdsByDimensions(Collection<Long> dimensions) {
@@ -113,7 +134,7 @@ public class ObservationDao {
         return new HashSet<>(
                 namedJdbcTemplate.queryForList(
                         CHECK_EXACT_OBSERVATION,
-                        new MapSqlParameterSource("ids", dimensionIds),
+                        new MapSqlParameterSource("ids", ArraySql.create(dimensionIds, JDBCType.BIGINT)),
                         Long.class
                 )
         );
@@ -129,6 +150,32 @@ public class ObservationDao {
         ).stream()
                 .findFirst()
                 .orElseThrow();
+    }
+
+    public Map<Long, Observation> getObservationsByIds(Collection<Long> ids) {
+        Map<Long, String> strIds = new HashMap<>();
+        Multimap<Long, Long> dimIds = HashMultimap.create();
+        namedJdbcTemplate.query(
+                GET_OBSERVATION_BY_IDS,
+                new MapSqlParameterSource("ids", ids),
+                rs -> {
+                    strIds.put(rs.getLong("o.id"), rs.getString("o.str_id"));
+                    dimIds.put(rs.getLong("o.id"), rs.getLong("od.dimension_id"));
+                }
+        );
+
+        Map<Long, Dimension> dimensions = dimensionDao.getDimensionsById(dimIds.values());
+        Map<Long, Observation> observations = new HashMap<>();
+        for (Long obsId : strIds.keySet()) {
+            Map<String, Dimension> dimensionMap = dimIds.get(obsId)
+                    .stream()
+                    .map(dimensions::get)
+                    .collect(Collectors.toMap(Dimension::getDimensionSubType, Function.identity()));
+
+            Observation observation = new Observation(obsId, strIds.get(obsId), dimensionMap);
+            observations.put(obsId, observation);
+        }
+        return observations;
     }
 
     private Value mapValue(ResultSet rs, int rn) throws SQLException {

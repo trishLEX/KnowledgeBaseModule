@@ -1,11 +1,5 @@
 package ru.fa.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
@@ -17,6 +11,13 @@ import ru.fa.dto.QuestionResponse;
 import ru.fa.model.Dimension;
 import ru.fa.model.Value;
 import ru.fa.util.CustomCollectors;
+import ru.fa.util.DimensionsUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -39,7 +40,7 @@ public class QuestionService {
             Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
             return new QuestionResponse.Answer(
                     value.getStrId(),
-                    value.getContent().asText(),
+                    value.getContent().toString(),
                     valueSubType
             );
         } else {
@@ -101,19 +102,7 @@ public class QuestionService {
             }
 
             for (Dimension dimension : subtypesToClarify.get(subType)) {
-                switch (dimension.compareTo(input)) {
-                    case -1:
-                        lower.add(dimension);
-                        break;
-                    case 0:
-                        equals.add(dimension);
-                        break;
-                    case 1:
-                        upper.add(dimension);
-                        break;
-                    default:
-                        throw new IllegalStateException();
-                }
+                DimensionsUtil.compareDimensions(upper, equals, lower, dimension, input);
             }
 
             if (upper.isEmpty() && equals.isEmpty() && !lower.isEmpty()

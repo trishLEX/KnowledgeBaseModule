@@ -2,6 +2,8 @@ package ru.fa.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.beans.ConstructorProperties;
+
 public abstract class QuestionResponse {
 
     @JsonProperty("response_type")
@@ -23,6 +25,7 @@ public abstract class QuestionResponse {
         @JsonProperty("dimension_subtype")
         private String dimensionSubType;
 
+        @ConstructorProperties({"question", "dimension_subtype"})
         public Question(String question, String dimensionSubType) {
             super(QuestionResponseType.QUESTION);
             this.question = question;
@@ -49,8 +52,9 @@ public abstract class QuestionResponse {
         @JsonProperty("value_subtype")
         private String valueSubType;
 
+        @ConstructorProperties({"str_id", "content", "value_subtype"})
         public Answer(String strId, String content, String valueSubType) {
-            super(QuestionResponseType.QUESTION);
+            super(QuestionResponseType.ANSWER);
             this.strId = strId;
             this.content = content;
             this.valueSubType = valueSubType;

@@ -27,6 +27,10 @@ public class Observation {
         return dimensionMap;
     }
 
+    public Dimension getDimension(String subType) {
+        return dimensionMap.get(subType);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
