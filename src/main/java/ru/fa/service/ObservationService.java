@@ -1,6 +1,5 @@
 package ru.fa.service;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.ObservationDao;
@@ -29,7 +28,7 @@ public class ObservationService {
         this.observationDao = observationDao;
     }
 
-    public Optional<Pair<Observation, Set<Long>>> dimensionsToRemove(
+    public Optional<DimensionsToRemove> dimensionsToRemove(
             Observation observation,
             Observation anotherObservation
     ) {
@@ -37,9 +36,19 @@ public class ObservationService {
             case DIFFERENT_BRANCHES:
                 return Optional.empty();
             case ONE_HIGHER_ANOTHER:
-                return Optional.of(Pair.of(observation, getDimensionsToRemove(observation, anotherObservation)));
+                return Optional.of(
+                        new DimensionsToRemove(
+                                observation,
+                                getDimensionsToRemove(observation, anotherObservation)
+                        )
+                );
             case ONE_LOWER_ANOTHER:
-                return Optional.of(Pair.of(anotherObservation, getDimensionsToRemove(anotherObservation, observation)));
+                return Optional.of(
+                        new DimensionsToRemove(
+                                anotherObservation,
+                                getDimensionsToRemove(anotherObservation, observation)
+                        )
+                );
             default:
                 throw new UnsupportedOperationException();
         }
@@ -70,7 +79,7 @@ public class ObservationService {
         return checkObservationsLevel(observations.get(observationId), observations.get(anotherObservationId));
     }
 
-    public ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
+    private ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
         List<Dimension> upper = new ArrayList<>();
         List<Dimension> equals = new ArrayList<>();
         List<Dimension> lower = new ArrayList<>();
