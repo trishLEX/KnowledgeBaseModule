@@ -1,7 +1,5 @@
 package ru.fa.controller;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fa.dao.DimensionDao;
 import ru.fa.model.Dimension;
+
+import java.util.List;
 
 @RestController("dimensions")
 public class DimensionController {
@@ -24,7 +24,7 @@ public class DimensionController {
 
     @GetMapping("{id}")
     public Dimension getDimension(@PathVariable("id") long id) {
-        return dimensionDao.getDimensionById(id);
+        return dimensionDao.getDimension(id);
     }
 
     @GetMapping

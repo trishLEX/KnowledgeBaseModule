@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -152,7 +153,7 @@ public class ObservationDao {
                 .orElseThrow();
     }
 
-    public Map<Long, Observation> getObservationsByIds(Collection<Long> ids) {
+    public Map<Long, Observation> getObservations(Collection<Long> ids) {
         Map<Long, String> strIds = new HashMap<>();
         Multimap<Long, Long> dimIds = HashMultimap.create();
         namedJdbcTemplate.query(
@@ -164,7 +165,7 @@ public class ObservationDao {
                 }
         );
 
-        Map<Long, Dimension> dimensions = dimensionDao.getDimensionsById(dimIds.values());
+        Map<Long, Dimension> dimensions = dimensionDao.getDimensions(dimIds.values());
         Map<Long, Observation> observations = new HashMap<>();
         for (Long obsId : strIds.keySet()) {
             Map<String, Dimension> dimensionMap = dimIds.get(obsId)
@@ -176,6 +177,10 @@ public class ObservationDao {
             observations.put(obsId, observation);
         }
         return observations;
+    }
+
+    public Observation getObservation(long id) {
+        return getObservations(Collections.singletonList(id)).get(id);
     }
 
     private Value mapValue(ResultSet rs, int rn) throws SQLException {

@@ -1,5 +1,12 @@
 package ru.fa.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import ru.fa.model.Dimension;
+import ru.fa.util.ArraySql;
+
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,13 +19,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import ru.fa.model.Dimension;
-import ru.fa.util.ArraySql;
 
 @Repository
 public class DimensionDao {
@@ -77,7 +77,7 @@ public class DimensionDao {
         );
     }
 
-    public Map<Long, Dimension> getDimensionsById(Collection<Long> ids) {
+    public Map<Long, Dimension> getDimensions(Collection<Long> ids) {
         return namedJdbcTemplate.query(
                 GET_DIMENSIONS_BY_ID,
                 new MapSqlParameterSource("ids", ids),
@@ -85,7 +85,7 @@ public class DimensionDao {
         ).stream().collect(Collectors.toMap(Dimension::getId, Function.identity()));
     }
 
-    public Dimension getDimensionById(long id) {
+    public Dimension getDimension(long id) {
         return namedJdbcTemplate.query(
                 GET_DIMENSIONS_BY_ID,
                 new MapSqlParameterSource("ids", Collections.singletonList(id)),

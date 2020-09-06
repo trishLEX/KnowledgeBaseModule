@@ -70,7 +70,7 @@ public class ObservationService {
     }
 
     private ObservationCompareResult checkObservationsLevel(long observationId, long anotherObservationId) {
-        Map<Long, Observation> observations = observationDao.getObservationsByIds(
+        Map<Long, Observation> observations = observationDao.getObservations(
                 Arrays.asList(
                         observationId,
                         anotherObservationId
@@ -79,7 +79,7 @@ public class ObservationService {
         return checkObservationsLevel(observations.get(observationId), observations.get(anotherObservationId));
     }
 
-    private ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
+    public ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
         List<Dimension> upper = new ArrayList<>();
         List<Dimension> equals = new ArrayList<>();
         List<Dimension> lower = new ArrayList<>();
@@ -99,7 +99,13 @@ public class ObservationService {
         }
 
         if (!upper.isEmpty() && !lower.isEmpty()) {
-            throw new ObservationConflictException(observation.getId(), anotherObservation.getId());
+            List<Dimension> solution = upper.stream()
+                    .map(Dimension::getDimensionSubType)
+                    .map(observation::getDimension)
+                    .collect(Collectors.toList());
+            solution.addAll(lower);
+            solution.addAll(equals);
+            throw new ObservationConflictException(observation.getId(), anotherObservation.getId(), solution);
         }
 
         if (lower.isEmpty()) {
@@ -109,7 +115,7 @@ public class ObservationService {
         }
     }
 
-    private enum ObservationCompareResult {
+    enum ObservationCompareResult {
         DIFFERENT_BRANCHES,
         ONE_HIGHER_ANOTHER,
         ONE_LOWER_ANOTHER

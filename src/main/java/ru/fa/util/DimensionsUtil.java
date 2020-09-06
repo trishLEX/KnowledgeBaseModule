@@ -27,7 +27,9 @@ public class DimensionsUtil {
 
     public static boolean isOneBranch(Dimension dimension, Dimension anotherDimension) {
         if (!dimension.getDimensionSubType().equals(anotherDimension.getDimensionSubType())) {
-            throw new IllegalArgumentException("Different dimension subtypes");
+            throw new IllegalArgumentException(
+                    "Different dimension subtypes. " + dimension + " and " + anotherDimension
+            );
         } else if (dimension.equals(anotherDimension)) {
             return true;
         } else if (dimension.getLevel() == anotherDimension.getLevel()) {
