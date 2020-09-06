@@ -9,20 +9,25 @@ import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
 import ru.fa.model.Value;
+import ru.fa.service.ObservationDimensionsToRemove;
 import ru.fa.util.ArraySql;
 
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -90,6 +95,26 @@ public class ObservationDao {
             "from observation o\n" +
             "join observation_dimension od on o.id = od.observation_id\n" +
             "where o.id in (:ids)";
+
+    private static final String GET_ALL_OBSERVATIONS = "" +
+            "select id, str_id, dimension_id\n" +
+            "from observation o\n" +
+            "join observation_dimension od on o.id = od.observation_id";
+
+    private static final String DELETE_OBSERVATION_DIMENSIONS = "" +
+            "delete from observation_dimension_v2\n" +
+            "where observation_id = :id and obs_dimension_id in (:dimIds)";
+
+    private static final String INSERT_OBSERVATION = "insert into observation (id, str_id) values (:id, :strId)";
+
+    private static final String INSERT_OBSERVATION_DIMENSIONS = "" +
+            "insert into observation_dimension (dimension_id, observation_id)\n" +
+            "values (:dimensionId, :observationId)";
+
+    private static final String INSERT_OBSERVATION_DIMENSIONS_V2 = "" +
+            "insert into observation_dimension_v2\n" +
+            "(dimension_id, obs_dimension_id, observation_id, dimension_subtype)\n" +
+            "values (:dimensionId, :obsDimensionId, :observationId, :dimensionSubtype)";
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final ObjectMapper objectMapper;
@@ -165,22 +190,77 @@ public class ObservationDao {
                 }
         );
 
-        Map<Long, Dimension> dimensions = dimensionDao.getDimensions(dimIds.values());
-        Map<Long, Observation> observations = new HashMap<>();
-        for (Long obsId : strIds.keySet()) {
-            Map<String, Dimension> dimensionMap = dimIds.get(obsId)
-                    .stream()
-                    .map(dimensions::get)
-                    .collect(Collectors.toMap(Dimension::getDimensionSubType, Function.identity()));
+        return getObservationMap(strIds, dimIds);
+    }
 
-            Observation observation = new Observation(obsId, strIds.get(obsId), dimensionMap);
-            observations.put(obsId, observation);
-        }
-        return observations;
+    public Collection<Observation> getObservations() {
+        Map<Long, String> strIds = new HashMap<>();
+        Multimap<Long, Long> dimIds = HashMultimap.create();
+        namedJdbcTemplate.query(
+                GET_OBSERVATION_BY_IDS,
+                new MapSqlParameterSource(),
+                rs -> {
+                    strIds.put(rs.getLong("id"), rs.getString("str_id"));
+                    dimIds.put(rs.getLong("id"), rs.getLong("dimension_id"));
+                }
+        );
+
+        return getObservationMap(strIds, dimIds).values();
     }
 
     public Observation getObservation(long id) {
         return getObservations(Collections.singletonList(id)).get(id);
+    }
+
+    public void deleteObservationDimensions(List<ObservationDimensionsToRemove> toRemoveList) {
+        namedJdbcTemplate.batchUpdate(
+                DELETE_OBSERVATION_DIMENSIONS,
+                toRemoveList.stream().map(toRemove -> new MapSqlParameterSource()
+                        .addValue("id", toRemove.getObservation().getId())
+                        .addValue("dimIds", toRemove.getDimensionIds())
+                ).collect(Collectors.toList())
+                .toArray(SqlParameterSource[]::new)
+        );
+    }
+
+    @Transactional
+    public void insertObservation(Observation observation) {
+        namedJdbcTemplate.update(
+                INSERT_OBSERVATION,
+                new MapSqlParameterSource()
+                    .addValue("id", observation.getId())
+                    .addValue("strId", observation.getStrId())
+        );
+
+        namedJdbcTemplate.batchUpdate(
+                INSERT_OBSERVATION_DIMENSIONS,
+                observation.getDimensionMap()
+                        .values()
+                        .stream()
+                        .map(d -> new MapSqlParameterSource()
+                                .addValue("dimensionId", d.getId())
+                                .addValue("observationId", observation.getId())
+                        ).collect(Collectors.toList())
+                        .toArray(SqlParameterSource[]::new)
+        );
+
+        List<MapSqlParameterSource> params = new ArrayList<>();
+        for (Dimension dimension : observation.getDimensionMap().values()) {
+            List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
+                    .stream()
+                    .map(obsDimId -> new MapSqlParameterSource()
+                            .addValue("dimensionId", dimension.getId())
+                            .addValue("obsDimensionId", obsDimId)
+                            .addValue("observationId", observation.getId())
+                            .addValue("dimensionSubtype", dimension.getDimensionSubType())
+                    ).collect(Collectors.toList());
+            params.addAll(param);
+        }
+
+        namedJdbcTemplate.batchUpdate(
+                INSERT_OBSERVATION_DIMENSIONS_V2,
+                params.toArray(SqlParameterSource[]::new)
+        );
     }
 
     private Value mapValue(ResultSet rs, int rn) throws SQLException {
@@ -198,5 +278,20 @@ public class ObservationDao {
         } catch (JsonProcessingException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private Map<Long, Observation> getObservationMap(Map<Long, String> strIds, Multimap<Long, Long> dimIds) {
+        Map<Long, Dimension> dimensions = dimensionDao.getDimensions(dimIds.values());
+        Map<Long, Observation> observations = new HashMap<>();
+        for (Long obsId : strIds.keySet()) {
+            Map<String, Dimension> dimensionMap = dimIds.get(obsId)
+                    .stream()
+                    .map(dimensions::get)
+                    .collect(Collectors.toMap(Dimension::getDimensionSubType, Function.identity()));
+
+            Observation observation = new Observation(obsId, strIds.get(obsId), dimensionMap);
+            observations.put(obsId, observation);
+        }
+        return observations;
     }
 }

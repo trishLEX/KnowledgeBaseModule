@@ -30,7 +30,7 @@ class ObservationServiceTest extends FunctionalTest {
     @Test
     void testDifBranches() {
         Map<Long, Observation> observations = observationDao.getObservations(Arrays.asList(0L, 1L));
-        Optional<DimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
+        Optional<ObservationDimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
                 observations.get(0L),
                 observations.get(1L)
         );
@@ -40,7 +40,7 @@ class ObservationServiceTest extends FunctionalTest {
     @Test
     void testSimple() {
         Map<Long, Observation> observations = observationDao.getObservations(Arrays.asList(1L, 2L));
-        Optional<DimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
+        Optional<ObservationDimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
                 observations.get(1L),
                 observations.get(2L)
         );
@@ -52,7 +52,7 @@ class ObservationServiceTest extends FunctionalTest {
     @Test
     void testOnlyOne() {
         Map<Long, Observation> observations = observationDao.getObservations(Arrays.asList(2L, 3L));
-        Optional<DimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
+        Optional<ObservationDimensionsToRemove> dimsToRemove = observationService.dimensionsToRemove(
                 observations.get(2L),
                 observations.get(3L)
         );

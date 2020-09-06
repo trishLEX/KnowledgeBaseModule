@@ -4,12 +4,12 @@ import ru.fa.model.Observation;
 
 import java.util.Set;
 
-public class DimensionsToRemove {
+public class ObservationDimensionsToRemove {
 
     private Observation observation;
     private Set<Long> dimensionIds;
 
-    public DimensionsToRemove(Observation observation, Set<Long> dimensionIds) {
+    public ObservationDimensionsToRemove(Observation observation, Set<Long> dimensionIds) {
         this.observation = observation;
         this.dimensionIds = dimensionIds;
     }

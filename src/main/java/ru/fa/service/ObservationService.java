@@ -2,6 +2,7 @@ package ru.fa.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.fa.dao.ObservationDao;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
@@ -10,6 +11,7 @@ import ru.fa.util.DimensionsUtil;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -28,7 +30,21 @@ public class ObservationService {
         this.observationDao = observationDao;
     }
 
-    public Optional<DimensionsToRemove> dimensionsToRemove(
+    //todo протестировать
+    @Transactional
+    public void insertObservation(Observation newObservation) {
+        Collection<Observation> observations = observationDao.getObservations();
+
+        List<ObservationDimensionsToRemove> toRemoveList = new ArrayList<>();
+        for (Observation observation : observations) {
+            Optional<ObservationDimensionsToRemove> toRemove = dimensionsToRemove(observation, newObservation);
+            toRemove.ifPresent(toRemoveList::add);
+        }
+        observationDao.insertObservation(newObservation);
+        observationDao.deleteObservationDimensions(toRemoveList);
+    }
+
+    public Optional<ObservationDimensionsToRemove> dimensionsToRemove(
             Observation observation,
             Observation anotherObservation
     ) {
@@ -37,14 +53,14 @@ public class ObservationService {
                 return Optional.empty();
             case ONE_HIGHER_ANOTHER:
                 return Optional.of(
-                        new DimensionsToRemove(
+                        new ObservationDimensionsToRemove(
                                 observation,
                                 getDimensionsToRemove(observation, anotherObservation)
                         )
                 );
             case ONE_LOWER_ANOTHER:
                 return Optional.of(
-                        new DimensionsToRemove(
+                        new ObservationDimensionsToRemove(
                                 anotherObservation,
                                 getDimensionsToRemove(anotherObservation, observation)
                         )
