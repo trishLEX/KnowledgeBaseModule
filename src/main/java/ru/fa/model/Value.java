@@ -1,16 +1,26 @@
 package ru.fa.model;
 
-import java.util.Objects;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.beans.ConstructorProperties;
+import java.util.Objects;
 
 public class Value {
 
+    @JsonProperty("id")
     private long id;
+
+    @JsonProperty("strId")
     private String strId;
+
+    @JsonProperty("content")
     private JsonNode content;
+
+    @JsonProperty("type")
     private String type;
 
+    @ConstructorProperties({"id", "strId", "content", "type"})
     public Value(long id, String strId, JsonNode content, String type) {
         this.id = id;
         this.strId = strId;

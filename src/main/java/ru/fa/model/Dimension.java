@@ -1,21 +1,45 @@
 package ru.fa.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Objects;
 
 @ParametersAreNonnullByDefault
+@JsonDeserialize(builder = Dimension.Builder.class)
 public class Dimension implements Comparable<Dimension> {
 
+    @JsonProperty("id")
     private long id;
+
+    @JsonProperty("level")
     private int level;
+
+    @JsonProperty("strId")
     private String strId;
+
+    @JsonProperty("label")
     private String label;
+
+    @JsonProperty("dimensionType")
     private String dimensionType;
+
+    @JsonProperty("dimensionSubType")
     private String dimensionSubType;
+
+    @JsonProperty("parentId")
     private Long parentId;
+
+    @JsonProperty("childrenIds")
     private List<Long> childrenIds;
+
+    @JsonProperty("allChildrenIds")
     private List<Long> allChildrenIds;
+
+    @JsonProperty("question")
     private String question;
 
     private Dimension(Builder builder) {
@@ -113,6 +137,7 @@ public class Dimension implements Comparable<Dimension> {
         return new Builder();
     }
 
+    @JsonPOJOBuilder(withPrefix = "set")
     public static class Builder {
         private long id;
         private int level;

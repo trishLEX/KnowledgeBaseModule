@@ -6,14 +6,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fa.dao.DimensionDao;
+import ru.fa.exception.BadRequestException;
+import ru.fa.exception.NotFoundException;
 import ru.fa.model.Dimension;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
-@RestController("dimensions")
+@RestController
+@RequestMapping("dimensions")
 public class DimensionController {
 
     private final DimensionDao dimensionDao;
@@ -24,7 +29,11 @@ public class DimensionController {
 
     @GetMapping("{id}")
     public Dimension getDimension(@PathVariable("id") long id) {
-        return dimensionDao.getDimension(id);
+        try {
+            return dimensionDao.getDimension(id);
+        } catch (NoSuchElementException e) {
+            throw new NotFoundException("No dimensions with id: " + id);
+        }
     }
 
     @GetMapping
@@ -38,7 +47,7 @@ public class DimensionController {
             @RequestBody Dimension dimension
     ) {
         if (dimension.getId() != id) {
-            throw new IllegalArgumentException("Wrong ids");
+            throw new BadRequestException("Wrong ids: " + id + " and " + dimension.getId());
         }
 
         dimensionDao.updateDimension(dimension);

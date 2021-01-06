@@ -1,5 +1,6 @@
 package ru.fa.service;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,24 @@ public class ObservationService {
         observationDao.deleteObservationDimensions(toRemoveList);
     }
 
-    public Optional<ObservationDimensionsToRemove> dimensionsToRemove(
+    public Observation getObservation(long id) {
+        return observationDao.getObservation(id);
+    }
+
+    public List<Observation> getObservations() {
+        return new ArrayList<>(observationDao.getObservations());
+    }
+
+    public void updateObservation(Observation observation) {
+        observationDao.updateObservation(observation);
+    }
+
+    public void deleteObservation(long id) {
+        observationDao.deleteObservation(id);
+    }
+
+    @VisibleForTesting
+    Optional<ObservationDimensionsToRemove> dimensionsToRemove(
             Observation observation,
             Observation anotherObservation
     ) {
@@ -95,7 +113,8 @@ public class ObservationService {
         return checkObservationsLevel(observations.get(observationId), observations.get(anotherObservationId));
     }
 
-    public ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
+    @VisibleForTesting
+    ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
         List<Dimension> upper = new ArrayList<>();
         List<Dimension> equals = new ArrayList<>();
         List<Dimension> lower = new ArrayList<>();

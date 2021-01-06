@@ -101,15 +101,26 @@ public class ObservationDao {
             "from observation o\n" +
             "join observation_dimension od on o.id = od.observation_id";
 
-    private static final String DELETE_OBSERVATION_DIMENSIONS = "" +
+    private static final String DELETE_OBSERVATION_DIMENSIONS_V2 = "" +
             "delete from observation_dimension_v2\n" +
             "where observation_id = :id and obs_dimension_id in (:dimIds)";
 
+    private static final String DELETE_OBSERVATION_DIMENSIONS_V2_BY_OBSERVATION_ID = "" +
+            "delete from observation_dimension_v2\n" +
+            "where observation_id = :id";
+
     private static final String INSERT_OBSERVATION = "insert into observation (id, str_id) values (:id, :strId)";
+
+    private static final String UPDATE_OBSERVATION = "update observation set str_id = :strId where id = :id";
 
     private static final String INSERT_OBSERVATION_DIMENSIONS = "" +
             "insert into observation_dimension (dimension_id, observation_id)\n" +
             "values (:dimensionId, :observationId)";
+
+    private static final String DELETE_OBSERVATION_DIMENSIONS = "" +
+            "delete from observation_dimension where observation_id = :observationId";
+
+    private static final String DELETE_OBSERVATION = "delete from observation where id = :id";
 
     private static final String INSERT_OBSERVATION_DIMENSIONS_V2 = "" +
             "insert into observation_dimension_v2\n" +
@@ -197,7 +208,7 @@ public class ObservationDao {
         Map<Long, String> strIds = new HashMap<>();
         Multimap<Long, Long> dimIds = HashMultimap.create();
         namedJdbcTemplate.query(
-                GET_OBSERVATION_BY_IDS,
+                GET_ALL_OBSERVATIONS,
                 new MapSqlParameterSource(),
                 rs -> {
                     strIds.put(rs.getLong("id"), rs.getString("str_id"));
@@ -214,7 +225,7 @@ public class ObservationDao {
 
     public void deleteObservationDimensions(List<ObservationDimensionsToRemove> toRemoveList) {
         namedJdbcTemplate.batchUpdate(
-                DELETE_OBSERVATION_DIMENSIONS,
+                DELETE_OBSERVATION_DIMENSIONS_V2,
                 toRemoveList.stream().map(toRemove -> new MapSqlParameterSource()
                         .addValue("id", toRemove.getObservation().getId())
                         .addValue("dimIds", toRemove.getDimensionIds())
@@ -260,6 +271,70 @@ public class ObservationDao {
         namedJdbcTemplate.batchUpdate(
                 INSERT_OBSERVATION_DIMENSIONS_V2,
                 params.toArray(SqlParameterSource[]::new)
+        );
+    }
+
+    @Transactional
+    public void updateObservation(Observation observation) {
+        namedJdbcTemplate.update(
+                UPDATE_OBSERVATION,
+                new MapSqlParameterSource()
+                        .addValue("id", observation.getId())
+                        .addValue("strId", observation.getStrId())
+        );
+
+        namedJdbcTemplate.update(
+                DELETE_OBSERVATION_DIMENSIONS,
+                new MapSqlParameterSource("observationId", observation.getId())
+        );
+        namedJdbcTemplate.batchUpdate(
+                INSERT_OBSERVATION_DIMENSIONS,
+                observation.getDimensionMap()
+                        .values()
+                        .stream()
+                        .map(d -> new MapSqlParameterSource()
+                                .addValue("dimensionId", d.getId())
+                                .addValue("observationId", observation.getId())
+                        ).collect(Collectors.toList())
+                        .toArray(SqlParameterSource[]::new)
+        );
+
+        List<MapSqlParameterSource> params = new ArrayList<>();
+        for (Dimension dimension : observation.getDimensionMap().values()) {
+            List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
+                    .stream()
+                    .map(obsDimId -> new MapSqlParameterSource()
+                            .addValue("dimensionId", dimension.getId())
+                            .addValue("obsDimensionId", obsDimId)
+                            .addValue("observationId", observation.getId())
+                            .addValue("dimensionSubtype", dimension.getDimensionSubType())
+                    ).collect(Collectors.toList());
+            params.addAll(param);
+        }
+
+        namedJdbcTemplate.update(
+                DELETE_OBSERVATION_DIMENSIONS_V2_BY_OBSERVATION_ID,
+                new MapSqlParameterSource("observationId", observation.getId())
+        );
+        namedJdbcTemplate.batchUpdate(
+                INSERT_OBSERVATION_DIMENSIONS_V2,
+                params.toArray(SqlParameterSource[]::new)
+        );
+    }
+
+    @Transactional
+    public void deleteObservation(long id) {
+        namedJdbcTemplate.update(
+                DELETE_OBSERVATION_DIMENSIONS,
+                new MapSqlParameterSource("observationId", id)
+        );
+        namedJdbcTemplate.update(
+                DELETE_OBSERVATION_DIMENSIONS_V2_BY_OBSERVATION_ID,
+                new MapSqlParameterSource("observationId", id)
+        );
+        namedJdbcTemplate.update(
+                DELETE_OBSERVATION,
+                new MapSqlParameterSource("id", id)
         );
     }
 
