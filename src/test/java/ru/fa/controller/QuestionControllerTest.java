@@ -30,10 +30,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"response_type\": \"ANSWER\",\n" +
-                "  \"str_id\": \"Value0\",\n" +
-                "  \"content\": \"{\\\"id\\\":0,\\\"body\\\":\\\"superBody\\\"}\",\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value0\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 0,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }
@@ -53,9 +59,12 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"question\": \"4, 5?\",\n" +
-                "  \"dimension_subtype\": \"SUBTYPE_1\",\n" +
-                "  \"response_type\": \"QUESTION\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"question\": \"4, 5?\",\n" +
+                "    \"dimension_subtype\": \"SUBTYPE_1\",\n" +
+                "    \"response_type\": \"QUESTION\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
 
@@ -72,10 +81,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         expected = "" +
                 "{\n" +
-                "  \"str_id\": \"Value0\",\n" +
-                "  \"content\": \"{\\\"id\\\":0,\\\"body\\\":\\\"superBody\\\"}\",\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
-                "  \"response_type\": \"ANSWER\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value0\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 0,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }
@@ -95,9 +110,12 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"question\": \"14, 15?\",\n" +
-                "  \"dimension_subtype\": \"SUBTYPE_2\",\n" +
-                "  \"response_type\": \"QUESTION\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"question\": \"14, 15?\",\n" +
+                "    \"dimension_subtype\": \"SUBTYPE_2\",\n" +
+                "    \"response_type\": \"QUESTION\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
 
@@ -114,10 +132,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         expected = "" +
                 "{\n" +
-                "  \"str_id\": \"Value3\",\n" +
-                "  \"content\": \"{\\\"id\\\":3,\\\"body\\\":\\\"superBody\\\"}\",\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
-                "  \"response_type\": \"ANSWER\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value3\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 3,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }
@@ -137,9 +161,12 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"question\": \"16, 17?\",\n" +
-                "  \"dimension_subtype\": \"SUBTYPE_2\",\n" +
-                "  \"response_type\": \"QUESTION\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"question\": \"16, 17?\",\n" +
+                "    \"dimension_subtype\": \"SUBTYPE_2\",\n" +
+                "    \"response_type\": \"QUESTION\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }
@@ -159,9 +186,12 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"question\": \"16, 17?\",\n" +
-                "  \"dimension_subtype\": \"SUBTYPE_2\",\n" +
-                "  \"response_type\": \"QUESTION\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"question\": \"16, 17?\",\n" +
+                "    \"dimension_subtype\": \"SUBTYPE_2\",\n" +
+                "    \"response_type\": \"QUESTION\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
 
@@ -178,10 +208,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         expected = "" +
                 "{\n" +
-                "  \"str_id\": \"Value1\",\n" +
-                "  \"content\": \"{\\\"id\\\":1,\\\"body\\\":\\\"superBody\\\"}\",\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
-                "  \"response_type\": \"ANSWER\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value1\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 1,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
 
@@ -198,10 +234,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         expected = "" +
                 "{\n" +
-                "  \"str_id\": \"Value2\",\n" +
-                "  \"content\": \"{\\\"id\\\":2,\\\"body\\\":\\\"superBody\\\"}\",\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
-                "  \"response_type\": \"ANSWER\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value2\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 2,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }

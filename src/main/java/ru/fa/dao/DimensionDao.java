@@ -10,13 +10,13 @@ import ru.fa.util.ArraySql;
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -78,6 +78,9 @@ public class DimensionDao {
     }
 
     public Map<Long, Dimension> getDimensions(Collection<Long> ids) {
+        if (ids.isEmpty()) {
+            return Collections.emptyMap();
+        }
         return namedJdbcTemplate.query(
                 GET_DIMENSIONS_BY_ID,
                 new MapSqlParameterSource("ids", ids),
@@ -182,8 +185,8 @@ public class DimensionDao {
                 .setDimensionType(rs.getString("type"))
                 .setDimensionSubType(rs.getString("subtype"))
                 .setParentId(rs.getLong("broader"))
-                .setAllChildrenIds(Arrays.asList((Long[]) rs.getArray("all_narrower").getArray()))
-                .setChildrenIds(Arrays.asList((Long[]) rs.getArray("narrower").getArray()))
+                .setAllChildrenIds(Set.of((Long[]) rs.getArray("all_narrower").getArray()))
+                .setChildrenIds(Set.of((Long[]) rs.getArray("narrower").getArray()))
                 .setQuestion(rs.getString("question"))
                 .build();
     }

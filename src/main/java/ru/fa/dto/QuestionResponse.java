@@ -1,6 +1,7 @@
 package ru.fa.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.beans.ConstructorProperties;
 
@@ -47,13 +48,13 @@ public abstract class QuestionResponse {
         private String strId;
 
         @JsonProperty("content")
-        private String content;
+        private JsonNode content;
 
         @JsonProperty("value_subtype")
         private String valueSubType;
 
         @ConstructorProperties({"str_id", "content", "value_subtype"})
-        public Answer(String strId, String content, String valueSubType) {
+        public Answer(String strId, JsonNode content, String valueSubType) {
             super(QuestionResponseType.ANSWER);
             this.strId = strId;
             this.content = content;
@@ -64,7 +65,7 @@ public abstract class QuestionResponse {
             return strId;
         }
 
-        public String getContent() {
+        public JsonNode getContent() {
             return content;
         }
 

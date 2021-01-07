@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.fa.exception.BadRequestException;
 import ru.fa.model.Observation;
+import ru.fa.service.ObservationConflictException;
 import ru.fa.service.ObservationService;
 
 import java.util.List;
@@ -43,7 +45,11 @@ public class ObservationController {
 
     @PostMapping
     public void createObservation(@RequestBody Observation observation) {
-        observationService.insertObservation(observation);
+        try {
+            observationService.insertObservation(observation);
+        } catch (ObservationConflictException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     @DeleteMapping("{id}")

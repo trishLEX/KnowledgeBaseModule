@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @ParametersAreNonnullByDefault
 @JsonDeserialize(builder = Dimension.Builder.class)
@@ -34,10 +34,10 @@ public class Dimension implements Comparable<Dimension> {
     private Long parentId;
 
     @JsonProperty("childrenIds")
-    private List<Long> childrenIds;
+    private Set<Long> childrenIds;
 
     @JsonProperty("allChildrenIds")
-    private List<Long> allChildrenIds;
+    private Set<Long> allChildrenIds;
 
     @JsonProperty("question")
     private String question;
@@ -83,11 +83,11 @@ public class Dimension implements Comparable<Dimension> {
         return parentId;
     }
 
-    public List<Long> getChildrenIds() {
+    public Set<Long> getChildrenIds() {
         return childrenIds;
     }
 
-    public List<Long> getAllChildrenIds() {
+    public Set<Long> getAllChildrenIds() {
         return allChildrenIds;
     }
 
@@ -146,8 +146,8 @@ public class Dimension implements Comparable<Dimension> {
         private String dimensionType;
         private String dimensionSubType;
         private Long parentId;
-        private List<Long> childrenIds;
-        private List<Long> allChildrenIds;
+        private Set<Long> childrenIds;
+        private Set<Long> allChildrenIds;
         private String question;
 
         public Builder setId(long id) {
@@ -185,12 +185,12 @@ public class Dimension implements Comparable<Dimension> {
             return this;
         }
 
-        public Builder setChildrenIds(List<Long> childrenIds) {
+        public Builder setChildrenIds(Set<Long> childrenIds) {
             this.childrenIds = childrenIds;
             return this;
         }
 
-        public Builder setAllChildrenIds(List<Long> allChildrenIds) {
+        public Builder setAllChildrenIds(Set<Long> allChildrenIds) {
             this.allChildrenIds = allChildrenIds;
             return this;
         }

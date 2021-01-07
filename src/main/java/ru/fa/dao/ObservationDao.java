@@ -91,15 +91,15 @@ public class ObservationDao {
             "where observation_id = :observationId and value_subtype = :valueSubtype";
 
     private static final String GET_OBSERVATION_BY_IDS = "" +
-            "select id, str_id, dimension_id\n" +
+            "select distinct id, str_id, dimension_id\n" +
             "from observation o\n" +
-            "join observation_dimension od on o.id = od.observation_id\n" +
+            "join observation_dimension_v2 od on o.id = od.observation_id\n" +
             "where o.id in (:ids)";
 
     private static final String GET_ALL_OBSERVATIONS = "" +
-            "select id, str_id, dimension_id\n" +
+            "select distinct id, str_id, dimension_id\n" +
             "from observation o\n" +
-            "join observation_dimension od on o.id = od.observation_id";
+            "join observation_dimension_v2 od on o.id = od.observation_id";
 
     private static final String DELETE_OBSERVATION_DIMENSIONS_V2 = "" +
             "delete from observation_dimension_v2\n" +
@@ -112,13 +112,6 @@ public class ObservationDao {
     private static final String INSERT_OBSERVATION = "insert into observation (id, str_id) values (:id, :strId)";
 
     private static final String UPDATE_OBSERVATION = "update observation set str_id = :strId where id = :id";
-
-    private static final String INSERT_OBSERVATION_DIMENSIONS = "" +
-            "insert into observation_dimension (dimension_id, observation_id)\n" +
-            "values (:dimensionId, :observationId)";
-
-    private static final String DELETE_OBSERVATION_DIMENSIONS = "" +
-            "delete from observation_dimension where observation_id = :observationId";
 
     private static final String DELETE_OBSERVATION = "delete from observation where id = :id";
 
@@ -243,18 +236,6 @@ public class ObservationDao {
                     .addValue("strId", observation.getStrId())
         );
 
-        namedJdbcTemplate.batchUpdate(
-                INSERT_OBSERVATION_DIMENSIONS,
-                observation.getDimensionMap()
-                        .values()
-                        .stream()
-                        .map(d -> new MapSqlParameterSource()
-                                .addValue("dimensionId", d.getId())
-                                .addValue("observationId", observation.getId())
-                        ).collect(Collectors.toList())
-                        .toArray(SqlParameterSource[]::new)
-        );
-
         List<MapSqlParameterSource> params = new ArrayList<>();
         for (Dimension dimension : observation.getDimensionMap().values()) {
             List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
@@ -283,22 +264,6 @@ public class ObservationDao {
                         .addValue("strId", observation.getStrId())
         );
 
-        namedJdbcTemplate.update(
-                DELETE_OBSERVATION_DIMENSIONS,
-                new MapSqlParameterSource("observationId", observation.getId())
-        );
-        namedJdbcTemplate.batchUpdate(
-                INSERT_OBSERVATION_DIMENSIONS,
-                observation.getDimensionMap()
-                        .values()
-                        .stream()
-                        .map(d -> new MapSqlParameterSource()
-                                .addValue("dimensionId", d.getId())
-                                .addValue("observationId", observation.getId())
-                        ).collect(Collectors.toList())
-                        .toArray(SqlParameterSource[]::new)
-        );
-
         List<MapSqlParameterSource> params = new ArrayList<>();
         for (Dimension dimension : observation.getDimensionMap().values()) {
             List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
@@ -314,7 +279,7 @@ public class ObservationDao {
 
         namedJdbcTemplate.update(
                 DELETE_OBSERVATION_DIMENSIONS_V2_BY_OBSERVATION_ID,
-                new MapSqlParameterSource("observationId", observation.getId())
+                new MapSqlParameterSource("id", observation.getId())
         );
         namedJdbcTemplate.batchUpdate(
                 INSERT_OBSERVATION_DIMENSIONS_V2,
@@ -325,12 +290,8 @@ public class ObservationDao {
     @Transactional
     public void deleteObservation(long id) {
         namedJdbcTemplate.update(
-                DELETE_OBSERVATION_DIMENSIONS,
-                new MapSqlParameterSource("observationId", id)
-        );
-        namedJdbcTemplate.update(
                 DELETE_OBSERVATION_DIMENSIONS_V2_BY_OBSERVATION_ID,
-                new MapSqlParameterSource("observationId", id)
+                new MapSqlParameterSource("id", id)
         );
         namedJdbcTemplate.update(
                 DELETE_OBSERVATION,

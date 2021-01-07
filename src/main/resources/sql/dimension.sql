@@ -25,3 +25,5 @@ create unique index dimension_str_id_uindex
 create index dimension_broader_index
     on dimension (broader);
 
+create index dimension_subtype_index on dimension (subtype);
+

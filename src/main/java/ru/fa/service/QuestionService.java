@@ -40,7 +40,7 @@ public class QuestionService {
             Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
             return new QuestionResponse.Answer(
                     value.getStrId(),
-                    value.getContent().toString(),
+                    value.getContent(),
                     valueSubType
             );
         } else {
@@ -90,7 +90,6 @@ public class QuestionService {
             Multimap<String, Dimension> subtypesToClarify,
             Map<String, Dimension> inputDimensions
     ) throws ObservationConflictException {
-        //todo проверить что keySet -- LinkedHashSet
         for (String subType : subtypesToClarify.keySet()) {
             List<Dimension> upper = new ArrayList<>();
             List<Dimension> equals = new ArrayList<>();

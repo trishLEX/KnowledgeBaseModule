@@ -1,14 +1,23 @@
 package ru.fa.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.beans.ConstructorProperties;
 import java.util.Map;
 import java.util.Objects;
 
 public class Observation {
 
+    @JsonProperty("id")
     private long id;
+
+    @JsonProperty("strId")
     private String strId;
+
+    @JsonProperty("dimensionMap")
     private Map<String, Dimension> dimensionMap;
 
+    @ConstructorProperties({"id", "strId", "dimensionMap"})
     public Observation(long id, String strId, Map<String, Dimension> dimensionMap) {
         this.id = id;
         this.strId = strId;
