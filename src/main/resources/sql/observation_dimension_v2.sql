@@ -17,5 +17,7 @@ create table observation_dimension_v2
 
 alter table observation_dimension_v2 owner to postgres;
 
-create index observation_dimension_v2_observation_id_index
-    on observation_dimension_v2 (observation_id);
+create index observation_dimension_v2_observation_id_dim_subtype_index
+    on observation_dimension_v2 (observation_id, dimension_subtype);
+
+create index observation_dimension_v2_dim_subtype_index on observation_dimension_v2 (dimension_subtype);
