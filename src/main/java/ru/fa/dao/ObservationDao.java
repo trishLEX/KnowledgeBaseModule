@@ -41,7 +41,7 @@ public class ObservationDao {
             "from (\n" +
             "         select observation_id,\n" +
             "                dimension_subtype,\n" +
-            "                array_agg(obs_dimension_id order by obs_dimension_id) dim_ids\n" +
+            "                array_agg(obs_dimension_id) dim_ids\n" +
             "         from observation_dimension_v2\n" +
             "         group by observation_id, dimension_subtype\n" +
             "     ) as obs\n" +
