@@ -1,8 +1,8 @@
 package ru.fa.service;
 
-import com.github.jsonldjava.shaded.com.google.common.collect.Sets;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.DimensionDao;
