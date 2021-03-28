@@ -42,16 +42,16 @@ public class ValueDao {
             "insert into observation_value (observation_id, value_id, value_subtype)\n" +
             "values (:observationId, :valueId, :valueSubtype)";
 
-    private static final String DELETE_OBSERVATION_VALUE = "delete from observation_value where value_id = :id";
+    private static final String DELETE_OBSERVATION_VALUE = "delete from observation_value where id = :id";
 
     private static final String SELECT_OBSERVATION_VALUES = "" +
-            "select observation_id, value_id, value_subtype\n" +
+            "select id, observation_id, value_id, value_subtype\n" +
             "from observation_value";
 
     private static final String SELECT_OBSERVATION_VALUE = "" +
-            "select observation_id, value_id, value_subtype\n" +
+            "select id, observation_id, value_id, value_subtype\n" +
             "from observation_value\n" +
-            "where value_id = :id";
+            "where id = :id";
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final ObjectMapper objectMapper;
@@ -167,6 +167,7 @@ public class ValueDao {
 
     private ObservationValue mapObservationValue(ResultSet rs, int rn) throws SQLException {
         return new ObservationValue(
+                rs.getLong("id"),
                 rs.getLong("observation_id"),
                 rs.getLong("value_id"),
                 rs.getString("value_subtype")

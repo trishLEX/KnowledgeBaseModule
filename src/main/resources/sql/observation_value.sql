@@ -1,5 +1,6 @@
 create table observation_value
 (
+    id bigserial primary key not null,
     observation_id bigint
         constraint observation_value_observation_id_fk
             references observation
