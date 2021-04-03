@@ -1,6 +1,10 @@
 package ru.fa;
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import ru.fa.model.Dimension;
+import ru.fa.model.Observation;
+import ru.fa.model.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +21,10 @@ import java.util.stream.Collectors;
 
 public class GraphGenerator {
 
+    //скорость роста наблюдений: в большую сторону log_2(VERTICES)^COMPONENTS
+
     private static final int VERTICES = 15;
-    private static final int COMPONENTS = 2;
+    private static final int COMPONENTS = 3;
 
     private static final int CHILD_SIZE = 2;
 
@@ -59,6 +65,24 @@ public class GraphGenerator {
 
 
         List<Map<String, Dimension>> observationDimensions = createObservations(0);
+        List<Observation> observations = new ArrayList<>();
+        for (int i = 0; i < observationDimensions.size(); i++) {
+            observations.add(new Observation(
+                    i,
+                    "Observation" + i,
+                    observationDimensions.get(i)
+            ));
+        }
+
+        List<Value> values = observations.stream()
+                .map(o -> new Value(
+                        o.getId(),
+                        "Value" + o.getId(),
+                        new ObjectNode(JsonNodeFactory.instance)
+                                .put("id", o.getId())
+                                .put("body", "superBody"),
+                        "VALUE_TYPE_1"
+                )).collect(Collectors.toList());
     }
 
     private static List<Map<String, Dimension>> createObservations(int rootIndex) {
