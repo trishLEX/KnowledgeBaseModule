@@ -16,14 +16,15 @@ import java.util.Set;
 
 public class GraphGenerator {
 
-    private static final int VERTICES = 30;
-    private static final int COMPONENTS = 1;
+    private static final int VERTICES = 15;
+    private static final int COMPONENTS = 2;
 
     private static final int CHILD_SIZE = 2;
 
     private static final Map<Long, Dimension> DIMENSION_MAP = new HashMap<>();
 
     public static void main (String[] args) {
+        List<long[][]> tables = new ArrayList<>();
         for (int i = 0; i < COMPONENTS; i++) {
             long[][] table = new long[VERTICES][VERTICES];
 
@@ -49,8 +50,10 @@ public class GraphGenerator {
             for (Dimension d: DIMENSION_MAP.values()) {
                 d.addAllChildrenIds(getAllChildrenIds(d, new HashSet<>()));
             }
+            tables.add(table);
             System.out.println(tableToString(table));
         }
+        System.out.println(tableToString(reshape(tables)));
     }
 
     private static void createChildren(LinkedList<Dimension> dimensions, long[][] table, int typeId) {
@@ -117,5 +120,16 @@ public class GraphGenerator {
         }
 
         return sb.toString();
+    }
+
+    private static long[][] reshape(List<long[][]> finalTable) {
+        long[][] result = new long[COMPONENTS * VERTICES][COMPONENTS * VERTICES];
+        for (int i = 0; i < finalTable.size(); i++) {
+            long[][] diag = finalTable.get(i);
+            for (int row = 0; row < diag.length; row++) {
+                System.arraycopy(diag[row], 0, result[VERTICES * i + row], VERTICES * i, diag[row].length);
+            }
+        }
+        return result;
     }
 }
