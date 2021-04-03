@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,8 +16,8 @@ import java.util.Set;
 
 public class GraphGenerator {
 
-    private static final int VERTICES = 5;
-    private static final int COMPONENTS = 2;
+    private static final int VERTICES = 30;
+    private static final int COMPONENTS = 1;
 
     private static final int CHILD_SIZE = 2;
 
@@ -41,7 +42,9 @@ public class GraphGenerator {
                     .setLabel("LABEL_" + id)
                     .build();
             DIMENSION_MAP.put(id, root);
-            createChildren(root, table, i);
+            LinkedList<Dimension> dimensions = new LinkedList<>();
+            dimensions.push(root);
+            createChildren(dimensions, table, i);
 
             for (Dimension d: DIMENSION_MAP.values()) {
                 d.addAllChildrenIds(getAllChildrenIds(d, new HashSet<>()));
@@ -50,10 +53,12 @@ public class GraphGenerator {
         }
     }
 
-    private static void createChildren(Dimension dimension, long[][] table, int typeId) {
-        if (dimension.getLevel() == VERTICES - 1) {
+    private static void createChildren(LinkedList<Dimension> dimensions, long[][] table, int typeId) {
+        if (dimensions.isEmpty()) {
             return;
         }
+
+        Dimension dimension = dimensions.pollLast();
 
         List<Dimension> children = new ArrayList<>();
         for (int i = 0; i < CHILD_SIZE; i++) {
@@ -88,8 +93,9 @@ public class GraphGenerator {
         }
 
         for (var child: children) {
-            createChildren(child, table, typeId);
+            dimensions.push(child);
         }
+        createChildren(dimensions, table, typeId);
     }
 
     private static Set<Long> getAllChildrenIds(Dimension dimension, Set<Long> childrenIds) {
