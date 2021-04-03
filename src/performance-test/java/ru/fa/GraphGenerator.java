@@ -5,6 +5,7 @@ import ru.fa.model.Dimension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Set;
 public class GraphGenerator {
 
     private static final int VERTICES = 5;
-    private static final int COMPONENTS = 1;
+    private static final int COMPONENTS = 2;
 
     private static final int CHILD_SIZE = 2;
 
@@ -25,13 +26,22 @@ public class GraphGenerator {
         for (int i = 0; i < COMPONENTS; i++) {
             long[][] table = new long[VERTICES][VERTICES];
 
+            long id = DIMENSION_MAP.values()
+                    .stream()
+                    .max(Comparator.comparingLong(Dimension::getId))
+                    .map(Dimension::getId)
+                    .map(maxId -> maxId + 1)
+                    .orElse(0L);
             Dimension root = Dimension.newBuilder()
-                    .setId(0)
+                    .setId(id)
+                    .setStrId("Dimension" + id)
+                    .setDimensionType("TYPE_" + i)
+                    .setDimensionSubType("SUBTYPE_" + i)
                     .setLevel(0)
-                    .setLabel("LABEL_" + 0)
+                    .setLabel("LABEL_" + id)
                     .build();
-            DIMENSION_MAP.put(0L, root);
-            createChildren(root, table);
+            DIMENSION_MAP.put(id, root);
+            createChildren(root, table, i);
 
             for (Dimension d: DIMENSION_MAP.values()) {
                 d.addAllChildrenIds(getAllChildrenIds(d, new HashSet<>()));
@@ -40,7 +50,7 @@ public class GraphGenerator {
         }
     }
 
-    private static void createChildren(Dimension dimension, long[][] table) {
+    private static void createChildren(Dimension dimension, long[][] table, int typeId) {
         if (dimension.getLevel() == VERTICES - 1) {
             return;
         }
@@ -58,24 +68,27 @@ public class GraphGenerator {
                     break;
                 }
             }
-            if (dimension.getId() + offset >= VERTICES) {
+            if (dimension.getId() + offset >= VERTICES * (typeId + 1)) {
                 continue;
             }
 
             Dimension child = Dimension.newBuilder()
                     .setId(dimension.getId() + offset)
+                    .setStrId("Dimension" + (dimension.getId() + offset))
                     .setParentId(dimension.getId())
                     .setLevel(dimension.getLevel() + 1)
                     .setLabel("LABEL_" + (dimension.getId() + offset))
+                    .setDimensionType("TYPE_" + typeId)
+                    .setDimensionSubType("SUBTYPE_" + typeId)
                     .build();
             dimension.addChildId(child.getId());
             children.add(child);
-            table[(int) dimension.getId()][(int) child.getId()] = 1;
+            table[(int) dimension.getId() % VERTICES][(int) child.getId() % VERTICES] = 1;
             DIMENSION_MAP.put(child.getId(), child);
         }
 
         for (var child: children) {
-            createChildren(child, table);
+            createChildren(child, table, typeId);
         }
     }
 
