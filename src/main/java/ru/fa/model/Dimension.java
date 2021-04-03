@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -95,6 +97,14 @@ public class Dimension implements Comparable<Dimension> {
         return question;
     }
 
+    public void addChildId(long dimensionId) {
+        childrenIds.add(dimensionId);
+    }
+
+    public void addAllChildrenIds(Collection<Long> ids) {
+        allChildrenIds.addAll(ids);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -146,8 +156,8 @@ public class Dimension implements Comparable<Dimension> {
         private String dimensionType;
         private String dimensionSubType;
         private Long parentId;
-        private Set<Long> childrenIds;
-        private Set<Long> allChildrenIds;
+        private Set<Long> childrenIds = new HashSet<>();
+        private Set<Long> allChildrenIds = new HashSet<>();
         private String question;
 
         public Builder setId(long id) {
