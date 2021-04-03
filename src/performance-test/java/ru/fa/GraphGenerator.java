@@ -54,11 +54,10 @@ public class GraphGenerator {
     }
 
     private static void createChildren(LinkedList<Dimension> dimensions, long[][] table, int typeId) {
-        if (dimensions.isEmpty()) {
+        Dimension dimension = dimensions.pollLast();
+        if (dimension == null) {
             return;
         }
-
-        Dimension dimension = dimensions.pollLast();
 
         List<Dimension> children = new ArrayList<>();
         for (int i = 0; i < CHILD_SIZE; i++) {
