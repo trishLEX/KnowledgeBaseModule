@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class GraphGenerator {
 
@@ -21,7 +22,8 @@ public class GraphGenerator {
 
     private static final int CHILD_SIZE = 2;
 
-    private static final Map<Long, Dimension> DIMENSION_MAP = new HashMap<>();
+    private static final Map<Long, Dimension> DIMENSION_MAP = new HashMap<>(VERTICES * COMPONENTS);
+    private static final List<Dimension> ROOTS = new ArrayList<>(COMPONENTS);
 
     public static void main (String[] args) {
         List<long[][]> tables = new ArrayList<>();
@@ -42,6 +44,7 @@ public class GraphGenerator {
                     .setLevel(0)
                     .setLabel("LABEL_" + id)
                     .build();
+            ROOTS.add(root);
             DIMENSION_MAP.put(id, root);
             LinkedList<Dimension> dimensions = new LinkedList<>();
             dimensions.push(root);
@@ -51,9 +54,50 @@ public class GraphGenerator {
                 d.addAllChildrenIds(getAllChildrenIds(d, new HashSet<>()));
             }
             tables.add(table);
-            System.out.println(tableToString(table));
         }
-        System.out.println(tableToString(reshape(tables)));
+//        System.out.println(tableToString(reshape(tables)));
+
+
+        List<Map<String, Dimension>> observationDimensions = createObservations(0);
+    }
+
+    private static List<Map<String, Dimension>> createObservations(int rootIndex) {
+        List<Dimension> current = getDimensionsForObservation(ROOTS.get(rootIndex));
+        current.add(ROOTS.get(rootIndex));
+        if (rootIndex == COMPONENTS - 1) {
+            return current.stream()
+                    .map(d -> {
+                        Map<String, Dimension> map = new HashMap<>();
+                        map.put(d.getDimensionSubType(), d);
+                        return map;
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        List<Map<String, Dimension>> next = createObservations(rootIndex + 1);
+
+        List<Map<String, Dimension>> result = new ArrayList<>();
+        for (Dimension dimension : current) {
+            for (Map<String, Dimension> dimensionMap : next) {
+                Map<String, Dimension> map = new HashMap<>(dimensionMap);
+                map.put(dimension.getDimensionSubType(), dimension);
+                result.add(map);
+            }
+        }
+        return result;
+    }
+
+    private static List<Dimension> getDimensionsForObservation(Dimension root) {
+        List<Dimension> dimensions = root.getChildrenIds()
+                .stream()
+                .limit(CHILD_SIZE - 1)
+                .map(DIMENSION_MAP::get)
+                .collect(Collectors.toList());
+        List<Dimension> observationDimensions = new ArrayList<>(dimensions);
+        dimensions.stream()
+                .map(GraphGenerator::getDimensionsForObservation)
+                .forEach(observationDimensions::addAll);
+        return observationDimensions;
     }
 
     private static void createChildren(LinkedList<Dimension> dimensions, long[][] table, int typeId) {
