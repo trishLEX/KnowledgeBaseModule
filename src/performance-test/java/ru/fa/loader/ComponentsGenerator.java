@@ -62,14 +62,19 @@ public class ComponentsGenerator {
         List<ObservationValue> observationValues = new ObservationValueGenerator(observations).createObservationValues();
 
         dimensionDao.createDimensionsWithIds(dimensionMap.values());
+        dimensionMap.clear();
         AtomicInteger id = new AtomicInteger(1);
         dimensionDao.createDimensionSubtypes(roots.stream()
                 .map(r ->
                         new DimensionSubtype(id.get(), r.getDimensionSubType(), id.getAndIncrement())
                 ).collect(Collectors.toList()));
+        roots.clear();
         observationDao.createObservations(observations);
+        observations.clear();
         valueDao.createValues(values);
+        values.clear();
         valueDao.createObservationValues(observationValues);
+        observationValues.clear();
     }
 
     @Transactional

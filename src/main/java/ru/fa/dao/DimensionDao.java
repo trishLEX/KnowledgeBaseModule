@@ -77,6 +77,8 @@ public class DimensionDao {
 
     private static final String COUNT_DIMENSIONS = "select count(1) from dimension";
 
+    private static final String GET_ALL_SUBTYPES = "select subtype from dimension_subtype";
+
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
     @Autowired
@@ -241,6 +243,10 @@ public class DimensionDao {
 
     public int countDimensions() {
         return namedJdbcTemplate.queryForObject(COUNT_DIMENSIONS, Map.of(), Integer.class);
+    }
+
+    public List<String> getAllSubtypes() {
+        return namedJdbcTemplate.queryForList(GET_ALL_SUBTYPES, Map.of(), String.class);
     }
 
     private static Dimension mapDimension(ResultSet rs, int rn) throws SQLException {

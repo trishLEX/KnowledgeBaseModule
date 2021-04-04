@@ -1,5 +1,6 @@
 package ru.fa.test;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -34,9 +35,9 @@ public class TestRunner {
 
     private static final Logger log = LoggerFactory.getLogger(TestRunner.class);
 
-    private static final int VERTICES = 15;
-    private static final int COMPONENTS = 3;
-    private static final int CHILD_SIZE = 2;
+    private static final int VERTICES = 30;
+    private static final int COMPONENTS = 4;
+    private static final int CHILD_SIZE = 3;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -78,8 +79,88 @@ public class TestRunner {
         stopWatch.stop();
 
         assert responseEntity.getStatusCode() == HttpStatus.OK;
+        log.info(responseEntity.getBody());
         log.info(
-                "Test exact: {}, dimensions: {}, observations; {}",
+                "Test exact: {} ms, dimensions: {}, observations: {}",
+                stopWatch.elapsed(TimeUnit.MILLISECONDS),
+                dimensionDao.countDimensions(),
+                observationDao.countObservations()
+        );
+    }
+
+    private void testExactWithoutOneDimension() {
+        Observation observation = observationDao.getObservation(3);
+
+        Map<String, String> dimensions = observation.getDimensionMap()
+                .values()
+                .stream()
+                .collect(Collectors.toMap(
+                        Dimension::getDimensionSubType,
+                        Dimension::getStrId
+                ));
+        String dimensionSubtype = dimensionDao.getAllSubtypes()
+                .stream()
+                .limit(1)
+                .findFirst()
+                .get();
+        dimensions.remove(dimensionSubtype);
+
+        QuestionRequest questionRequest = new QuestionRequest(
+                "VALUE_SUBTYPE_1",
+                dimensions
+        );
+
+        Stopwatch stopWatch = Stopwatch.createStarted();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                "http://localhost:8080/question",
+                questionRequest,
+                String.class
+        );
+        stopWatch.stop();
+
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+        log.info(responseEntity.getBody());
+        log.info(
+                "Test exact without one dimension: {} ms, dimensions: {}, observations: {}",
+                stopWatch.elapsed(TimeUnit.MILLISECONDS),
+                dimensionDao.countDimensions(),
+                observationDao.countObservations()
+        );
+    }
+
+    private void testOneDimension() {
+        Observation observation = observationDao.getObservation(3);
+
+        Map<String, String> dimensions = observation.getDimensionMap()
+                .values()
+                .stream()
+                .collect(Collectors.toMap(
+                        Dimension::getDimensionSubType,
+                        Dimension::getStrId
+                ));
+        List<String> dimensionSubtypes = dimensionDao.getAllSubtypes()
+                .stream()
+                .limit(COMPONENTS - 1)
+                .collect(Collectors.toList());
+        dimensionSubtypes.forEach(dimensions::remove);
+
+        QuestionRequest questionRequest = new QuestionRequest(
+                "VALUE_SUBTYPE_1",
+                dimensions
+        );
+
+        Stopwatch stopWatch = Stopwatch.createStarted();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                "http://localhost:8080/question",
+                questionRequest,
+                String.class
+        );
+        stopWatch.stop();
+
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+        log.info(responseEntity.getBody());
+        log.info(
+                "Test one dimension: {} ms, dimensions: {}, observations: {}",
                 stopWatch.elapsed(TimeUnit.MILLISECONDS),
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
@@ -90,7 +171,10 @@ public class TestRunner {
     public void runTests() {
         componentsGenerator.clearDb();
         componentsGenerator.loadComponents(VERTICES, COMPONENTS, CHILD_SIZE);
+        log.info("Components loaded");
         testExact();
+        testExactWithoutOneDimension();
+        testOneDimension();
         SpringApplication.exit(applicationContext, () -> 0);
         System.exit(0);
     }
