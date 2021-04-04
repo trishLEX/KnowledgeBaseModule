@@ -1,6 +1,6 @@
 package ru.fa.scripts;
 
-import ru.fa.model.DimensionType;
+import ru.fa.scripts.model.DimensionType;
 
 public class OperationPlaceBankImport {
 

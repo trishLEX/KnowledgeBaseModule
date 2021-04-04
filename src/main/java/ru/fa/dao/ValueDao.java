@@ -1,5 +1,11 @@
 package ru.fa.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,11 +17,6 @@ import org.springframework.stereotype.Repository;
 import ru.fa.model.ObservationValue;
 import ru.fa.model.Value;
 import ru.fa.util.JsonSql;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class ValueDao {
@@ -62,7 +63,7 @@ public class ValueDao {
         this.objectMapper = objectMapper;
     }
 
-    public void insertValue(Value value) {
+    public void createValue(Value value) {
         namedJdbcTemplate.update(
                 INSERT_VALUE,
                 new MapSqlParameterSource()
@@ -73,7 +74,18 @@ public class ValueDao {
         );
     }
 
-    public void insertObservationValue(ObservationValue observationValue) {
+    public void createValues(Collection<Value> values) {
+        SqlParameterSource[] params = values.stream()
+                .map(value -> new MapSqlParameterSource()
+                        .addValue("id", value.getId())
+                        .addValue("strId", value.getStrId())
+                        .addValue("content", JsonSql.create(value.getContent()))
+                        .addValue("type", value.getType()))
+                .toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(INSERT_VALUE, params);
+    }
+
+    public void createObservationValue(ObservationValue observationValue) {
         namedJdbcTemplate.update(
                 INSERT_OBSERVATION_VALUE,
                 new MapSqlParameterSource()
@@ -81,6 +93,16 @@ public class ValueDao {
                         .addValue("valueId", observationValue.getValueId())
                         .addValue("valueSubtype", observationValue.getValueSubtype())
         );
+    }
+
+    public void createObservationValues(Collection<ObservationValue> observationValues) {
+        SqlParameterSource[] params = observationValues.stream()
+                .map(observationValue -> new MapSqlParameterSource()
+                        .addValue("observationId", observationValue.getObservationId())
+                        .addValue("valueId", observationValue.getValueId())
+                        .addValue("valueSubtype", observationValue.getValueSubtype())
+                ).toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(INSERT_OBSERVATION_VALUE, params);
     }
 
     public void updateValue(Value value) {

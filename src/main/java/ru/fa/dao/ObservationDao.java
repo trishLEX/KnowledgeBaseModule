@@ -1,5 +1,20 @@
 package ru.fa.dao;
 
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,21 +32,6 @@ import ru.fa.model.Observation;
 import ru.fa.model.Value;
 import ru.fa.service.ObservationDimensionsToRemove;
 import ru.fa.util.ArraySql;
-
-import java.sql.JDBCType;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Repository
 public class ObservationDao {
@@ -228,7 +228,7 @@ public class ObservationDao {
     }
 
     @Transactional
-    public void insertObservation(Observation observation) {
+    public void createObservation(Observation observation) {
         namedJdbcTemplate.update(
                 INSERT_OBSERVATION,
                 new MapSqlParameterSource()
@@ -252,6 +252,36 @@ public class ObservationDao {
         namedJdbcTemplate.batchUpdate(
                 INSERT_OBSERVATION_DIMENSIONS_V2,
                 params.toArray(SqlParameterSource[]::new)
+        );
+    }
+
+    @Transactional
+    public void createObservations(Collection<Observation> observations) {
+        SqlParameterSource[] params = observations
+                .stream()
+                .map(observation -> new MapSqlParameterSource()
+                        .addValue("id", observation.getId())
+                        .addValue("strId", observation.getStrId()))
+                .toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(INSERT_OBSERVATION, params);
+
+        List<MapSqlParameterSource> observationValueParams = new ArrayList<>();
+        for (var observation : observations) {
+            for (Dimension dimension : observation.getDimensionMap().values()) {
+                List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
+                        .stream()
+                        .map(obsDimId -> new MapSqlParameterSource()
+                                .addValue("dimensionId", dimension.getId())
+                                .addValue("obsDimensionId", obsDimId)
+                                .addValue("observationId", observation.getId())
+                                .addValue("dimensionSubtype", dimension.getDimensionSubType())
+                        ).collect(Collectors.toList());
+                observationValueParams.addAll(param);
+            }
+        }
+        namedJdbcTemplate.batchUpdate(
+                INSERT_OBSERVATION_DIMENSIONS_V2,
+                observationValueParams.toArray(SqlParameterSource[]::new)
         );
     }
 

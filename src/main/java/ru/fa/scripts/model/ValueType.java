@@ -1,4 +1,4 @@
-package ru.fa.model;
+package ru.fa.scripts.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

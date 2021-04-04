@@ -1,4 +1,4 @@
-package ru.fa.model;
+package ru.fa.scripts.model;
 
 public enum DimensionType {
     BANKING_PRODUCT,

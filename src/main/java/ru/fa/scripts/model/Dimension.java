@@ -1,7 +1,4 @@
-package ru.fa.scripts;
-
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.DimensionType;
+package ru.fa.scripts.model;
 
 import java.util.List;
 import java.util.Objects;

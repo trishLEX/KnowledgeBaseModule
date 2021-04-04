@@ -52,7 +52,7 @@ public class ValueController {
 
     @PostMapping
     public void createValue(@RequestBody Value value) {
-        valueDao.insertValue(value);
+        valueDao.createValue(value);
     }
 
     @DeleteMapping("{id}")

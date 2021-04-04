@@ -2,6 +2,7 @@ package ru.fa.scripts;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import ru.fa.scripts.model.Dimension;
 
 import java.io.File;
 import java.io.PrintWriter;

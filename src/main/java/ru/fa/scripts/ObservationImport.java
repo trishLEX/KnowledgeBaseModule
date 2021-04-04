@@ -1,5 +1,15 @@
 package ru.fa.scripts;
 
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -11,20 +21,12 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.fa.model.DimensionSubType;
 import ru.fa.model.Value;
-import ru.fa.model.ValueSubType;
-import ru.fa.model.ValueType;
-
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import ru.fa.scripts.model.Dimension;
+import ru.fa.scripts.model.DimensionSubType;
+import ru.fa.scripts.model.Observation;
+import ru.fa.scripts.model.ValueSubType;
+import ru.fa.scripts.model.ValueType;
 
 import static ru.fa.scripts.CommonImport.createNamedJdbcTemplate;
 import static ru.fa.scripts.CommonImport.owlIdToStrId;

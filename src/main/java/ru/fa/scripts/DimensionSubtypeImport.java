@@ -2,7 +2,7 @@ package ru.fa.scripts;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.fa.model.DimensionSubType;
+import ru.fa.scripts.model.DimensionSubType;
 
 public class DimensionSubtypeImport {
 

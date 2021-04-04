@@ -1,13 +1,12 @@
-package ru.fa.scripts;
-
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.Value;
+package ru.fa.scripts.model;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import ru.fa.model.Value;
 
 public class Observation {
 

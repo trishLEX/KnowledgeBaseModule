@@ -26,9 +26,11 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import ru.fa.model.DimensionSubType;
-import ru.fa.model.DimensionType;
+import ru.fa.scripts.model.DimensionSubType;
+import ru.fa.scripts.model.DimensionType;
 import ru.fa.model.Value;
+import ru.fa.scripts.model.Dimension;
+import ru.fa.scripts.model.Observation;
 import ru.fa.util.ArraySql;
 
 public class CommonImport {

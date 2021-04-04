@@ -41,7 +41,7 @@ public class ObservationService {
             Optional<ObservationDimensionsToRemove> toRemove = dimensionsToRemove(observation, newObservation);
             toRemove.ifPresent(toRemoveList::add);
         }
-        observationDao.insertObservation(newObservation);
+        observationDao.createObservation(newObservation);
         observationDao.deleteObservationDimensions(toRemoveList);
     }
 

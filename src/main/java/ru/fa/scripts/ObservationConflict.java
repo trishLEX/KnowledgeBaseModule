@@ -2,6 +2,9 @@ package ru.fa.scripts;
 
 import java.util.Set;
 
+import ru.fa.scripts.model.Dimension;
+import ru.fa.scripts.model.Observation;
+
 public class ObservationConflict {
     /**
      * Пара конфликтующих правил

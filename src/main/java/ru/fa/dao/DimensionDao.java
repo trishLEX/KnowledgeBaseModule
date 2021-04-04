@@ -1,12 +1,5 @@
 package ru.fa.dao;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.stereotype.Repository;
-import ru.fa.model.Dimension;
-import ru.fa.util.ArraySql;
-
 import java.sql.JDBCType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +12,15 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
+import ru.fa.model.Dimension;
+import ru.fa.model.DimensionSubtype;
+import ru.fa.util.ArraySql;
 
 @Repository
 public class DimensionDao {
@@ -61,6 +63,10 @@ public class DimensionDao {
             "(:strId, :label, :broader, :type, :subtype, :question, :level, :allNarrower, :narrower)";
 
     private static final String DELETE_DIMENSION = "delete from dimension where id = :id";
+
+    private static final String CREATE_SUBTYPE = "" +
+            "insert into dimension_subtype (id, subtype, num)\n" +
+            "values (:id, :subtype, :num)";
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
@@ -167,6 +173,34 @@ public class DimensionDao {
                         .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
                         .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
         );
+    }
+
+    public void createDimensions(Collection<Dimension> dimensions) {
+        SqlParameterSource[] params = dimensions
+                .stream()
+                .map(dimension -> new MapSqlParameterSource()
+                        .addValue("strId", dimension.getStrId())
+                        .addValue("label", dimension.getLabel())
+                        .addValue("broader", dimension.getParentId())
+                        .addValue("type", dimension.getDimensionType())
+                        .addValue("subtype", dimension.getDimensionSubType())
+                        .addValue("question", dimension.getQuestion())
+                        .addValue("level", dimension.getLevel())
+                        .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
+                ).toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(CREATE_DIMENSION, params);
+    }
+
+    public void createDimensionSubtypes(Collection<DimensionSubtype> dimensionSubtypes) {
+        SqlParameterSource[] params = dimensionSubtypes
+                .stream()
+                .map(dimensionSubtype -> new MapSqlParameterSource()
+                        .addValue("id", dimensionSubtype.getId())
+                        .addValue("subtype", dimensionSubtype.getSubtype())
+                        .addValue("num", dimensionSubtype.getNum())
+                ).toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(CREATE_SUBTYPE, params);
     }
 
     public void deleteDimension(long id) {
