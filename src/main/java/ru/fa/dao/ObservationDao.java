@@ -85,7 +85,7 @@ public class ObservationDao {
             "   and array_agg(dimension_id) <@ :ids";
 
     private static final String GET_OBSERVATION_VALUE = "" +
-            "select id, str_id, content, type\n" +
+            "select v.id, str_id, content, type\n" +
             "from value v\n" +
             "join observation_value ov on v.id = ov.value_id\n" +
             "where observation_id = :observationId and value_subtype = :valueSubtype";
@@ -119,6 +119,8 @@ public class ObservationDao {
             "insert into observation_dimension_v2\n" +
             "(dimension_id, obs_dimension_id, observation_id, dimension_subtype)\n" +
             "values (:dimensionId, :obsDimensionId, :observationId, :dimensionSubtype)";
+
+    private static final String COUNT_OBSERVATIONS = "select count(1) from observation";
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
     private final ObjectMapper objectMapper;
@@ -327,6 +329,10 @@ public class ObservationDao {
                 DELETE_OBSERVATION,
                 new MapSqlParameterSource("id", id)
         );
+    }
+
+    public int countObservations() {
+        return namedJdbcTemplate.queryForObject(COUNT_OBSERVATIONS, Map.of(), Integer.class);
     }
 
     private Value mapValue(ResultSet rs, int rn) throws SQLException {

@@ -1,9 +1,9 @@
 package ru.fa.dto;
 
+import java.beans.ConstructorProperties;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
-
-import java.beans.ConstructorProperties;
 
 public abstract class QuestionResponse {
 
@@ -40,6 +40,15 @@ public abstract class QuestionResponse {
         public String getDimensionSubType() {
             return dimensionSubType;
         }
+
+        @Override
+        public String toString() {
+            return "Question{" +
+                    "responseType=" + getResponseType() +
+                    ", question='" + question + '\'' +
+                    ", dimensionSubType='" + dimensionSubType + '\'' +
+                    '}';
+        }
     }
 
     public static class Answer extends QuestionResponse {
@@ -71,6 +80,16 @@ public abstract class QuestionResponse {
 
         public String getValueSubType() {
             return valueSubType;
+        }
+
+        @Override
+        public String toString() {
+            return "Answer{" +
+                    "responseType=" + getResponseType() +
+                    ", strId='" + strId + '\'' +
+                    ", content=" + content +
+                    ", valueSubType='" + valueSubType + '\'' +
+                    '}';
         }
     }
 }

@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,8 @@ import ru.fa.model.ObservationValue;
 import ru.fa.model.Value;
 
 @Service
+@Profile("performance")
 public class ComponentsGenerator {
-
-    private static final int VERTICES = 15;
-    private static final int COMPONENTS = 3;
-    private static final int CHILD_SIZE = 2;
 
     private final DimensionDao dimensionDao;
     private final ObservationDao observationDao;
@@ -45,17 +43,17 @@ public class ComponentsGenerator {
     }
 
     @Transactional
-    public void loadComponents() {
-        DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(COMPONENTS, VERTICES, CHILD_SIZE);
+    public void loadComponents(int vertices, int components, int childSize) {
+        DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(components, vertices, childSize);
         Map<Long, Dimension> dimensionMap = dimensionsGenerator.createDimensions();
         List<Dimension> roots = dimensionMap.values()
                 .stream()
                 .filter(d -> d.getParentId() == null)
                 .collect(Collectors.toList());
         ObservationGenerator observationGenerator = new ObservationGenerator(
-                COMPONENTS,
-                VERTICES,
-                CHILD_SIZE,
+                components,
+                vertices,
+                childSize,
                 dimensionMap,
                 roots
         );
@@ -63,7 +61,7 @@ public class ComponentsGenerator {
         List<Value> values = new ValueGenerator(observations).createValues();
         List<ObservationValue> observationValues = new ObservationValueGenerator(observations).createObservationValues();
 
-        dimensionDao.createDimensions(dimensionMap.values());
+        dimensionDao.createDimensionsWithIds(dimensionMap.values());
         AtomicInteger id = new AtomicInteger(1);
         dimensionDao.createDimensionSubtypes(roots.stream()
                 .map(r ->

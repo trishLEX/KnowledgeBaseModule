@@ -20,7 +20,7 @@ public class JsonSql implements SqlValue {
     }
 
     public static JsonSql create(JsonNode json) {
-        return new JsonSql(json.asText());
+        return new JsonSql(json.toString());
     }
 
     @Override

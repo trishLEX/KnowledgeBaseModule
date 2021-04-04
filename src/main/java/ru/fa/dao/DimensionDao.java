@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -62,11 +63,19 @@ public class DimensionDao {
             "values\n" +
             "(:strId, :label, :broader, :type, :subtype, :question, :level, :allNarrower, :narrower)";
 
+    private static final String CREATE_DIMENSION_WITH_ID = "" +
+            "insert into dimension\n" +
+            "(id, str_id, label, broader, type, subtype, question, level, all_narrower, narrower)\n" +
+            "values\n" +
+            "(:id, :strId, :label, :broader, :type, :subtype, :question, :level, :allNarrower, :narrower)";
+
     private static final String DELETE_DIMENSION = "delete from dimension where id = :id";
 
     private static final String CREATE_SUBTYPE = "" +
             "insert into dimension_subtype (id, subtype, num)\n" +
             "values (:id, :subtype, :num)";
+
+    private static final String COUNT_DIMENSIONS = "select count(1) from dimension";
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
 
@@ -170,7 +179,7 @@ public class DimensionDao {
                         .addValue("subtype", dimension.getDimensionSubType())
                         .addValue("question", dimension.getQuestion())
                         .addValue("level", dimension.getLevel())
-                        .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("allNarrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
                         .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
         );
     }
@@ -186,11 +195,31 @@ public class DimensionDao {
                         .addValue("subtype", dimension.getDimensionSubType())
                         .addValue("question", dimension.getQuestion())
                         .addValue("level", dimension.getLevel())
-                        .addValue("all_narrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("allNarrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
                         .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
                 ).toArray(SqlParameterSource[]::new);
         namedJdbcTemplate.batchUpdate(CREATE_DIMENSION, params);
     }
+
+    @VisibleForTesting
+    public void createDimensionsWithIds(Collection<Dimension> dimensions) {
+        SqlParameterSource[] params = dimensions
+                .stream()
+                .map(dimension -> new MapSqlParameterSource()
+                        .addValue("id", dimension.getId())
+                        .addValue("strId", dimension.getStrId())
+                        .addValue("label", dimension.getLabel())
+                        .addValue("broader", dimension.getParentId())
+                        .addValue("type", dimension.getDimensionType())
+                        .addValue("subtype", dimension.getDimensionSubType())
+                        .addValue("question", dimension.getQuestion())
+                        .addValue("level", dimension.getLevel())
+                        .addValue("allNarrower", ArraySql.create(dimension.getAllChildrenIds(), JDBCType.BIGINT))
+                        .addValue("narrower", ArraySql.create(dimension.getChildrenIds(), JDBCType.BIGINT))
+                ).toArray(SqlParameterSource[]::new);
+        namedJdbcTemplate.batchUpdate(CREATE_DIMENSION_WITH_ID, params);
+    }
+
 
     public void createDimensionSubtypes(Collection<DimensionSubtype> dimensionSubtypes) {
         SqlParameterSource[] params = dimensionSubtypes
@@ -208,6 +237,10 @@ public class DimensionDao {
                 DELETE_DIMENSION,
                 new MapSqlParameterSource("id", id)
         );
+    }
+
+    public int countDimensions() {
+        return namedJdbcTemplate.queryForObject(COUNT_DIMENSIONS, Map.of(), Integer.class);
     }
 
     private static Dimension mapDimension(ResultSet rs, int rn) throws SQLException {
