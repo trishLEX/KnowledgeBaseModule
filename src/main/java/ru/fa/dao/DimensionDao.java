@@ -1,18 +1,5 @@
 package ru.fa.dao;
 
-import java.sql.JDBCType;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.google.common.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -22,6 +9,20 @@ import org.springframework.stereotype.Repository;
 import ru.fa.model.Dimension;
 import ru.fa.model.DimensionSubtype;
 import ru.fa.util.ArraySql;
+
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Repository
 public class DimensionDao {
@@ -37,6 +38,18 @@ public class DimensionDao {
     private static final String GET_QUESTION_BY_STR_ID = "select question from dimension where id = :id";
 
     private static final String GET_DIMENSIONS_TOP_CONCEPTS = "select subtype, id from dimension where broader is null";
+
+    private static final String GET_FACT_DIMENSIONS = "" +
+            "select id from dimension\n" +
+            "where id in (\n" +
+            "    select id\n" +
+            "    from dimension\n" +
+            "    where id in (:ids)\n" +
+            "        union\n" +
+            "        select unnest(all_narrower) id\n" +
+            "        from dimension\n" +
+            "        where id in (:ids)\n" +
+            ") and cardinality(all_narrower) = 0";
 
     private static final String GET_DIMENSION_IDS_BY_STR_IDS = "" +
             "select subtype, id\n" +
@@ -136,6 +149,14 @@ public class DimensionDao {
                 }
         );
         return topConcepts;
+    }
+
+    public Set<Long> getFactDimensions(Collection<Long> ids) {
+        return new HashSet<>(namedJdbcTemplate.queryForList(
+                GET_FACT_DIMENSIONS,
+                new MapSqlParameterSource("ids", ids),
+                Long.class
+        ));
     }
 
     public Map<String, Long> getDimensionsValuesByStrIds(Collection<String> strIds) {

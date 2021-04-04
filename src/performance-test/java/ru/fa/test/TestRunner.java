@@ -1,12 +1,5 @@
 package ru.fa.test;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.PreDestroy;
-
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +20,12 @@ import ru.fa.dto.QuestionRequest;
 import ru.fa.loader.ComponentsGenerator;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
+
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 @Profile("performance")
@@ -55,6 +54,7 @@ public class TestRunner {
     private ComponentsGenerator componentsGenerator;
 
     private void testExact() {
+        System.out.println("*****\n\n\n");
         Observation observation = observationDao.getObservation(3);
 
         Map<String, String> dimensions = observation.getDimensionMap()
@@ -70,6 +70,7 @@ public class TestRunner {
                 dimensions
         );
 
+        log.info("Request: {}", questionRequest);
         Stopwatch stopWatch = Stopwatch.createStarted();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 "http://localhost:8080/question",
@@ -79,16 +80,18 @@ public class TestRunner {
         stopWatch.stop();
 
         assert responseEntity.getStatusCode() == HttpStatus.OK;
-        log.info(responseEntity.getBody());
+        log.info("Response: {}", responseEntity.getBody());
         log.info(
                 "Test exact: {} ms, dimensions: {}, observations: {}",
                 stopWatch.elapsed(TimeUnit.MILLISECONDS),
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
+        System.out.println("*****\n\n\n");
     }
 
     private void testExactWithoutOneDimension() {
+        System.out.println("*****\n\n\n");
         Observation observation = observationDao.getObservation(3);
 
         Map<String, String> dimensions = observation.getDimensionMap()
@@ -110,6 +113,7 @@ public class TestRunner {
                 dimensions
         );
 
+        log.info("Request: {}", questionRequest);
         Stopwatch stopWatch = Stopwatch.createStarted();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 "http://localhost:8080/question",
@@ -119,16 +123,18 @@ public class TestRunner {
         stopWatch.stop();
 
         assert responseEntity.getStatusCode() == HttpStatus.OK;
-        log.info(responseEntity.getBody());
+        log.info("Response: {}", responseEntity.getBody());
         log.info(
                 "Test exact without one dimension: {} ms, dimensions: {}, observations: {}",
                 stopWatch.elapsed(TimeUnit.MILLISECONDS),
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
+        System.out.println("*****\n\n\n");
     }
 
     private void testOneDimension() {
+        System.out.println("*****\n\n\n");
         Observation observation = observationDao.getObservation(3);
 
         Map<String, String> dimensions = observation.getDimensionMap()
@@ -149,6 +155,7 @@ public class TestRunner {
                 dimensions
         );
 
+        log.info("Request: {}", questionRequest);
         Stopwatch stopWatch = Stopwatch.createStarted();
         ResponseEntity<String> responseEntity = restTemplate.postForEntity(
                 "http://localhost:8080/question",
@@ -158,13 +165,14 @@ public class TestRunner {
         stopWatch.stop();
 
         assert responseEntity.getStatusCode() == HttpStatus.OK;
-        log.info(responseEntity.getBody());
+        log.info("Response: {}", responseEntity.getBody());
         log.info(
                 "Test one dimension: {} ms, dimensions: {}, observations: {}",
                 stopWatch.elapsed(TimeUnit.MILLISECONDS),
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
+        System.out.println("*****\n\n\n");
     }
 
     @EventListener(ContextRefreshedEvent.class)

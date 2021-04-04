@@ -1,20 +1,5 @@
 package ru.fa.dao;
 
-import java.sql.JDBCType;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +18,21 @@ import ru.fa.model.Value;
 import ru.fa.service.ObservationDimensionsToRemove;
 import ru.fa.util.ArraySql;
 
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 @Repository
 public class ObservationDao {
 
@@ -48,13 +48,14 @@ public class ObservationDao {
             "join (\n" +
             "    select subtype, array_agg(id) dim_ids\n" +
             "    from (\n" +
-            "             select id, subtype\n" +
-            "             from dimension\n" +
-            "             where id in (:ids)\n" +
-            "             union\n" +
-            "             select unnest(all_narrower) child_id, subtype\n" +
-            "             from dimension\n" +
-            "             where id in (:ids)\n" +
+            "             select id, subtype from dimension where id in (:ids)" +
+//            "             select id, subtype\n" +
+//            "             from dimension\n" +
+//            "             where id in (:ids)\n" +
+//            "             union\n" +
+//            "             select unnest(all_narrower) child_id, subtype\n" +
+//            "             from dimension\n" +
+//            "             where id in (:ids)\n" +
             "         ) unioned\n" +
             "    group by subtype\n" +
             ") as ids\n" +

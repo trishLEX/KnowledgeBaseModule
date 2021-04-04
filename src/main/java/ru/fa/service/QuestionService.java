@@ -14,6 +14,7 @@ import ru.fa.util.CustomCollectors;
 import ru.fa.util.DimensionsUtil;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,8 +32,12 @@ public class QuestionService {
         this.dimensionDao = dimensionDao;
     }
 
-    public QuestionResponse processNotEmptyQuestion(String valueSubType, Map<String, Long> dimensions) {
-        Set<Long> observationIds = getObservationIds(dimensions);
+    public QuestionResponse processNotEmptyQuestion(
+            String valueSubType,
+            Map<String, Long> dimensions,
+            Set<Long> factDimensions
+    ) {
+        Set<Long> observationIds = getObservationIds(factDimensions);
 
         if (observationIds.isEmpty()) {
             throw new IllegalStateException("Can't find observation for dimensions " + dimensions);
@@ -77,13 +82,13 @@ public class QuestionService {
         }
     }
 
-    private Set<Long> getObservationIds(Map<String, Long> dimensions) {
-        Set<Long> observationIds = observationDao.checkExactObservation(dimensions.values());
+    private Set<Long> getObservationIds(Collection<Long> dimensions) {
+        Set<Long> observationIds = observationDao.checkExactObservation(dimensions);
         if (observationIds.size() == 1) {
             return observationIds;
         }
 
-        return observationDao.getObservationsIdsByDimensions(dimensions.values());
+        return observationDao.getObservationsIdsByDimensions(dimensions);
     }
 
     private String getDimensionSubtypeToClarify(
