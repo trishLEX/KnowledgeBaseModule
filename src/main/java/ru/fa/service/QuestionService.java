@@ -49,8 +49,7 @@ public class QuestionService {
                     valueSubType
             );
         } else {
-            Multimap<String, Long> subTypesToClarifyRaw =
-                    observationDao.getDimensionSubTypesToClarify(observationIds);
+            Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
             Map<Long, Dimension> dimensionMap = dimensionDao.getDimensions(
                     Sets.union(
                             Sets.newHashSet(subTypesToClarifyRaw.values()),

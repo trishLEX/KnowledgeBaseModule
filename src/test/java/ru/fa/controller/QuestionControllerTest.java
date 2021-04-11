@@ -263,13 +263,16 @@ class QuestionControllerTest extends FunctionalTest {
         //language=json
         String expected = "" +
                 "{\n" +
-                "  \"str_id\": \"Value2\",\n" +
-                "  \"content\": {\n" +
-                "    \"id\": 2,\n" +
-                "    \"body\": \"superBody\"\n" +
-                "  },\n" +
-                "  \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
-                "  \"response_type\": \"ANSWER\"\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value2\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 2,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }

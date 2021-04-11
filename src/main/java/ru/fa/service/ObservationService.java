@@ -114,7 +114,7 @@ public class ObservationService {
     }
 
     @VisibleForTesting
-    ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
+    public ObservationCompareResult checkObservationsLevel(Observation observation, Observation anotherObservation) {
         List<Dimension> upper = new ArrayList<>();
         List<Dimension> equals = new ArrayList<>();
         List<Dimension> lower = new ArrayList<>();
