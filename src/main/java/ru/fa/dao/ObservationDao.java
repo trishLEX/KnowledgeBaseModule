@@ -1,5 +1,21 @@
 package ru.fa.dao;
 
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,22 +33,6 @@ import ru.fa.model.Observation;
 import ru.fa.model.Value;
 import ru.fa.service.ObservationDimensionsToRemove;
 import ru.fa.util.ArraySql;
-
-import java.sql.JDBCType;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 public class ObservationDao {
@@ -221,15 +221,21 @@ public class ObservationDao {
     }
 
     public void deleteObservationDimensions(List<ObservationDimensionsToRemove> toRemoveList) {
-        System.out.println(toRemoveList);
-        namedJdbcTemplate.batchUpdate(
-                DELETE_OBSERVATION_DIMENSIONS_V2,
-                toRemoveList.stream()
-                        .map(toRemove -> new MapSqlParameterSource()
-                                .addValue("id", toRemove.getObservation().getId())
-                                .addValue("dimIds", toRemove.getDimensionIds())
-                        ).collect(Collectors.toList())
-                        .toArray(SqlParameterSource[]::new)
+//        namedJdbcTemplate.batchUpdate(
+//                DELETE_OBSERVATION_DIMENSIONS_V2,
+//                toRemoveList.stream()
+//                        .map(toRemove -> new MapSqlParameterSource()
+//                                .addValue("id", toRemove.getObservation().getId())
+//                                .addValue("dimIds", new ArrayList<>(toRemove.getDimensionIds()))
+//                        ).collect(Collectors.toList())
+//                        .toArray(SqlParameterSource[]::new)
+//        );
+        toRemoveList.stream()
+                .map(toRemove -> new MapSqlParameterSource()
+                        .addValue("id", toRemove.getObservation().getId())
+                        .addValue("dimIds", new ArrayList<>(toRemove.getDimensionIds()))
+                ).collect(Collectors.toList()).forEach(
+                        params -> namedJdbcTemplate.update(DELETE_OBSERVATION_DIMENSIONS_V2, params)
         );
     }
 

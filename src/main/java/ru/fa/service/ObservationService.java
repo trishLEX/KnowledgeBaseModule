@@ -1,15 +1,5 @@
 package ru.fa.service;
 
-import com.google.common.annotations.VisibleForTesting;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.fa.dao.ObservationDao;
-import ru.fa.model.Dimension;
-import ru.fa.model.Observation;
-import ru.fa.util.DimensionsUtil;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,6 +9,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import com.google.common.annotations.VisibleForTesting;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import ru.fa.dao.ObservationDao;
+import ru.fa.model.Dimension;
+import ru.fa.model.Observation;
+import ru.fa.util.DimensionsUtil;
 
 @Service
 @ParametersAreNonnullByDefault
@@ -32,17 +34,16 @@ public class ObservationService {
     }
 
     //todo протестировать
-    @Transactional
+    @Transactional(propagation = Propagation.NESTED)
     public void insertObservation(Observation newObservation) {
         Collection<Observation> observations = observationDao.getObservations();
 
-        List<ObservationDimensionsToRemove> toRemoveList = new ArrayList<>();
         for (Observation observation : observations) {
-            Optional<ObservationDimensionsToRemove> toRemove = dimensionsToRemove(observation, newObservation);
-            toRemove.ifPresent(toRemoveList::add);
+            //валидация
+            checkObservationsLevel(observation, newObservation);
         }
-        observationDao.deleteObservationDimensions(toRemoveList);
         observationDao.createObservation(newObservation);
+//        observationDao.deleteObservationDimensions(toRemoveList);
     }
 
     public Observation getObservation(long id) {

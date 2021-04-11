@@ -1,5 +1,12 @@
 package ru.fa.service;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
@@ -9,27 +16,23 @@ import ru.fa.dao.DimensionDao;
 import ru.fa.dao.ObservationDao;
 import ru.fa.dto.QuestionResponse;
 import ru.fa.model.Dimension;
+import ru.fa.model.Observation;
 import ru.fa.model.Value;
 import ru.fa.util.CustomCollectors;
 import ru.fa.util.DimensionsUtil;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
 
     private final ObservationDao observationDao;
     private final DimensionDao dimensionDao;
+    private final ObservationService observationService;
 
     @Autowired
-    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao) {
+    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao, ObservationService observationService) {
         this.observationDao = observationDao;
         this.dimensionDao = dimensionDao;
+        this.observationService = observationService;
     }
 
     public QuestionResponse processNotEmptyQuestion(
@@ -49,6 +52,41 @@ public class QuestionService {
                     valueSubType
             );
         } else {
+            List<Observation> observations = new ArrayList<>(observationDao.getObservations(observationIds).values());
+            for (int i = 0; i < observations.size(); i++) {
+                for (int j = i + 1; j < observations.size(); j++) {
+                    if (!observationIds.contains(observations.get(i).getId())
+                            || !observationIds.contains(observations.get(j).getId())) {
+                        continue;
+                    }
+                    ObservationService.ObservationCompareResult result = observationService.checkObservationsLevel(
+                            observations.get(i),
+                            observations.get(j)
+                    );
+                    switch (result) {
+                        case ONE_LOWER_ANOTHER:
+                            observationIds.remove(observations.get(j).getId());
+                            break;
+                        case ONE_HIGHER_ANOTHER:
+                            observationIds.remove(observations.get(i).getId());
+                            break;
+                        case DIFFERENT_BRANCHES:
+                            break;
+                        default:
+                            throw new IllegalStateException();
+                    }
+                }
+            }
+
+            if (observationIds.size() == 1) {
+                Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
+                return new QuestionResponse.Answer(
+                        value.getStrId(),
+                        value.getContent(),
+                        valueSubType
+                );
+            }
+
             Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
             Map<Long, Dimension> dimensionMap = dimensionDao.getDimensions(
                     Sets.union(

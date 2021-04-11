@@ -1,5 +1,10 @@
 package ru.fa.loader;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +28,6 @@ import ru.fa.model.Value;
 import ru.fa.service.ObservationConflictException;
 import ru.fa.service.ObservationService;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
 @Service
 @Profile("performance")
 public class ComponentsGenerator {
@@ -50,7 +50,7 @@ public class ComponentsGenerator {
         this.observationService = observationService;
     }
 
-//    @Transactional
+    @Transactional
     public void loadComponents(int vertices, int components, int childSize) {
         DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(components, vertices, childSize);
         Map<Long, Dimension> dimensionMap = dimensionsGenerator.createDimensions();
@@ -80,8 +80,7 @@ public class ComponentsGenerator {
         for (var observation : observations) {
             try {
                 observationService.insertObservation(observation);
-            } catch (ObservationConflictException e) {
-                log.error("Conflict", e);
+            } catch (ObservationConflictException ignored) {
             }
         }
 //        observationDao.createObservations(observations);

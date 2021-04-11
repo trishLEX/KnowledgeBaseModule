@@ -1,5 +1,13 @@
 package ru.fa.service;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.LinkedListMultimap;
@@ -12,14 +20,6 @@ import ru.fa.dao.DimensionDao;
 import ru.fa.dao.ObservationDao;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 class ObservationServiceTest extends FunctionalTest {
 
@@ -117,7 +117,7 @@ class ObservationServiceTest extends FunctionalTest {
         obsDims.putAll(0L, List.of(4L, 16L, 25L));
         obsDims.putAll(1L, List.of(5L, 16L, 25L));
         obsDims.putAll(2L, List.of(5L, 14L, 22L));
-        obsDims.putAll(3L, List.of(5L, 10L, 22L));
+        obsDims.putAll(3L, List.of(5L, 12L, 22L));
 
         Observation observation0 = new Observation(0, "Observation0", getDimensionMap(obsDims.get(0L)));
         Observation observation1 = new Observation(1, "Observation1", getDimensionMap(obsDims.get(1L)));
