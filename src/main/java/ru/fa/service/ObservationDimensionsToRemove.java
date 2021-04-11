@@ -21,4 +21,12 @@ public class ObservationDimensionsToRemove {
     public Set<Long> getDimensionIds() {
         return dimensionIds;
     }
+
+    @Override
+    public String toString() {
+        return "ObservationDimensionsToRemove{" +
+                "observation=" + observation +
+                ", dimensionIds=" + dimensionIds +
+                '}';
+    }
 }

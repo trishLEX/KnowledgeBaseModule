@@ -41,8 +41,8 @@ public class ObservationService {
             Optional<ObservationDimensionsToRemove> toRemove = dimensionsToRemove(observation, newObservation);
             toRemove.ifPresent(toRemoveList::add);
         }
-        observationDao.createObservation(newObservation);
         observationDao.deleteObservationDimensions(toRemoveList);
+        observationDao.createObservation(newObservation);
     }
 
     public Observation getObservation(long id) {
@@ -64,23 +64,23 @@ public class ObservationService {
     @VisibleForTesting
     Optional<ObservationDimensionsToRemove> dimensionsToRemove(
             Observation observation,
-            Observation anotherObservation
+            Observation newObservation
     ) {
-        switch (checkObservationsLevel(observation, anotherObservation)) {
+        switch (checkObservationsLevel(observation, newObservation)) {
             case DIFFERENT_BRANCHES:
                 return Optional.empty();
             case ONE_HIGHER_ANOTHER:
                 return Optional.of(
                         new ObservationDimensionsToRemove(
                                 observation,
-                                getDimensionsToRemove(observation, anotherObservation)
+                                getDimensionsToRemove(observation, newObservation)
                         )
                 );
             case ONE_LOWER_ANOTHER:
                 return Optional.of(
                         new ObservationDimensionsToRemove(
-                                anotherObservation,
-                                getDimensionsToRemove(anotherObservation, observation)
+                                newObservation,
+                                getDimensionsToRemove(newObservation, observation)
                         )
                 );
             default:

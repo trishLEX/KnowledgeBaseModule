@@ -1,6 +1,9 @@
 package ru.fa.service;
 
+import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Multimap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,12 @@ import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 class ObservationServiceTest extends FunctionalTest {
 
@@ -99,5 +104,38 @@ class ObservationServiceTest extends FunctionalTest {
         Assertions.assertDoesNotThrow(
                 () -> observationService.checkObservationsLevel(observations.get(0L), observations.get(1L))
         );
+    }
+
+    @Test
+    void testCreatingObservations() {
+        observationDao.deleteObservation(0);
+        observationDao.deleteObservation(1);
+        observationDao.deleteObservation(2);
+        observationDao.deleteObservation(3);
+
+        Multimap<Long, Long> obsDims = LinkedListMultimap.create();
+        obsDims.putAll(0L, List.of(4L, 16L, 25L));
+        obsDims.putAll(1L, List.of(5L, 16L, 25L));
+        obsDims.putAll(2L, List.of(5L, 14L, 22L));
+        obsDims.putAll(3L, List.of(5L, 10L, 22L));
+
+        Observation observation0 = new Observation(0, "Observation0", getDimensionMap(obsDims.get(0L)));
+        Observation observation1 = new Observation(1, "Observation1", getDimensionMap(obsDims.get(1L)));
+        Observation observation2 = new Observation(2, "Observation2", getDimensionMap(obsDims.get(2L)));
+        Observation observation3 = new Observation(3, "Observation3", getDimensionMap(obsDims.get(3L)));
+
+        observationService.insertObservation(observation0);
+        observationService.insertObservation(observation1);
+        observationService.insertObservation(observation2);
+        observationService.insertObservation(observation3);
+    }
+
+    private Map<String, Dimension> getDimensionMap(Collection<Long> dimIds) {
+        return dimensionDao.getDimensions(dimIds).values()
+                .stream()
+                .collect(Collectors.toMap(
+                        Dimension::getDimensionSubType,
+                        Functions.identity()
+                ));
     }
 }

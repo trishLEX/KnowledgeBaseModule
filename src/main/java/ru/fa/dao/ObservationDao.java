@@ -221,13 +221,15 @@ public class ObservationDao {
     }
 
     public void deleteObservationDimensions(List<ObservationDimensionsToRemove> toRemoveList) {
+        System.out.println(toRemoveList);
         namedJdbcTemplate.batchUpdate(
                 DELETE_OBSERVATION_DIMENSIONS_V2,
-                toRemoveList.stream().map(toRemove -> new MapSqlParameterSource()
-                        .addValue("id", toRemove.getObservation().getId())
-                        .addValue("dimIds", toRemove.getDimensionIds())
-                ).collect(Collectors.toList())
-                .toArray(SqlParameterSource[]::new)
+                toRemoveList.stream()
+                        .map(toRemove -> new MapSqlParameterSource()
+                                .addValue("id", toRemove.getObservation().getId())
+                                .addValue("dimIds", toRemove.getDimensionIds())
+                        ).collect(Collectors.toList())
+                        .toArray(SqlParameterSource[]::new)
         );
     }
 
@@ -242,8 +244,10 @@ public class ObservationDao {
 
         List<MapSqlParameterSource> params = new ArrayList<>();
         for (Dimension dimension : observation.getDimensionMap().values()) {
-            List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
-                    .stream()
+            List<MapSqlParameterSource> param = Stream.concat(
+                    dimension.getAllChildrenIds().stream(),
+                    Stream.of(dimension.getId())
+            )
                     .map(obsDimId -> new MapSqlParameterSource()
                             .addValue("dimensionId", dimension.getId())
                             .addValue("obsDimensionId", obsDimId)

@@ -36,8 +36,8 @@ public class TestRunner {
     private static final Logger log = LoggerFactory.getLogger(TestRunner.class);
 
     private static final int VERTICES = 15;
-    private static final int COMPONENTS = 2;
-    private static final int CHILD_SIZE = 2;
+    private static final int COMPONENTS = 3;
+    private static final int CHILD_SIZE = 3;
 
     @Autowired
     private RestTemplate restTemplate;

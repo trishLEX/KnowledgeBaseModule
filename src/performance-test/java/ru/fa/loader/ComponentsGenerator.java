@@ -1,10 +1,7 @@
 package ru.fa.loader;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -23,26 +20,37 @@ import ru.fa.model.DimensionSubtype;
 import ru.fa.model.Observation;
 import ru.fa.model.ObservationValue;
 import ru.fa.model.Value;
+import ru.fa.service.ObservationConflictException;
+import ru.fa.service.ObservationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Service
 @Profile("performance")
 public class ComponentsGenerator {
 
+    private static final Logger log = LoggerFactory.getLogger(ComponentsGenerator.class);
+
     private final DimensionDao dimensionDao;
     private final ObservationDao observationDao;
     private final ValueDao valueDao;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final ObservationService observationService;
 
     @Autowired
     public ComponentsGenerator(DimensionDao dimensionDao, ObservationDao observationDao, ValueDao valueDao,
-                               NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+                               NamedParameterJdbcTemplate namedParameterJdbcTemplate, ObservationService observationService) {
         this.dimensionDao = dimensionDao;
         this.observationDao = observationDao;
         this.valueDao = valueDao;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+        this.observationService = observationService;
     }
 
-    @Transactional
+//    @Transactional
     public void loadComponents(int vertices, int components, int childSize) {
         DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(components, vertices, childSize);
         Map<Long, Dimension> dimensionMap = dimensionsGenerator.createDimensions();
@@ -69,7 +77,14 @@ public class ComponentsGenerator {
                         new DimensionSubtype(id.get(), r.getDimensionSubType(), id.getAndIncrement())
                 ).collect(Collectors.toList()));
         roots.clear();
-        observationDao.createObservations(observations);
+        for (var observation : observations) {
+            try {
+                observationService.insertObservation(observation);
+            } catch (ObservationConflictException e) {
+                log.error("Conflict", e);
+            }
+        }
+//        observationDao.createObservations(observations);
         observations.clear();
         valueDao.createValues(values);
         values.clear();
