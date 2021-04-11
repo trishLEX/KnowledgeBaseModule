@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class ObservationDao {
@@ -271,8 +272,10 @@ public class ObservationDao {
         List<MapSqlParameterSource> observationValueParams = new ArrayList<>();
         for (var observation : observations) {
             for (Dimension dimension : observation.getDimensionMap().values()) {
-                List<MapSqlParameterSource> param = dimension.getAllChildrenIds()
-                        .stream()
+                List<MapSqlParameterSource> param = Stream.concat(
+                        dimension.getAllChildrenIds().stream(),
+                        Stream.of(dimension.getId())
+                )
                         .map(obsDimId -> new MapSqlParameterSource()
                                 .addValue("dimensionId", dimension.getId())
                                 .addValue("obsDimensionId", obsDimId)
