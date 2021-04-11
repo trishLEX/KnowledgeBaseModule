@@ -24,6 +24,7 @@ import ru.fa.model.Observation;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -83,6 +84,43 @@ public class TestRunner {
         log.info("Response: {}", responseEntity.getBody());
         log.info(
                 "Test exact: {} ms, dimensions: {}, observations: {}",
+                stopWatch.elapsed(TimeUnit.MILLISECONDS),
+                dimensionDao.countDimensions(),
+                observationDao.countObservations()
+        );
+        System.out.println("*****\n\n\n");
+    }
+
+    private void superExact() {
+        System.out.println("*****\n\n\n");
+        Set<Long> dims = dimensionDao.getFactDimensions(dimensionDao.getDimensionsTopConcepts().values());
+        Map<String, String> dimensions = dimensionDao.getDimensions(dims)
+                .values()
+                .stream()
+                .collect(Collectors.toMap(
+                        d -> d.getDimensionSubType(),
+                        d -> d.getStrId(),
+                        (a, b) -> a
+                ));
+
+        QuestionRequest questionRequest = new QuestionRequest(
+                "VALUE_SUBTYPE_1",
+                dimensions
+        );
+
+        log.info("Request: {}", questionRequest);
+        Stopwatch stopWatch = Stopwatch.createStarted();
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(
+                "http://localhost:8080/question",
+                questionRequest,
+                String.class
+        );
+        stopWatch.stop();
+
+        assert responseEntity.getStatusCode() == HttpStatus.OK;
+        log.info("Response: {}", responseEntity.getBody());
+        log.info(
+                "Test superExact: {} ms, dimensions: {}, observations: {}",
                 stopWatch.elapsed(TimeUnit.MILLISECONDS),
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
@@ -181,6 +219,7 @@ public class TestRunner {
         componentsGenerator.loadComponents(VERTICES, COMPONENTS, CHILD_SIZE);
         log.info("Components loaded");
         testExact();
+        superExact();
         testExactWithoutOneDimension();
         testOneDimension();
         SpringApplication.exit(applicationContext, () -> 0);
