@@ -1,5 +1,13 @@
 package ru.fa.test;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import javax.annotation.PreDestroy;
+
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +29,6 @@ import ru.fa.loader.ComponentsGenerator;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
 
-import javax.annotation.PreDestroy;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 @Service
 @Profile("performance")
 @DependsOn("questionController")
@@ -35,9 +36,9 @@ public class TestRunner {
 
     private static final Logger log = LoggerFactory.getLogger(TestRunner.class);
 
-    private static final int VERTICES = 15;
-    private static final int COMPONENTS = 3;
-    private static final int CHILD_SIZE = 3;
+    private static final int HEIGHT = 3;
+    private static final int COMPONENTS = 1;
+    private static final int CHILD_SIZE = 5;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -56,7 +57,7 @@ public class TestRunner {
 
     private void testExact() {
         System.out.println("*****\n\n\n");
-        Observation observation = observationDao.getObservation(3);
+        Observation observation = observationDao.getObservation(0);
 
         Map<String, String> dimensions = observation.getDimensionMap()
                 .values()
@@ -216,7 +217,7 @@ public class TestRunner {
     @EventListener(ContextRefreshedEvent.class)
     public void runTests() {
         componentsGenerator.clearDb();
-        componentsGenerator.loadComponents(VERTICES, COMPONENTS, CHILD_SIZE);
+        componentsGenerator.loadComponents(HEIGHT, COMPONENTS, CHILD_SIZE);
         log.info("Components loaded");
         testExact();
         superExact();

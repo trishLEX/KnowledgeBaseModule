@@ -12,15 +12,13 @@ import ru.fa.model.Observation;
 public class ObservationGenerator {
 
     private final int components;
-    private final int vertices;
     private final int childSize;
     private final Map<Long, Dimension> dimensionMap;
     private final List<Dimension> roots;
 
-    public ObservationGenerator(int components, int vertices, int childSize, Map<Long, Dimension> dimensionMap,
+    public ObservationGenerator(int components, int childSize, Map<Long, Dimension> dimensionMap,
                                 List<Dimension> roots) {
         this.components = components;
-        this.vertices = vertices;
         this.childSize = childSize;
         this.dimensionMap = dimensionMap;
         this.roots = roots;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,8 @@ public class ComponentsGenerator {
     }
 
     @Transactional
-    public void loadComponents(int vertices, int components, int childSize) {
+    public void loadComponents(int height, int components, int childSize) {
+        int vertices = countVertices(height, childSize);
         DimensionsGenerator dimensionsGenerator = new DimensionsGenerator(components, vertices, childSize);
         Map<Long, Dimension> dimensionMap = dimensionsGenerator.createDimensions();
         List<Dimension> roots = dimensionMap.values()
@@ -60,7 +62,6 @@ public class ComponentsGenerator {
                 .collect(Collectors.toList());
         ObservationGenerator observationGenerator = new ObservationGenerator(
                 components,
-                vertices,
                 childSize,
                 dimensionMap,
                 roots
@@ -99,5 +100,11 @@ public class ComponentsGenerator {
         namedParameterJdbcTemplate.update("truncate performance.dimension_subtype", new MapSqlParameterSource());
         namedParameterJdbcTemplate.update("truncate performance.observation", new MapSqlParameterSource());
         namedParameterJdbcTemplate.update("truncate performance.value", new MapSqlParameterSource());
+    }
+
+    public static int countVertices(int height, int childSize) {
+        return IntStream.range(0, height + 1)
+                .map(h -> (int) Math.pow(childSize, h))
+                .sum();
     }
 }
