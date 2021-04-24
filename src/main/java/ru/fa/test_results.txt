@@ -1,0 +1,592 @@
+"C:\Program Files\Java\jdk-11.0.1\bin\java.exe" -Xmx12g -XX:TieredStopAtLevel=1 -noverify -Dspring.output.ansi.enabled=always -Dcom.sun.management.jmxremote -Dspring.jmx.enabled=true -Dspring.liveBeansView.mbeanDomain -Dspring.application.admin.enabled=true "-javaagent:E:\Program Files\JetBrains\IntelliJ IDEA 2019.1.1\lib\idea_rt.jar=52043:E:\Program Files\JetBrains\IntelliJ IDEA 2019.1.1\bin" -Dfile.encoding=UTF-8 -classpath E:\Sorry\Documents\IdeaProjects\KnBase\out\production\classes;E:\Sorry\Documents\IdeaProjects\KnBase\out\production\resources;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.postgresql\postgresql\42.1.4\1c7788d16b67d51f2f38ae99e474ece968bf715a\postgresql-42.1.4.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter-jdbc\2.3.1.RELEASE\800b64e76588ea88761ad9108cde762204805d66\spring-boot-starter-jdbc-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter-web\2.3.1.RELEASE\555c4f90141cdbc7637145e413bca0d622ba6796\spring-boot-starter-web-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter-json\2.3.1.RELEASE\8342003919c7e5a2470072595ea190cb8a9552c0\spring-boot-starter-json-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter\2.3.1.RELEASE\e0d28696fea064578cb01da346232284f922eba4\spring-boot-starter-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.poi\poi-ooxml\4.1.2\87d9a22aa9a7dd26e80c360e709f7ee02e32ab3b\poi-ooxml-4.1.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.poi\poi\4.1.2\964bf41cf68bce08e4ef6b2279b559fdf8d454f4\poi-4.1.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.guava\guava\29.0-jre\801142b4c3d0f0770dd29abea50906cacfddd447\guava-29.0-jre.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-shacl\3.15.0\8a48f714ac1ebe76431491a4f83051edb3cdedfe\jena-shacl-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-tdb\3.15.0\ed1431f8ddbe4120527b1bbe722aae1768f9462\jena-tdb-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-rdfconnection\3.15.0\2656a6323366a31e1950103b2571bdf3705750bb\jena-rdfconnection-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-tdb2\3.15.0\547abe4fa08054d8c62babe8234815a1eef0707c\jena-tdb2-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-dboe-storage\3.15.0\9f9e0cd4f116691d348dad795ab92d3f95bcc1b2\jena-dboe-storage-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-dboe-trans-data\3.15.0\968aa8267181d79cf542f012f5a3626147677cc9\jena-dboe-trans-data-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-dboe-transaction\3.15.0\64e6dd5f4059377c5541bf0e9faf1f0185e4cfef\jena-dboe-transaction-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-dboe-index\3.15.0\baadd280c3fc8798c6932865067c8ce22a9ddf56\jena-dboe-index-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-dboe-base\3.15.0\6e8614f614fbe5c478f625423da0de121f99fddc\jena-dboe-base-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-arq\3.15.0\fd3d246a33959de2e7b6215dac900d84750d7699\jena-arq-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-core\3.15.0\a396ccaa3dd48ef8ab51d938811d12d81934914d\jena-core-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-base\3.15.0\bdce8f857dbb74445c79aac6326358a716d76712\jena-base-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-lang3\3.10\e155460aaf5b464062a09c3923f089ce99128a17\commons-lang3-3.10.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.datatype\jackson-datatype-jdk8\2.11.0\cca91d6375258fd7ff2a6abb7bf91eef492bd606\jackson-datatype-jdk8-2.11.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.datatype\jackson-datatype-jsr310\2.11.0\168b2d0e11478b9f0a1bfccd62d6b5e8547b1e6f\jackson-datatype-jsr310-2.11.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.module\jackson-module-parameter-names\2.11.0\950a1e9a7c1093e7ffd92b216d5a0667f1e39058\jackson-module-parameter-names-2.11.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-databind\2.11.2\ee08bbd8975dde844307fe8309dfcd5ec7ee129d\jackson-databind-2.11.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.zaxxer\HikariCP\3.4.5\aa1a2c00aae8e4ba8308e19940711bb9525b103d\HikariCP-3.4.5.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-jdbc\5.2.7.RELEASE\847d31c90479a34e4e1fe7eeeb47ac89adce3438\spring-jdbc-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-autoconfigure\2.3.1.RELEASE\6d679d6ba26235a0e81ca1d58f9c1024d9427411\spring-boot-autoconfigure-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot\2.3.1.RELEASE\ce8d8b6838ecceb68962b975b18682f4237ccf71\spring-boot-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter-logging\2.3.1.RELEASE\3f242a91ffddf7485fde1367e1354c7e13024c8\spring-boot-starter-logging-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework.boot\spring-boot-starter-tomcat\2.3.1.RELEASE\5b599d0da04e724479c22daa47f9bfd62533a2e9\spring-boot-starter-tomcat-2.3.1.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\jakarta.annotation\jakarta.annotation-api\1.3.5\59eb84ee0d616332ff44aba065f3888cf002cd2d\jakarta.annotation-api-1.3.5.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-webmvc\5.2.7.RELEASE\dcd97bcb0a2aa33f272b0031e4771134e327d942\spring-webmvc-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-web\5.2.7.RELEASE\50a27c77e1731f3b7af5c2ae7caf6fe59bcc309\spring-web-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-tx\5.2.7.RELEASE\66faebf0da41c67b67d082efc98e92c40e83e6b\spring-tx-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-context\5.2.7.RELEASE\7fd9c4ea311a5d9ab92770be7fc93cc53db334f9\spring-context-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-aop\5.2.7.RELEASE\9cf69f8e888091684c05f0a287bb638502e90725\spring-aop-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-beans\5.2.7.RELEASE\5465ab17688ed62254fdef411cf883fd5c3b77a\spring-beans-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-expression\5.2.7.RELEASE\c98d7b10f959f9bedfbbbd4d723cf7a1f17a1f71\spring-expression-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-core\5.2.7.RELEASE\56e14a3a5e2813534b5db2da1502cd58ab5bc61d\spring-core-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.yaml\snakeyaml\1.26\a78a8747147d2c5807683e76ec2b633e95c14fe9\snakeyaml-1.26.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient-cache\4.5.10\b195778247a21e980cb9f80c41364dc0c38feaef\httpclient-cache-4.5.10.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.thrift\libthrift\0.13.0\e5af3b6dc164eb2c699b70bf67a0babef507faf\libthrift-0.13.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpclient\4.5.10\7ca2e4276f4ef95e4db725a8cd4a1d1e7585b9e5\httpclient-4.5.10.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\commons-codec\commons-codec\1.14\3cb1181b2141a7e752f5bdc998b7ef1849f726cf\commons-codec-1.14.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-collections4\4.4\62ebe7544cb7164d87e0637a2a6a2bdc981395e8\commons-collections4-4.4.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-math3\3.6.1\e4ba98f1d4b3c80ec46392f25e094a6a2e58fcbf\commons-math3-3.6.1.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.zaxxer\SparseBitSet\1.2\8467c813d442837fcaeddbc42cf5c5359fab4933\SparseBitSet-1.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.poi\poi-ooxml-schemas\4.1.2\550cc22a598c0b0a51d1f55f8371e83c1229802d\poi-ooxml-schemas-4.1.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-compress\1.20\b8df472b31e1f17c232d2ad78ceb1c84e00c641b\commons-compress-1.20.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.github.virtuald\curvesapi\1.06\159dd2e8956459a4eb0a9a6ecda9004d8d289708\curvesapi-1.06.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.guava\failureaccess\1.0.1\1dcf1de382a0bf95a3d8b0849546c88bac1292c9\failureaccess-1.0.1.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.guava\listenablefuture\9999.0-empty-to-avoid-conflict-with-guava\b421526c5f297295adef1c886e5246c39d4ac629\listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.code.findbugs\jsr305\3.0.2\25ea2e8b0c338a877313bd4672d3fe056ea78f0d\jsr305-3.0.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.checkerframework\checker-qual\2.11.1\8c43bf8f99b841d23aadda6044329dad9b63c185\checker-qual-2.11.1.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.errorprone\error_prone_annotations\2.3.4\dac170e4594de319655ffb62f41cbd6dbb5e601e\error_prone_annotations-2.3.4.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.google.j2objc\j2objc-annotations\1.3\ba035118bc8bac37d7eff77700720999acd9986d\j2objc-annotations-1.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-annotations\2.11.2\e0a7f61fce3e3eac38a079c11831868269de2ea\jackson-annotations-2.11.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.fasterxml.jackson.core\jackson-core\2.11.2\bc022ab0f0c83c07f9c52c5ab9a6a4932b15cc35\jackson-core-2.11.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\ch.qos.logback\logback-classic\1.2.3\7c4f3c474fb2c041d8028740440937705ebb473a\logback-classic-1.2.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-to-slf4j\2.13.3\966f6fd1af4959d6b12bfa880121d4a2b164f857\log4j-to-slf4j-2.13.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.slf4j\jul-to-slf4j\1.7.30\d58bebff8cbf70ff52b59208586095f467656c30\jul-to-slf4j-1.7.30.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.github.jsonld-java\jsonld-java\0.12.5\f85d7947d40ad30803a00b0d268baf6a00c6d32b\jsonld-java-0.12.5.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.slf4j\jcl-over-slf4j\1.7.30\cd92524ea19d27e5b94ecd251e1af729cffdfe15\jcl-over-slf4j-1.7.30.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.slf4j\slf4j-api\1.7.30\b5a4b6d16ab13e34a88fae84c35cd5d68cac922c\slf4j-api-1.7.30.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.springframework\spring-jcl\5.2.7.RELEASE\72282e1f89c58284632220437b5a1e8066c53d7d\spring-jcl-5.2.7.RELEASE.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.tomcat.embed\tomcat-embed-websocket\9.0.36\33fa5038aa66be6e9cc188000c2188aa4dd33c85\tomcat-embed-websocket-9.0.36.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.tomcat.embed\tomcat-embed-core\9.0.36\cf6574dd9c4764e60c548b69da52fc07a5a0a9bd\tomcat-embed-core-9.0.36.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.glassfish\jakarta.el\3.0.3\dab46ee1ee23f7197c13d7c40fce14817c9017df\jakarta.el-3.0.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.xmlbeans\xmlbeans\3.1.0\6dac1f897dfb3e3f17fc79b18a3353b2e51c464e\xmlbeans-3.1.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\ch.qos.logback\logback-core\1.2.3\864344400c3d4d92dfeb0a305dc87d953677c03c\logback-core-1.2.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.logging.log4j\log4j-api\2.13.3\ec1508160b93d274b1add34419b897bae84c6ca9\log4j-api-2.13.3.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-shaded-guava\3.15.0\50d6c1745807b6b18c76a764b2335b502b1648db\jena-shaded-guava-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.jena\jena-iri\3.15.0\3fb1cea74f3f50ed50ffdf5f09e1d200432d7691\jena-iri-3.15.0.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\commons-cli\commons-cli\1.4\c51c00206bb913cd8612b24abd9fa98ae89719b1\commons-cli-1.4.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.httpcomponents\httpcore\4.4.12\21ebaf6d532bc350ba95bd81938fa5f0e511c132\httpcore-4.4.12.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\commons-io\commons-io\2.6\815893df5f31da2ece4040fe0a12fd44b577afaf\commons-io-2.6.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\javax.annotation\javax.annotation-api\1.3.2\934c04d3cfef185a8008e7bf34331b79730a9d43\javax.annotation-api-1.3.2.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\org.apache.commons\commons-csv\1.8\37ca9a9aa2d4be2599e55506a6d3170dd7a3df4\commons-csv-1.8.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\com.github.andrewoma.dexx\collection\0.7\264efc08bdcd22126bd429aaea9efaf5158b2b90\collection-0.7.jar;C:\Users\Sorry\.gradle\caches\modules-2\files-2.1\commons-logging\commons-logging\1.2\4bfc12adfe4842bf07b657f0369c4cb522955686\commons-logging-1.2.jar ru.fa.Performance
+00:00:47.510 [main] DEBUG org.springframework.core.env.StandardEnvironment - Activating profiles [performance]
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v2.3.1.RELEASE)
+
+2021-04-21 00:00:47.715  INFO 2488 --- [           main] ru.fa.Performance                        : Starting Performance on trishLEX with PID 2488 (E:\Sorry\Documents\IdeaProjects\KnBase\out\production\classes started by trishLEX in E:\Sorry\Documents\IdeaProjects\KnBase)
+2021-04-21 00:00:47.716  INFO 2488 --- [           main] ru.fa.Performance                        : The following profiles are active: performance
+2021-04-21 00:00:48.403  INFO 2488 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2021-04-21 00:00:48.409  INFO 2488 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2021-04-21 00:00:48.409  INFO 2488 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.36]
+2021-04-21 00:00:48.479  INFO 2488 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2021-04-21 00:00:48.479  INFO 2488 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 720 ms
+2021-04-21 00:00:48.519  INFO 2488 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.postgresql.jdbc.TimestampUtils (file:/C:/Users/Sorry/.gradle/caches/modules-2/files-2.1/org.postgresql/postgresql/42.1.4/1c7788d16b67d51f2f38ae99e474ece968bf715a/postgresql-42.1.4.jar) to field java.util.TimeZone.defaultTimeZone
+WARNING: Please consider reporting this to the maintainers of org.postgresql.jdbc.TimestampUtils
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2021-04-21 00:00:48.624  INFO 2488 --- [           main] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Driver does not support get/set network timeout for connections. (Метод org.postgresql.jdbc.PgConnection.getNetworkTimeout() ещё не реализован)
+2021-04-21 00:00:48.632  INFO 2488 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2021-04-21 00:00:48.751  INFO 2488 --- [           main] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2021-04-21 00:00:48.876  INFO 2488 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+Observations count: 4096
+2021-04-21 00:00:52.945  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 3 6 2
+*****
+
+
+2021-04-21 00:00:52.949  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension82, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:00:53.016  INFO 2488 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2021-04-21 00:00:53.017  INFO 2488 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2021-04-21 00:00:53.021  INFO 2488 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 4 ms
+2021-04-21 00:00:53.072  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value255","content":{"id":255,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:00:53.073  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 119 ms, dimensions: 90, observations: 19
+*****
+
+
+*****
+
+
+2021-04-21 00:00:53.074  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension76, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:00:53.090  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:00:53.091  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 16 ms, dimensions: 90, observations: 19
+*****
+
+
+*****
+
+
+2021-04-21 00:00:53.092  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension75}}
+2021-04-21 00:00:53.101  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:00:53.102  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 8 ms, dimensions: 90, observations: 19
+*****
+
+
+*****
+
+
+2021-04-21 00:00:53.103  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension82, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:00:53.109  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value255","content":{"id":255,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:00:53.109  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 5 ms, dimensions: 90, observations: 19
+*****
+
+
+*****
+
+
+2021-04-21 00:00:53.110  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension76, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:00:53.118  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:00:53.118  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 7 ms, dimensions: 90, observations: 19
+*****
+
+
+*****
+
+
+2021-04-21 00:00:53.119  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension75}}
+2021-04-21 00:00:53.128  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:00:53.128  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 8 ms, dimensions: 90, observations: 19
+*****
+
+
+Observations count: 16384
+2021-04-21 00:01:11.124  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 3 7 2
+*****
+
+
+2021-04-21 00:01:11.125  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:01:11.133  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value1023","content":{"id":1023,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:01:11.133  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 7 ms, dimensions: 105, observations: 22
+*****
+
+
+*****
+
+
+2021-04-21 00:01:11.134  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:01:11.141  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:01:11.142  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 7 ms, dimensions: 105, observations: 22
+*****
+
+
+*****
+
+
+2021-04-21 00:01:11.143  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension90}}
+2021-04-21 00:01:11.150  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:01:11.150  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 7 ms, dimensions: 105, observations: 22
+*****
+
+
+*****
+
+
+2021-04-21 00:01:11.151  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:01:11.158  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value1023","content":{"id":1023,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:01:11.158  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 6 ms, dimensions: 105, observations: 22
+*****
+
+
+*****
+
+
+2021-04-21 00:01:11.159  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:01:11.167  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:01:11.167  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 7 ms, dimensions: 105, observations: 22
+*****
+
+
+*****
+
+
+2021-04-21 00:01:11.168  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension90}}
+2021-04-21 00:01:11.175  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:01:11.175  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 7 ms, dimensions: 105, observations: 22
+*****
+
+
+Observations count: 65536
+2021-04-21 00:03:04.473  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 3 8 2
+*****
+
+
+2021-04-21 00:03:04.476  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_7=Dimension112, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:03:04.484  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value4095","content":{"id":4095,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:03:04.484  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 8 ms, dimensions: 120, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 00:03:04.485  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_7=Dimension106, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:03:04.495  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:03:04.495  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 9 ms, dimensions: 120, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 00:03:04.496  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_7=Dimension105}}
+2021-04-21 00:03:04.506  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:03:04.506  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 9 ms, dimensions: 120, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 00:03:04.507  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_7=Dimension112, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:03:04.515  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value4095","content":{"id":4095,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:03:04.516  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 7 ms, dimensions: 120, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 00:03:04.516  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_7=Dimension106, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:03:04.526  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:03:04.526  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 9 ms, dimensions: 120, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 00:03:04.527  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_7=Dimension105}}
+2021-04-21 00:03:04.536  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:03:04.537  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 9 ms, dimensions: 120, observations: 25
+*****
+
+
+Observations count: 262144
+2021-04-21 00:11:38.068  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 3 9 2
+*****
+
+
+2021-04-21 00:11:38.069  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_8=Dimension128, SUBTYPE_7=Dimension112, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:11:38.078  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value16383","content":{"id":16383,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:11:38.079  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 8 ms, dimensions: 135, observations: 28
+*****
+
+
+*****
+
+
+2021-04-21 00:11:38.079  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_8=Dimension121, SUBTYPE_7=Dimension106, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:11:38.089  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:11:38.089  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 10 ms, dimensions: 135, observations: 28
+*****
+
+
+*****
+
+
+2021-04-21 00:11:38.090  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_8=Dimension120}}
+2021-04-21 00:11:38.101  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:11:38.101  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 11 ms, dimensions: 135, observations: 28
+*****
+
+
+*****
+
+
+2021-04-21 00:11:38.103  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_8=Dimension128, SUBTYPE_7=Dimension112, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 00:11:38.112  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value16383","content":{"id":16383,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 00:11:38.112  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 7 ms, dimensions: 135, observations: 28
+*****
+
+
+*****
+
+
+2021-04-21 00:11:38.112  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_8=Dimension121, SUBTYPE_7=Dimension106, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 00:11:38.121  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:11:38.121  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 9 ms, dimensions: 135, observations: 28
+*****
+
+
+*****
+
+
+2021-04-21 00:11:38.122  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_8=Dimension120}}
+2021-04-21 00:11:38.134  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 00:11:38.134  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 11 ms, dimensions: 135, observations: 28
+*****
+
+
+Observations count: 1048576
+2021-04-21 01:03:42.118  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 3 10 2
+*****
+
+
+2021-04-21 01:03:42.167  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_8=Dimension128, SUBTYPE_7=Dimension112, SUBTYPE_9=Dimension142, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 01:03:42.184  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value65535","content":{"id":65535,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:03:42.184  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 16 ms, dimensions: 150, observations: 31
+*****
+
+
+*****
+
+
+2021-04-21 01:03:42.186  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_8=Dimension121, SUBTYPE_7=Dimension106, SUBTYPE_9=Dimension136, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 01:03:42.199  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:03:42.199  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 12 ms, dimensions: 150, observations: 31
+*****
+
+
+*****
+
+
+2021-04-21 01:03:42.200  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_9=Dimension135}}
+2021-04-21 01:03:42.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:03:42.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 14 ms, dimensions: 150, observations: 31
+*****
+
+
+*****
+
+
+2021-04-21 01:03:42.217  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension97, SUBTYPE_5=Dimension82, SUBTYPE_8=Dimension128, SUBTYPE_7=Dimension112, SUBTYPE_9=Dimension142, SUBTYPE_0=Dimension7, SUBTYPE_2=Dimension37, SUBTYPE_1=Dimension22, SUBTYPE_4=Dimension67, SUBTYPE_3=Dimension52}}
+2021-04-21 01:03:42.226  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value65535","content":{"id":65535,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:03:42.226  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 8 ms, dimensions: 150, observations: 31
+*****
+
+
+*****
+
+
+2021-04-21 01:03:42.227  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension91, SUBTYPE_5=Dimension76, SUBTYPE_8=Dimension121, SUBTYPE_7=Dimension106, SUBTYPE_9=Dimension136, SUBTYPE_2=Dimension32, SUBTYPE_1=Dimension16, SUBTYPE_4=Dimension61, SUBTYPE_3=Dimension46}}
+2021-04-21 01:03:42.239  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:03:42.240  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 12 ms, dimensions: 150, observations: 31
+*****
+
+
+*****
+
+
+2021-04-21 01:03:42.241  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_9=Dimension135}}
+2021-04-21 01:03:42.255  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:03:42.255  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 13 ms, dimensions: 150, observations: 31
+*****
+
+
+Observations count: 15625
+2021-04-21 01:04:08.196  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 4 6 2
+*****
+
+
+2021-04-21 01:04:08.198  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension170, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:04:08.204  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value624","content":{"id":624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:04:08.205  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 6 ms, dimensions: 186, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 01:04:08.206  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension156, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:04:08.214  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:04:08.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 8 ms, dimensions: 186, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 01:04:08.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension170}}
+2021-04-21 01:04:08.224  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:04:08.224  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 8 ms, dimensions: 186, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 01:04:08.226  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension170, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:04:08.231  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value624","content":{"id":624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:04:08.231  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 4 ms, dimensions: 186, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 01:04:08.232  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension156, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:04:08.240  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:04:08.240  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 7 ms, dimensions: 186, observations: 25
+*****
+
+
+*****
+
+
+2021-04-21 01:04:08.241  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_5=Dimension170}}
+2021-04-21 01:04:08.250  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:04:08.250  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 8 ms, dimensions: 186, observations: 25
+*****
+
+
+Observations count: 78125
+2021-04-21 01:07:08.194  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 4 7 2
+*****
+
+
+2021-04-21 01:07:08.197  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:07:08.203  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value3124","content":{"id":3124,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:07:08.203  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 6 ms, dimensions: 217, observations: 29
+*****
+
+
+*****
+
+
+2021-04-21 01:07:08.204  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:07:08.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:07:08.216  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 11 ms, dimensions: 217, observations: 29
+*****
+
+
+*****
+
+
+2021-04-21 01:07:08.216  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201}}
+2021-04-21 01:07:08.228  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:07:08.228  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 11 ms, dimensions: 217, observations: 29
+*****
+
+
+*****
+
+
+2021-04-21 01:07:08.230  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:07:08.235  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value3124","content":{"id":3124,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:07:08.235  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 5 ms, dimensions: 217, observations: 29
+*****
+
+
+*****
+
+
+2021-04-21 01:07:08.236  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:07:08.246  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:07:08.246  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 9 ms, dimensions: 217, observations: 29
+*****
+
+
+*****
+
+
+2021-04-21 01:07:08.247  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201}}
+2021-04-21 01:07:08.258  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:07:08.258  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 11 ms, dimensions: 217, observations: 29
+*****
+
+
+Observations count: 390625
+2021-04-21 01:31:22.027  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 4 8 2
+*****
+
+
+2021-04-21 01:31:22.165  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_7=Dimension232, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:31:22.180  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value15624","content":{"id":15624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:31:22.181  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 14 ms, dimensions: 248, observations: 33
+*****
+
+
+*****
+
+
+2021-04-21 01:31:22.182  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_7=Dimension218, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:31:22.196  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:31:22.196  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 13 ms, dimensions: 248, observations: 33
+*****
+
+
+*****
+
+
+2021-04-21 01:31:22.197  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_7=Dimension232}}
+2021-04-21 01:31:22.211  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:31:22.212  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 14 ms, dimensions: 248, observations: 33
+*****
+
+
+*****
+
+
+2021-04-21 01:31:22.215  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_7=Dimension232, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 01:31:22.222  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value15624","content":{"id":15624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 01:31:22.223  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 7 ms, dimensions: 248, observations: 33
+*****
+
+
+*****
+
+
+2021-04-21 01:31:22.224  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_7=Dimension218, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 01:31:22.236  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:31:22.237  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 12 ms, dimensions: 248, observations: 33
+*****
+
+
+*****
+
+
+2021-04-21 01:31:22.238  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_7=Dimension232}}
+2021-04-21 01:31:22.252  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 01:31:22.252  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 14 ms, dimensions: 248, observations: 33
+*****
+
+
+Observations count: 1953125
+2021-04-21 03:35:33.092  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 4 9 2
+*****
+
+
+2021-04-21 03:35:33.110  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_8=Dimension263, SUBTYPE_7=Dimension232, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 03:35:33.129  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value78124","content":{"id":78124,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 03:35:33.130  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 18 ms, dimensions: 279, observations: 37
+*****
+
+
+*****
+
+
+2021-04-21 03:35:33.131  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_8=Dimension249, SUBTYPE_7=Dimension218, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 03:35:33.149  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 03:35:33.149  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 17 ms, dimensions: 279, observations: 37
+*****
+
+
+*****
+
+
+2021-04-21 03:35:33.150  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_8=Dimension265}}
+2021-04-21 03:35:33.167  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 03:35:33.167  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 17 ms, dimensions: 279, observations: 37
+*****
+
+
+*****
+
+
+2021-04-21 03:35:33.172  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_8=Dimension263, SUBTYPE_7=Dimension232, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 03:35:33.181  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value78124","content":{"id":78124,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 03:35:33.182  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 9 ms, dimensions: 279, observations: 37
+*****
+
+
+*****
+
+
+2021-04-21 03:35:33.183  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_8=Dimension249, SUBTYPE_7=Dimension218, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 03:35:33.199  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 03:35:33.199  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 16 ms, dimensions: 279, observations: 37
+*****
+
+
+*****
+
+
+2021-04-21 03:35:33.200  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_8=Dimension265}}
+2021-04-21 03:35:33.218  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 03:35:33.218  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 18 ms, dimensions: 279, observations: 37
+*****
+
+
+Observations count: 9765625
+2021-04-21 19:29:16.099  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Components loaded: 4 10 2
+*****
+
+
+2021-04-21 19:29:17.079  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_8=Dimension263, SUBTYPE_7=Dimension232, SUBTYPE_9=Dimension294, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 19:29:17.656  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value390624","content":{"id":390624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 19:29:17.657  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 576 ms, dimensions: 310, observations: 41
+*****
+
+
+*****
+
+
+2021-04-21 19:29:17.658  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_8=Dimension249, SUBTYPE_7=Dimension218, SUBTYPE_9=Dimension280, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 19:29:17.698  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 19:29:17.699  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 40 ms, dimensions: 310, observations: 41
+*****
+
+
+*****
+
+
+2021-04-21 19:29:17.700  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_9=Dimension294}}
+2021-04-21 19:29:17.719  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 19:29:17.720  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 19 ms, dimensions: 310, observations: 41
+*****
+
+
+*****
+
+
+2021-04-21 19:29:17.723  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension201, SUBTYPE_5=Dimension170, SUBTYPE_8=Dimension263, SUBTYPE_7=Dimension232, SUBTYPE_9=Dimension294, SUBTYPE_0=Dimension15, SUBTYPE_2=Dimension77, SUBTYPE_1=Dimension46, SUBTYPE_4=Dimension139, SUBTYPE_3=Dimension108}}
+2021-04-21 19:29:17.732  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"str_id":"Value390624","content":{"id":390624,"body":"superBody"},"value_subtype":"VALUE_SUBTYPE_1","response_type":"ANSWER"}}
+2021-04-21 19:29:17.732  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test superExact: 8 ms, dimensions: 310, observations: 41
+*****
+
+
+*****
+
+
+2021-04-21 19:29:17.733  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_6=Dimension187, SUBTYPE_5=Dimension156, SUBTYPE_8=Dimension249, SUBTYPE_7=Dimension218, SUBTYPE_9=Dimension280, SUBTYPE_2=Dimension64, SUBTYPE_1=Dimension32, SUBTYPE_4=Dimension125, SUBTYPE_3=Dimension94}}
+2021-04-21 19:29:17.751  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 19:29:17.752  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test exact without one dimension: 18 ms, dimensions: 310, observations: 41
+*****
+
+
+*****
+
+
+2021-04-21 19:29:17.753  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Request: QuestionRequest{valueSubType=VALUE_SUBTYPE_1, dimensions={SUBTYPE_9=Dimension294}}
+2021-04-21 19:29:17.773  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Response: {"status":"OK","result":{"question":null,"dimension_subtype":"SUBTYPE_0","response_type":"QUESTION"}}
+2021-04-21 19:29:17.774  INFO 2488 --- [           main] ru.fa.test.TestRunner                    : Test one dimension: 20 ms, dimensions: 310, observations: 41
+*****
+
+
+Observations count: 759375

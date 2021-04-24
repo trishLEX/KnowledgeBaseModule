@@ -35,7 +35,11 @@ public class DimensionDao {
             "select id, str_id, label, broader, type, subtype, question, level, all_narrower, narrower\n" +
             "from dimension where id in (:ids)";
 
-    private static final String GET_QUESTION_BY_STR_ID = "select question from dimension where id = :id";
+    private static final String GET_DIMENSIONS = "" +
+            "select id, str_id, label, broader, type, subtype, question, level, all_narrower, narrower\n" +
+            "from dimension";
+
+    private static final String GET_QUESTION_BY_ID = "select question from dimension where id = :id";
 
     private static final String GET_DIMENSIONS_TOP_CONCEPTS = "select subtype, id from dimension where broader is null";
 
@@ -118,6 +122,14 @@ public class DimensionDao {
         ).stream().collect(Collectors.toMap(Dimension::getId, Function.identity()));
     }
 
+    public List<Dimension> getDimensions() {
+        return namedJdbcTemplate.query(
+                GET_DIMENSIONS,
+                Map.of(),
+                DimensionDao::mapDimension
+        );
+    }
+
     public Dimension getDimension(long id) {
         return namedJdbcTemplate.query(
                 GET_DIMENSIONS_BY_ID,
@@ -130,7 +142,7 @@ public class DimensionDao {
 
     public String getQuestionById(long id) {
         return namedJdbcTemplate.queryForObject(
-                GET_QUESTION_BY_STR_ID,
+                GET_QUESTION_BY_ID,
                 new MapSqlParameterSource("id", id),
                 String.class
         );
@@ -159,7 +171,7 @@ public class DimensionDao {
         ));
     }
 
-    public Map<String, Long> getDimensionsValuesByStrIds(Collection<String> strIds) {
+    public Map<String, Long> getDimensionsByStrIds(Collection<String> strIds) {
         Map<String, Long> dimensions = new HashMap<>();
         namedJdbcTemplate.query(
                 GET_DIMENSION_IDS_BY_STR_IDS,

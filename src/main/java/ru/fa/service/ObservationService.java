@@ -1,17 +1,5 @@
 package ru.fa.service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.annotation.ParametersAreNonnullByDefault;
-
 import com.google.common.annotations.VisibleForTesting;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +9,17 @@ import ru.fa.dao.ObservationDao;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
 import ru.fa.util.DimensionsUtil;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @ParametersAreNonnullByDefault
@@ -50,8 +49,11 @@ public class ObservationService {
         return observationDao.getObservation(id);
     }
 
-    public List<Observation> getObservations() {
-        return new ArrayList<>(observationDao.getObservations());
+    public List<Observation> getObservations(Collection<String> strIds) {
+        if (strIds.isEmpty()) {
+            return new ArrayList<>(observationDao.getObservations());
+        }
+        return new ArrayList<>(observationDao.getObservationsByStrIds(strIds).values());
     }
 
     public void updateObservation(Observation observation) {

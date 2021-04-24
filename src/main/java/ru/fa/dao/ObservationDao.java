@@ -1,21 +1,5 @@
 package ru.fa.dao;
 
-import java.sql.JDBCType;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,6 +17,22 @@ import ru.fa.model.Observation;
 import ru.fa.model.Value;
 import ru.fa.service.ObservationDimensionsToRemove;
 import ru.fa.util.ArraySql;
+
+import java.sql.JDBCType;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
 public class ObservationDao {
@@ -89,14 +89,26 @@ public class ObservationDao {
     private static final String GET_OBSERVATION_VALUE = "" +
             "select v.id, str_id, content, type\n" +
             "from value v\n" +
-            "join observation_value ov on v.id = ov.value_id\n" +
-            "where observation_id = :observationId and value_subtype = :valueSubtype";
+            "join observation_value ov on v.id = ov.value_id and value_subtype = :valueSubtype\n" +
+            "where observation_id = :observationId";
+
+    private static final String GET_OBSERVATIONS_VALUES = "" +
+            "select v.id, str_id, content, type\n" +
+            "from value v\n" +
+            "join observation_value ov on v.id = ov.value_id and ov.value_subtype = :valueSubtype\n" +
+            "where observation_id in (:observationIds)";
 
     private static final String GET_OBSERVATION_BY_IDS = "" +
             "select distinct id, str_id, dimension_id\n" +
             "from observation o\n" +
             "join observation_dimension_v2 od on o.id = od.observation_id\n" +
             "where o.id in (:ids)";
+
+    private static final String GET_OBSERVATION_BY_STR_IDS = "" +
+            "select distinct id, str_id, dimension_id\n" +
+            "from observation o\n" +
+            "join observation_dimension_v2 od on o.id = od.observation_id\n" +
+            "where o.str_id in (:strIds)";
 
     private static final String GET_ALL_OBSERVATIONS = "" +
             "select distinct id, str_id, dimension_id\n" +
@@ -186,6 +198,18 @@ public class ObservationDao {
                 .orElseThrow();
     }
 
+    public Set<Value> getObservationsValues(Collection<Long> observationIds, String valueSubType) {
+        return new HashSet<>(
+                namedJdbcTemplate.query(
+                        GET_OBSERVATIONS_VALUES,
+                        new MapSqlParameterSource()
+                            .addValue("observationIds", observationIds)
+                            .addValue("valueSubtype", valueSubType),
+                        this::mapValue
+                )
+        );
+    }
+
     public Map<Long, Observation> getObservations(Collection<Long> ids) {
         Map<Long, String> strIds = new HashMap<>();
         Multimap<Long, Long> dimIds = HashMultimap.create();
@@ -199,6 +223,21 @@ public class ObservationDao {
         );
 
         return getObservationMap(strIds, dimIds);
+    }
+
+    public Map<Long, Observation> getObservationsByStrIds(Collection<String> strIds) {
+        Map<Long, String> strIdsMap = new HashMap<>();
+        Multimap<Long, Long> dimIds = HashMultimap.create();
+        namedJdbcTemplate.query(
+                GET_OBSERVATION_BY_STR_IDS,
+                new MapSqlParameterSource("strIds", strIds),
+                rs -> {
+                    strIdsMap.put(rs.getLong("id"), rs.getString("str_id"));
+                    dimIds.put(rs.getLong("id"), rs.getLong("dimension_id"));
+                }
+        );
+
+        return getObservationMap(strIdsMap, dimIds);
     }
 
     public Collection<Observation> getObservations() {

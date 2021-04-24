@@ -1,11 +1,5 @@
 package ru.fa.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +11,12 @@ import org.springframework.stereotype.Repository;
 import ru.fa.model.ObservationValue;
 import ru.fa.model.Value;
 import ru.fa.util.JsonSql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class ValueDao {
@@ -38,6 +38,10 @@ public class ValueDao {
     private static final String SELECT_VALUES = "select id, str_id, content, type from value";
 
     private static final String SELECT_VALUE = "select id, str_id, content, type from value where id = :id";
+
+    private static final String SELECT_VALUES_BY_STR_IDS = "" +
+            "select id, str_id, content, type from value\n" +
+            "where str_id in (:strIds)";
 
     private static final String INSERT_OBSERVATION_VALUE = "" +
             "insert into observation_value (observation_id, value_id, value_subtype)\n" +
@@ -158,6 +162,14 @@ public class ValueDao {
         return namedJdbcTemplate.query(
                 SELECT_VALUES,
                 new MapSqlParameterSource(),
+                this::mapValue
+        );
+    }
+
+    public List<Value> getValues(Collection<String> strIds) {
+        return namedJdbcTemplate.query(
+                SELECT_VALUES_BY_STR_IDS,
+                new MapSqlParameterSource("strIds", strIds),
                 this::mapValue
         );
     }

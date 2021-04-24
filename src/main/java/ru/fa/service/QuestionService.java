@@ -1,15 +1,7 @@
 package ru.fa.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Multimap;
-import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.DimensionDao;
@@ -21,18 +13,25 @@ import ru.fa.model.Value;
 import ru.fa.util.CustomCollectors;
 import ru.fa.util.DimensionsUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 public class QuestionService {
 
     private final ObservationDao observationDao;
     private final DimensionDao dimensionDao;
-    private final ObservationService observationService;
 
     @Autowired
-    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao, ObservationService observationService) {
+    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao) {
         this.observationDao = observationDao;
         this.dimensionDao = dimensionDao;
-        this.observationService = observationService;
     }
 
     public QuestionResponse processNotEmptyQuestion(
@@ -40,92 +39,72 @@ public class QuestionService {
             Map<String, Long> dimensions,
             Set<Long> factDimensions
     ) {
-        Set<Long> observationIds = getObservationIds(factDimensions);
-
+        //получаем возможные наблюдения
+        Set<Long> observationIds = observationDao.getObservationsIdsByDimensions(factDimensions);
         if (observationIds.isEmpty()) {
             throw new IllegalStateException("Can't find observation for dimensions " + dimensions);
-        } else if (observationIds.size() == 1) {
-            Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
-            return new QuestionResponse.Answer(
-                    value.getStrId(),
-                    value.getContent(),
-                    valueSubType
-            );
-        } else {
-            List<Observation> observations = new ArrayList<>(observationDao.getObservations(observationIds).values());
-            for (int i = 0; i < observations.size(); i++) {
-                for (int j = i + 1; j < observations.size(); j++) {
-                    if (!observationIds.contains(observations.get(i).getId())
-                            || !observationIds.contains(observations.get(j).getId())) {
-                        continue;
-                    }
-                    ObservationService.ObservationCompareResult result = observationService.checkObservationsLevel(
-                            observations.get(i),
-                            observations.get(j)
-                    );
-                    switch (result) {
-                        case ONE_LOWER_ANOTHER:
-                            observationIds.remove(observations.get(j).getId());
-                            break;
-                        case ONE_HIGHER_ANOTHER:
-                            observationIds.remove(observations.get(i).getId());
-                            break;
-                        case DIFFERENT_BRANCHES:
-                            break;
-                        default:
-                            throw new IllegalStateException();
-                    }
-                }
-            }
+        }
 
-            if (observationIds.size() == 1) {
-                Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
-                return new QuestionResponse.Answer(
-                        value.getStrId(),
-                        value.getContent(),
-                        valueSubType
+        //проверяем возможный ответ
+        Optional<QuestionResponse.Answer> possibleAnswer = checkAnswer(observationIds, valueSubType);
+        if (possibleAnswer.isPresent()) {
+            return possibleAnswer.get();
+        }
+
+        Collection<Observation> observations = observationDao.getObservations(observationIds).values();
+        Map<Long, Dimension> dimensionMap = dimensionDao.getDimensions(dimensions.values());
+        Map<String, Dimension> inputDimensions = dimensions.entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> dimensionMap.get(entry.getValue()))
                 );
-            }
 
-            Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
-            Map<Long, Dimension> dimensionMap = dimensionDao.getDimensions(
-                    Sets.union(
-                            Sets.newHashSet(subTypesToClarifyRaw.values()),
-                            Sets.newHashSet(dimensions.values())
-                    )
-            );
-
-            Multimap<String, Dimension> subtypesToClarify = subTypesToClarifyRaw
-                    .entries()
-                    .stream()
-                    .collect(CustomCollectors.toLinkedHashMultimap(
-                            Map.Entry::getKey,
-                            entry -> dimensionMap.get(entry.getValue())
-                    ));
-            Map<String, Dimension> inputDimensions = dimensions.entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            Map.Entry::getKey,
-                            entry -> dimensionMap.get(entry.getValue()))
-                    );
-
-            try {
-                String subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
-                String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
-                return new QuestionResponse.Question(question, subtypeToClarify);
-            } catch (ObservationConflictException e) {
-                throw new IllegalStateException("Observations " + observationIds + " have conflicts");
+        //считаем расстояние от input'a до верних наблюдений
+        int minDistance = Integer.MAX_VALUE;
+        Map<Observation, Integer> observationsDistance = new HashMap<>();
+        for (Observation o : observations) {
+            int distance = getDistanceToObservation(inputDimensions, o);
+            observationsDistance.put(o, distance);
+            if (distance < minDistance && distance >= 0) {
+                minDistance = distance;
             }
         }
+        for (Observation o : observations) {
+            //оставляем только наблюдения, которые ниже input'a и ближайшие наблюдения над input'ом
+            if (observationsDistance.get(o) > minDistance) {
+                observationIds.remove(o.getId());
+            }
+        }
+
+        //возможно осталось только одно значение
+        possibleAnswer = checkAnswer(observationIds, valueSubType);
+        if (possibleAnswer.isPresent()) {
+            return possibleAnswer.get();
+        }
+
+        //находим вид измерения для уточнения
+        return getClarifyingQuestion(dimensions, observationIds, dimensionMap, inputDimensions);
     }
 
-    private Set<Long> getObservationIds(Collection<Long> dimensions) {
-        Set<Long> observationIds = observationDao.checkExactObservation(dimensions);
-        if (observationIds.size() == 1) {
-            return observationIds;
-        }
+    private QuestionResponse.Question getClarifyingQuestion(Map<String, Long> dimensions, Set<Long> observationIds, Map<Long, Dimension> dimensionMap, Map<String, Dimension> inputDimensions) {
+        Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
+        dimensionMap.putAll(dimensionDao.getDimensions(subTypesToClarifyRaw.values()));
+        Multimap<String, Dimension> subtypesToClarify = subTypesToClarifyRaw
+                .entries()
+                .stream()
+                .collect(CustomCollectors.toLinkedHashMultimap(
+                        Map.Entry::getKey,
+                        entry -> dimensionMap.get(entry.getValue())
+                ));
 
-        return observationDao.getObservationsIdsByDimensions(dimensions);
+        try {
+            String subtypeToClarify = getDimensionSubtypeToClarify(subtypesToClarify, inputDimensions);
+            String question = dimensionMap.get(dimensions.get(subtypeToClarify)).getQuestion();
+            return new QuestionResponse.Question(question, subtypeToClarify);
+        } catch (ObservationConflictException e) {
+            throw new IllegalStateException("Observations " + observationIds + " have conflicts");
+        }
     }
 
     private String getDimensionSubtypeToClarify(
@@ -156,5 +135,43 @@ public class QuestionService {
         }
 
         throw new ObservationConflictException("Seems to be conflicts of observations");
+    }
+
+    private int getDistanceToObservation(Map<String, Dimension> input, Observation observation) {
+        int distance = 0;
+        for (var subtype : input.keySet()) {
+            var dimension = input.get(subtype);
+            var observationDimension = observation.getDimension(subtype);
+            var currentDistance = dimension.getLevel() - observationDimension.getLevel();
+            if (currentDistance < 0 && distance == 0) {
+                distance = -1;
+                continue;
+            }
+            distance = Math.max(distance, 0);
+            distance += Math.max(currentDistance, 0);
+        }
+        return distance;
+    }
+
+    private Optional<QuestionResponse.Answer> checkAnswer(Collection<Long> observationIds, String valueSubType) {
+        if (observationIds.size() == 1) {
+            Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
+            return Optional.of(new QuestionResponse.Answer(
+                    value.getStrId(),
+                    value.getContent(),
+                    valueSubType
+            ));
+        }
+
+        Set<Value> values = observationDao.getObservationsValues(observationIds, valueSubType);
+        if (values.size() == 1) {
+            return Optional.of(new QuestionResponse.Answer(
+                    Iterables.getOnlyElement(values).getStrId(),
+                    Iterables.getOnlyElement(values).getContent(),
+                    valueSubType
+            ));
+        }
+
+        return Optional.empty();
     }
 }

@@ -1,11 +1,5 @@
 package ru.fa.loader;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +22,12 @@ import ru.fa.model.ObservationValue;
 import ru.fa.model.Value;
 import ru.fa.service.ObservationConflictException;
 import ru.fa.service.ObservationService;
+
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @Profile("performance")
@@ -78,11 +78,18 @@ public class ComponentsGenerator {
                         new DimensionSubtype(id.get(), r.getDimensionSubType(), id.getAndIncrement())
                 ).collect(Collectors.toList()));
         roots.clear();
+        var observationsCount = observations.size();
+        System.out.println("Observations count: " + observationsCount);
+        double i = 0;
         for (var observation : observations) {
+//            if ((int) (i / observationsCount * 100) % 10 == 0) {
+//                System.out.println(i / observationsCount * 100);
+//            }
             try {
                 observationService.insertObservation(observation);
             } catch (ObservationConflictException ignored) {
             }
+//            i++;
         }
 //        observationDao.createObservations(observations);
         observations.clear();

@@ -20,7 +20,7 @@ public class DimensionService {
 
     public Map<String, Long> getRequestDimensions(Map<String, String> input) {
         Map<String, Long> topConcepts = dimensionDao.getDimensionsTopConcepts();
-        Map<String, Long> dimensions = dimensionDao.getDimensionsValuesByStrIds(input.values());
+        Map<String, Long> dimensions = dimensionDao.getDimensionsByStrIds(input.values());
         topConcepts.putAll(dimensions);
         return topConcepts;
     }

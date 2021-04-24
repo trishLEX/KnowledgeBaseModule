@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.fa.exception.BadRequestException;
 import ru.fa.model.Observation;
@@ -31,8 +32,8 @@ public class ObservationController {
     }
 
     @GetMapping
-    public List<Observation> getObservations() {
-        return observationService.getObservations();
+    public List<Observation> getObservations(@RequestParam("str_id") List<String> strIds) {
+        return observationService.getObservations(strIds);
     }
 
     @PutMapping("{id}")

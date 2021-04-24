@@ -1,7 +1,5 @@
 package ru.fa.controller;
 
-import java.util.Map;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -9,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import ru.fa.FunctionalTest;
 import ru.fa.JsonAsserts;
 import ru.fa.dto.QuestionRequest;
+
+import java.util.Map;
 
 class QuestionControllerTest extends FunctionalTest {
 
@@ -178,7 +178,7 @@ class QuestionControllerTest extends FunctionalTest {
                 Map.of(
                         "SUBTYPE_1", "Dimension5Subtype1",
                         "SUBTYPE_2", "Dimension14Subtype2",
-                        "SUBTYPE_3", "Dimension25Subtype3"
+                        "SUBTYPE_3", "Dimension22Subtype3"
                 )
         );
         ResponseEntity<String> response = restTemplate.postForEntity("/question", questionRequest, String.class);

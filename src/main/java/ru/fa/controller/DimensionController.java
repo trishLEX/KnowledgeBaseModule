@@ -1,5 +1,6 @@
 package ru.fa.controller;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +39,9 @@ public class DimensionController {
 
     @GetMapping
     public List<Dimension> getDimension(@RequestParam("str_id") List<String> strIds) {
+        if (CollectionUtils.isEmpty(strIds)) {
+            return dimensionDao.getDimensions();
+        }
         return dimensionDao.getDimensionsByStrId(strIds);
     }
 

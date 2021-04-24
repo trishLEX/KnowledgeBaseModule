@@ -1,13 +1,5 @@
 package ru.fa.test;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.annotation.PreDestroy;
-
 import com.google.common.base.Stopwatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +21,13 @@ import ru.fa.loader.ComponentsGenerator;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
 
+import javax.annotation.PreDestroy;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
 @Service
 @Profile("performance")
 @DependsOn("questionController")
@@ -36,9 +35,30 @@ public class TestRunner {
 
     private static final Logger log = LoggerFactory.getLogger(TestRunner.class);
 
-    private static final int HEIGHT = 3;
-    private static final int COMPONENTS = 1;
-    private static final int CHILD_SIZE = 5;
+    private static int HEIGHT = 3;
+    private static int COMPONENTS = 4;
+    private static int CHILD_SIZE = 3;
+
+    private static final List<List<Integer>> PARAMS = List.of(
+            List.of(3, 6, 2),
+            List.of(3, 7, 2),
+            List.of(3, 8, 2),
+            List.of(3, 9, 2),
+            List.of(3, 10, 2),
+
+            List.of(4, 6, 2),
+            List.of(4, 7, 2),
+            List.of(4, 8, 2),
+            List.of(4, 9, 2),
+            List.of(4, 10, 2),
+
+            List.of(3, 5, 3),
+
+            List.of(4, 2, 3),
+            List.of(4, 3, 3),
+            List.of(4, 4, 3),
+            List.of(4, 5, 4)
+    );
 
     @Autowired
     private RestTemplate restTemplate;
@@ -56,7 +76,7 @@ public class TestRunner {
     private ComponentsGenerator componentsGenerator;
 
     private void testExact() {
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
         Observation observation = observationDao.getObservation(0);
 
         Map<String, String> dimensions = observation.getDimensionMap()
@@ -89,18 +109,18 @@ public class TestRunner {
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
     }
 
     private void superExact() {
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
         Set<Long> dims = dimensionDao.getFactDimensions(dimensionDao.getDimensionsTopConcepts().values());
         Map<String, String> dimensions = dimensionDao.getDimensions(dims)
                 .values()
                 .stream()
                 .collect(Collectors.toMap(
-                        d -> d.getDimensionSubType(),
-                        d -> d.getStrId(),
+                        Dimension::getDimensionSubType,
+                        Dimension::getStrId,
                         (a, b) -> a
                 ));
 
@@ -126,12 +146,12 @@ public class TestRunner {
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
     }
 
     private void testExactWithoutOneDimension() {
-        System.out.println("*****\n\n\n");
-        Observation observation = observationDao.getObservation(3);
+        System.out.println("*****\n\n");
+        Observation observation = observationDao.getObservation(0);
 
         Map<String, String> dimensions = observation.getDimensionMap()
                 .values()
@@ -169,11 +189,11 @@ public class TestRunner {
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
     }
 
     private void testOneDimension() {
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
         Observation observation = observationDao.getObservation(3);
 
         Map<String, String> dimensions = observation.getDimensionMap()
@@ -211,18 +231,25 @@ public class TestRunner {
                 dimensionDao.countDimensions(),
                 observationDao.countObservations()
         );
-        System.out.println("*****\n\n\n");
+        System.out.println("*****\n\n");
     }
 
     @EventListener(ContextRefreshedEvent.class)
     public void runTests() {
-        componentsGenerator.clearDb();
-        componentsGenerator.loadComponents(HEIGHT, COMPONENTS, CHILD_SIZE);
-        log.info("Components loaded");
-        testExact();
-        superExact();
-        testExactWithoutOneDimension();
-        testOneDimension();
+        for (List<Integer> params : PARAMS) {
+            HEIGHT = params.get(0);
+            COMPONENTS = params.get(1);
+            CHILD_SIZE = params.get(2);
+            componentsGenerator.clearDb();
+            componentsGenerator.loadComponents(HEIGHT, COMPONENTS, CHILD_SIZE);
+            log.info("Components loaded: " + HEIGHT + " " + COMPONENTS + " " + CHILD_SIZE);
+            superExact();
+            testExactWithoutOneDimension();
+            testOneDimension();
+            superExact();
+            testExactWithoutOneDimension();
+            testOneDimension();
+        }
         SpringApplication.exit(applicationContext, () -> 0);
         System.exit(0);
     }
