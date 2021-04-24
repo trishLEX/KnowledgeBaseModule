@@ -276,4 +276,33 @@ class QuestionControllerTest extends FunctionalTest {
                 "}";
         JsonAsserts.assertJsonEquals(expected, response.getBody());
     }
+
+    @Test
+    void testSameValueSeveralObservations() {
+        QuestionRequest questionRequest = new QuestionRequest(
+                "VALUE_SUBTYPE_1",
+                Map.of(
+                        "SUBTYPE_1", "Dimension3Subtype1",
+                        "SUBTYPE_2", "Dimension13Subtype2",
+                        "SUBTYPE_3", "Dimension24Subtype3"
+                )
+        );
+        ResponseEntity<String> response = restTemplate.postForEntity("/question", questionRequest, String.class);
+
+        //language=json
+        String expected = "" +
+                "{\n" +
+                "  \"status\": \"OK\",\n" +
+                "  \"result\": {\n" +
+                "    \"str_id\": \"Value4\",\n" +
+                "    \"content\": {\n" +
+                "      \"id\": 4,\n" +
+                "      \"body\": \"superBody\"\n" +
+                "    },\n" +
+                "    \"value_subtype\": \"VALUE_SUBTYPE_1\",\n" +
+                "    \"response_type\": \"ANSWER\"\n" +
+                "  }\n" +
+                "}";
+        JsonAsserts.assertJsonEquals(expected, response.getBody());
+    }
 }
