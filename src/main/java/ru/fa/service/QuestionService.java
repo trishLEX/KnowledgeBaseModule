@@ -87,7 +87,13 @@ public class QuestionService {
         return getClarifyingQuestion(dimensions, observationIds, dimensionMap, inputDimensions);
     }
 
-    private QuestionResponse.Question getClarifyingQuestion(Map<String, Long> dimensions, Set<Long> observationIds, Map<Long, Dimension> dimensionMap, Map<String, Dimension> inputDimensions) {
+    private QuestionResponse.Question getClarifyingQuestion(
+            Map<String, Long> dimensions,
+            Set<Long> observationIds,
+            Map<Long, Dimension> dimensionMap,
+            Map<String, Dimension> inputDimensions
+    ) {
+        //вид измерения -> список измерений, по которым есть пересечения
         Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
         dimensionMap.putAll(dimensionDao.getDimensions(subTypesToClarifyRaw.values()));
         Multimap<String, Dimension> subtypesToClarify = subTypesToClarifyRaw

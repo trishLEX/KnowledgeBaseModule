@@ -37,6 +37,10 @@ import java.util.stream.Stream;
 @Repository
 public class ObservationDao {
 
+    //получаем наблюдения, которые действуют на указанные измерения
+    //для этого собираем измерения, на которые действуют наблюдения по каждому виду измерений
+    //джоиним на (вид измерения, список измерений)
+    //если пересекаются по всем видам измерений, значит оставляем
     private static final String GET_OBSERVATION_IDS_BY_DIMENSIONS = "" +
             "select observation_id, array_agg(dimension_subtype)\n" +
             "from (\n" +
@@ -48,16 +52,7 @@ public class ObservationDao {
             "     ) as obs\n" +
             "join (\n" +
             "    select subtype, array_agg(id) dim_ids\n" +
-            "    from (\n" +
-            "             select id, subtype from dimension where id in (:ids)" +
-//            "             select id, subtype\n" +
-//            "             from dimension\n" +
-//            "             where id in (:ids)\n" +
-//            "             union\n" +
-//            "             select unnest(all_narrower) child_id, subtype\n" +
-//            "             from dimension\n" +
-//            "             where id in (:ids)\n" +
-            "         ) unioned\n" +
+            "    from (select id, subtype from dimension where id in (:ids)) dimensions_by_subtype\n" +
             "    group by subtype\n" +
             ") as ids\n" +
             "on obs.dimension_subtype = ids.subtype and obs.dim_ids && ids.dim_ids\n" +
