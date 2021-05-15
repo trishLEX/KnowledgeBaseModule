@@ -3,7 +3,6 @@ todo перейти со строковых dimension value в запросе н
 todo удалить старый класс Observation и переименовать ObservationDimension
 
 
-todo описать индексы
 todo описать валидацию
 todo описать реальные данные
 todo добавить типы данных в модель базы

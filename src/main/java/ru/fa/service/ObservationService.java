@@ -152,10 +152,4 @@ public class ObservationService {
             return ObservationCompareResult.ONE_HIGHER_ANOTHER;
         }
     }
-
-    enum ObservationCompareResult {
-        DIFFERENT_BRANCHES,
-        ONE_HIGHER_ANOTHER,
-        ONE_LOWER_ANOTHER
-    }
 }

@@ -1,5 +1,6 @@
 package ru.fa.controller;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,8 +40,8 @@ public class ValueController {
     }
 
     @GetMapping
-    public List<Value> getValues(@RequestParam("str_id") List<String> strIds) {
-        if (strIds.isEmpty()) {
+    public List<Value> getValues(@RequestParam(value = "str_id", required = false) List<String> strIds) {
+        if (CollectionUtils.isEmpty(strIds)) {
             return valueDao.getValues();
         }
         return valueDao.getValues(strIds);

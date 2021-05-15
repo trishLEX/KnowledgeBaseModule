@@ -33,11 +33,7 @@ public class GraphvizExport {
         NamedParameterJdbcTemplate namedJdbcTemplate = CommonImport.createNamedJdbcTemplate();
         List<Dimension> dimensions = namedJdbcTemplate.query(
                 "" +
-                        "select * from performance.dimension\n",
-//                        "where id in (" +
-//                        "   select distinct dimension_id\n" +
-//                        "   from observation_dimension_v2 od\n" +
-//                        "   where observation_id in (1))",
+                        "select * from test.dimension\n",
                 Collections.emptyMap(),
                 GraphvizExport::mapDimension
         );
@@ -45,7 +41,7 @@ public class GraphvizExport {
         List<List<Long>> observationDims = namedJdbcTemplate.query(
                 "" +
                         "select array_agg(distinct dimension_id) dims\n" +
-                        "from performance.observation_dimension_v2\n" +
+                        "from test.observation_dimension_v2\n" +
                         "group by observation_id", //where observation_id in (1)",
                 new MapSqlParameterSource("obsId", observationId),
                 (rs, rn) -> List.of((Long[]) rs.getArray("dims").getArray())

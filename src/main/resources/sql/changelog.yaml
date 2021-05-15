@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - include:
+      file: sql/dimension.sql
+  - include:
+      file: sql/dimension_subtype.sql
+  - include:
+      file: sql/observation.sql
+  - include:
+      file: sql/observation_dimension_v2.sql
+  - include:
+      file: sql/observation_value.sql
+  - include:
+      file: sql/value.sql

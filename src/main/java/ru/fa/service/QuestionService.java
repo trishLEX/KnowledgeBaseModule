@@ -15,6 +15,7 @@ import ru.fa.util.DimensionsUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,11 +28,13 @@ public class QuestionService {
 
     private final ObservationDao observationDao;
     private final DimensionDao dimensionDao;
+    private final ObservationService observationService;
 
     @Autowired
-    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao) {
+    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao, ObservationService observationService) {
         this.observationDao = observationDao;
         this.dimensionDao = dimensionDao;
+        this.observationService = observationService;
     }
 
     public QuestionResponse processNotEmptyQuestion(
@@ -46,7 +49,7 @@ public class QuestionService {
         }
 
         //проверяем возможный ответ
-        Optional<QuestionResponse.Answer> possibleAnswer = checkAnswer(observationIds, valueSubType);
+        Optional<QuestionResponse> possibleAnswer = checkAnswer(observationIds, valueSubType);
         if (possibleAnswer.isPresent()) {
             return possibleAnswer.get();
         }
@@ -61,15 +64,21 @@ public class QuestionService {
                 );
 
         //считаем расстояние от input'a до верних наблюдений
-        int minDistance = Integer.MAX_VALUE;
-        Map<Observation, Integer> observationsDistance = new HashMap<>();
+        var minDistance = Integer.MAX_VALUE;
+        var observationsDistance = new HashMap<Observation, Integer>();
+        var crossObservations = new ArrayList<Observation>();
         for (Observation o : observations) {
             int distance = getDistanceToObservation(inputDimensions, o);
             observationsDistance.put(o, distance);
-            if (distance < minDistance && distance >= 0) {
+            if (distance == -2) {
+                crossObservations.add(o);
+            } else if (distance < minDistance && distance >= 0) {
                 minDistance = distance;
             }
         }
+
+
+
         for (Observation o : observations) {
             //оставляем только наблюдения, которые ниже input'a и ближайшие наблюдения над input'ом
             if (observationsDistance.get(o) > minDistance) {
@@ -77,14 +86,43 @@ public class QuestionService {
             }
         }
 
+        getCrossObservationsToRemove(crossObservations).forEach(o -> observationIds.remove(o.getId()));
+
         //возможно осталось только одно значение
         possibleAnswer = checkAnswer(observationIds, valueSubType);
-        if (possibleAnswer.isPresent()) {
-            return possibleAnswer.get();
-        }
+        return possibleAnswer.orElseGet(
+                () -> getClarifyingQuestion(dimensions, observationIds, dimensionMap, inputDimensions)
+        );
+    }
 
-        //находим вид измерения для уточнения
-        return getClarifyingQuestion(dimensions, observationIds, dimensionMap, inputDimensions);
+    private List<Observation> getCrossObservationsToRemove(List<Observation> crossObservations) {
+        if (crossObservations.size() < 2) {
+            return Collections.emptyList();
+        }
+        var observationsToRemove = new ArrayList<Observation>();
+        var diffBranchesObservations = new ArrayList<Observation>();
+        var current = crossObservations.get(0);
+        for (var o : crossObservations.subList(1, crossObservations.size())) {
+            ObservationCompareResult compareResult = observationService.checkObservationsLevel(current, o);
+            switch (compareResult) {
+                case ONE_HIGHER_ANOTHER:
+                    observationsToRemove.add(current);
+                    current = o;
+                    break;
+                case ONE_LOWER_ANOTHER:
+                    observationsToRemove.add(o);
+                    break;
+                case DIFFERENT_BRANCHES:
+                    diffBranchesObservations.add(o);
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Unsupported result: " + compareResult);
+            }
+        }
+        if (!diffBranchesObservations.isEmpty()) {
+            observationsToRemove.addAll(getCrossObservationsToRemove(diffBranchesObservations));
+        }
+        return observationsToRemove;
     }
 
     private QuestionResponse.Question getClarifyingQuestion(
@@ -149,17 +187,19 @@ public class QuestionService {
             var dimension = input.get(subtype);
             var observationDimension = observation.getDimension(subtype);
             var currentDistance = dimension.getLevel() - observationDimension.getLevel();
-            if (currentDistance < 0 && distance == 0) {
+            if (distance * currentDistance < 0) {
+                return -2;
+            }
+            if (currentDistance < 0) {
                 distance = -1;
                 continue;
             }
-            distance = Math.max(distance, 0);
-            distance += Math.max(currentDistance, 0);
+            distance += currentDistance;
         }
         return distance;
     }
 
-    private Optional<QuestionResponse.Answer> checkAnswer(Collection<Long> observationIds, String valueSubType) {
+    private Optional<QuestionResponse> checkAnswer(Collection<Long> observationIds, String valueSubType) {
         if (observationIds.size() == 1) {
             Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
             return Optional.of(new QuestionResponse.Answer(

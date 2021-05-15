@@ -40,24 +40,24 @@ public class TestRunner {
     private static int CHILD_SIZE = 3;
 
     private static final List<List<Integer>> PARAMS = List.of(
-            List.of(3, 6, 2),
-            List.of(3, 7, 2),
-            List.of(3, 8, 2),
-            List.of(3, 9, 2),
-            List.of(3, 10, 2),
-
-            List.of(4, 6, 2),
-            List.of(4, 7, 2),
-            List.of(4, 8, 2),
-            List.of(4, 9, 2),
-            List.of(4, 10, 2),
-
-            List.of(3, 5, 3),
-
-            List.of(4, 2, 3),
-            List.of(4, 3, 3),
-            List.of(4, 4, 3),
-            List.of(4, 5, 4)
+            List.of(3, 2, 2)
+//            List.of(3, 7, 2),
+//            List.of(3, 8, 2),
+//            List.of(3, 9, 2),
+//            List.of(3, 10, 2),
+//
+//            List.of(4, 6, 2),
+//            List.of(4, 7, 2),
+//            List.of(4, 8, 2),
+//            List.of(4, 9, 2),
+//            List.of(4, 10, 2),
+//
+//            List.of(3, 5, 3),
+//
+//            List.of(4, 2, 3),
+//            List.of(4, 3, 3),
+//            List.of(4, 4, 3),
+//            List.of(4, 5, 4)
     );
 
     @Autowired
@@ -126,7 +126,7 @@ public class TestRunner {
 
         QuestionRequest questionRequest = new QuestionRequest(
                 "VALUE_SUBTYPE_1",
-                dimensions
+                Map.of("SUBTYPE_0", "Dimension1", "SUBTYPE_1", "Dimension18")
         );
 
         log.info("Request: {}", questionRequest);
