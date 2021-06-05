@@ -1,6 +1,7 @@
 package ru.fa.service;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.fa.dao.ObservationDao;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
+import ru.fa.model.Value;
 import ru.fa.util.DimensionsUtil;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -32,7 +34,26 @@ public class ObservationService {
         this.observationDao = observationDao;
     }
 
-    //todo протестировать
+    public Set<Long> getObservationsIdsByDimensions(Set<Long> factDimensions) {
+        return observationDao.getObservationsIdsByDimensions(factDimensions);
+    }
+
+    public Collection<Observation> getObservationsByIds(Collection<Long> observationIds) {
+        return observationDao.getObservations(observationIds).values();
+    }
+
+    public Multimap<String, Long> getDimensionSubTypesToClarify(Collection<Long> observationIds) {
+        return observationDao.getDimensionSubTypesToClarify(observationIds);
+    }
+
+    public Value getObservationValue(long observationId, String valueSubtype) {
+        return observationDao.getObservationValue(observationId, valueSubtype);
+    }
+
+    public Set<Value> getObservationsValues(Collection<Long> observationIds, String valueSubType) {
+        return observationDao.getObservationsValues(observationIds, valueSubType);
+    }
+
     @Transactional(propagation = Propagation.NESTED)
     public void insertObservation(Observation newObservation) {
         Collection<Observation> observations = observationDao.getObservations();
@@ -42,7 +63,6 @@ public class ObservationService {
             checkObservationsLevel(observation, newObservation);
         }
         observationDao.createObservation(newObservation);
-//        observationDao.deleteObservationDimensions(toRemoveList);
     }
 
     public Observation getObservation(long id) {

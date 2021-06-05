@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.fa.dao.DimensionDao;
-import ru.fa.dao.ObservationDao;
 import ru.fa.dto.QuestionResponse;
 import ru.fa.model.Dimension;
 import ru.fa.model.Observation;
@@ -26,13 +25,11 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService {
 
-    private final ObservationDao observationDao;
     private final DimensionDao dimensionDao;
     private final ObservationService observationService;
 
     @Autowired
-    public QuestionService(ObservationDao observationDao, DimensionDao dimensionDao, ObservationService observationService) {
-        this.observationDao = observationDao;
+    public QuestionService(DimensionDao dimensionDao, ObservationService observationService) {
         this.dimensionDao = dimensionDao;
         this.observationService = observationService;
     }
@@ -43,7 +40,7 @@ public class QuestionService {
             Set<Long> factDimensions
     ) {
         //получаем возможные наблюдения
-        Set<Long> observationIds = observationDao.getObservationsIdsByDimensions(factDimensions);
+        Set<Long> observationIds = observationService.getObservationsIdsByDimensions(factDimensions);
         if (observationIds.isEmpty()) {
             throw new IllegalStateException("Can't find observation for dimensions " + dimensions);
         }
@@ -54,7 +51,7 @@ public class QuestionService {
             return possibleAnswer.get();
         }
 
-        Collection<Observation> observations = observationDao.getObservations(observationIds).values();
+        Collection<Observation> observations = observationService.getObservationsByIds(observationIds);
         Map<Long, Dimension> dimensionMap = dimensionDao.getDimensions(dimensions.values());
         Map<String, Dimension> inputDimensions = dimensions.entrySet()
                 .stream()
@@ -132,7 +129,7 @@ public class QuestionService {
             Map<String, Dimension> inputDimensions
     ) {
         //вид измерения -> список измерений, по которым есть пересечения
-        Multimap<String, Long> subTypesToClarifyRaw = observationDao.getDimensionSubTypesToClarify(observationIds);
+        Multimap<String, Long> subTypesToClarifyRaw = observationService.getDimensionSubTypesToClarify(observationIds);
         dimensionMap.putAll(dimensionDao.getDimensions(subTypesToClarifyRaw.values()));
         Multimap<String, Dimension> subtypesToClarify = subTypesToClarifyRaw
                 .entries()
@@ -201,7 +198,7 @@ public class QuestionService {
 
     private Optional<QuestionResponse> checkAnswer(Collection<Long> observationIds, String valueSubType) {
         if (observationIds.size() == 1) {
-            Value value = observationDao.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
+            Value value = observationService.getObservationValue(Iterables.getOnlyElement(observationIds), valueSubType);
             return Optional.of(new QuestionResponse.Answer(
                     value.getStrId(),
                     value.getContent(),
@@ -209,7 +206,7 @@ public class QuestionService {
             ));
         }
 
-        Set<Value> values = observationDao.getObservationsValues(observationIds, valueSubType);
+        Set<Value> values = observationService.getObservationsValues(observationIds, valueSubType);
         if (values.size() == 1) {
             return Optional.of(new QuestionResponse.Answer(
                     Iterables.getOnlyElement(values).getStrId(),
