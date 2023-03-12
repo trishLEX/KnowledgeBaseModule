@@ -1,7 +1,11 @@
 package ru.fa;
 
+import com.google.common.collect.Streams;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.query.Query;
+import org.apache.jena.query.QueryExecutionFactory;
+import org.apache.jena.query.QueryFactory;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -16,6 +20,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JenaTest {
 
@@ -271,6 +276,25 @@ public class JenaTest {
 
         System.out.println("Get property rule5");
         System.out.println(Lists.newArrayList(rulesModel.getResource(rule5.getURI()).listProperties()));
+
+        System.out.println("Get observation rule");
+        //todo можно сравнить как быстро АПИ и SPARQL отрабатывают
+        System.out.println(Streams.stream(rulesModel.listResourcesWithProperty(firstValueProperty, node12))
+                .filter(res -> res.getProperty(secondValueProperty).getResource().equals(node13))
+                .collect(Collectors.toList()));
+
+        var strQuery = "" +
+                "prefix kn: <http://knbase.fa.ru#> " +
+                "select ?r " +
+                "where {" +
+                "   ?r kn:firstValue kn:12 . " +
+                "   ?r kn:secondValue kn:13 . " +
+                "}";
+        Query query = QueryFactory.create(strQuery);
+        try (var qexec = QueryExecutionFactory.create(query, rulesModel)) {
+            var rs = qexec.execSelect();
+            System.out.println(rs.next().getResource("?r"));
+        }
     }
 
     private void addChild(Resource parent, Resource child) {
