@@ -5,6 +5,7 @@ import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.rdf.model.InfModel;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.reasoner.Reasoner;
 import org.apache.jena.reasoner.rulesys.FBRuleReasoner;
@@ -160,57 +161,94 @@ public class JenaTest {
     @Test
     void test2() {
         var childrenProperty = example.createProperty(CHILDREN);
+        var firstValueProperty = example.createProperty(URI + "firstValue");
+        var secondValueProperty = example.createProperty(URI + "secondValue");
 
-        var node5 = createNode("5");
-        var node11 = createNode("11");
-        var node12 = createNode("12");
-        var node3 = createNode("3");
-        var node4 = createNode("4");
-        var node1 = createNode("1");
-        var node2 = createNode("2");
+        var firstRootProperty = example.createProperty(URI + "firstRoot");
+        var secondRootProperty = example.createProperty(URI + "secondRoot");
 
-        addChild( node5, node12);
-        addChild( node5, node11);
-        addChild( node1, node3);
-        addChild( node2, node4);
-        addChild( node1, node2);
-        addChild( node2, node5);
+        var nilrule = example.createResource(URI + "nilrule");
+        var nilNode = createNode("nil", -1, nilrule, firstValueProperty);
+        var nilNode2 = createNode("nil2", -1, nilrule, secondValueProperty);
+        nilrule.addProperty(firstValueProperty, nilNode);
+        nilrule.addProperty(firstRootProperty, nilNode);
+        nilrule.addProperty(secondValueProperty, nilNode2);
+        nilrule.addProperty(secondRootProperty, nilNode2);
 
-        var node8 = createNode("8");
-        var node9 = createNode("9");
-        var node6 = createNode("6");
-        var node10 = createNode("10");
-        var node7 = createNode("7");
+        var node5 = createNode("5", 2, nilrule, firstValueProperty);
+        var node11 = createNode("11", 3, nilrule, firstValueProperty);
+        var node12 = createNode("12", 3, nilrule, firstValueProperty);
+        var node3 = createNode("3", 1, nilrule, firstValueProperty);
+        var node4 = createNode("4", 2, nilrule, firstValueProperty);
+        var node1 = createNode("1", 0, nilrule, firstValueProperty);
+        var node2 = createNode("2", 1, nilrule, firstValueProperty);
 
-        addChild( node7, node10);
-        addChild( node6, node7);
-        addChild( node7, node9);
-        addChild( node6, node8);
+        addChild(node5, node12);
+        addChild(node5, node11);
+        addChild(node1, node3);
+        addChild(node2, node4);
+        addChild(node1, node2);
+        addChild(node2, node5);
+
+        var node8 = createNode("8", 1, nilrule, secondValueProperty);
+        var node9 = createNode("9", 2, nilrule, secondValueProperty);
+        var node6 = createNode("6", 0, nilrule, secondValueProperty);
+        var node10 = createNode("10", 2, nilrule, secondValueProperty);
+        var node7 = createNode("7", 1, nilrule, secondValueProperty);
+        var node13 = createNode("13", 3, nilrule, secondValueProperty);
+        var node14 = createNode("14",3, nilrule, secondValueProperty);
+
+        addChild(node7, node10);
+        addChild(node6, node7);
+        addChild(node7, node9);
+        addChild(node6, node8);
+        addChild(node10, node13);
+        addChild(node10, node14);
 
         var rule3 = example.createResource(URI + "rule3");
         var rule2 = example.createResource(URI + "rule2");
         var rule1 = example.createResource(URI + "rule1");
-
-        var firstValueProperty = example.createProperty(URI + "firstValue");
-        var secondValueProperty = example.createProperty(URI + "secondValue");
+        var rule4 = example.createResource(URI + "rule4");
+        var rule5 = example.createResource(URI + "rule5");
 
         rule1.addProperty(firstValueProperty, node2);
         rule1.addProperty(secondValueProperty, node10);
+        rule1.addProperty(firstRootProperty, node2);
+        rule1.addProperty(secondRootProperty, node10);
 
         rule2.addProperty(firstValueProperty, node4);
         rule2.addProperty(secondValueProperty, node9);
+        rule2.addProperty(firstRootProperty, node4);
+        rule2.addProperty(secondRootProperty, node9);
 
         rule3.addProperty(firstValueProperty, node1);
         rule3.addProperty(secondValueProperty, node6);
+        rule3.addProperty(firstRootProperty, node1);
+        rule3.addProperty(secondRootProperty, node6);
+
+        rule4.addProperty(firstValueProperty, node5);
+        rule4.addProperty(secondValueProperty, node13);
+        rule4.addProperty(firstRootProperty, node5);
+        rule4.addProperty(secondRootProperty, node13);
+
+        rule5.addProperty(firstValueProperty, node5);
+        rule5.addProperty(secondValueProperty, node14);
+        rule5.addProperty(firstRootProperty, node5);
+        rule5.addProperty(secondRootProperty, node14);
 
         String rules = "" +
-                "[r1: (?o http://knbase.fa.ru#firstValue  ?b)  (?b http://knbase.fa.ru#children ?bc) noValue(?o1 http://knbase.fa.ru#firstValue ?bc) " +
+                "[r1: (?o http://knbase.fa.ru#firstValue  ?b)  (?b http://knbase.fa.ru#children ?bc) " +
                 "        ->  (?o http://knbase.fa.ru#firstValue ?bc) ]" +
-                "[r2: (?o http://knbase.fa.ru#secondValue  ?c) (?c http://knbase.fa.ru#children ?cc) noValue(?o1 http://knbase.fa.ru#secondValue ?cc)" +
-                "     -> (?o http://knbase.fa.ru#secondValue ?cc) ]";
+                "[r2: (?o http://knbase.fa.ru#secondValue  ?c) (?c http://knbase.fa.ru#children ?cc)" +
+                "     -> (?o http://knbase.fa.ru#secondValue ?cc) ]" +
+                "[r3: (?o http://knbase.fa.ru#firstValue ?b) (?b http://knbase.fa.ru#children ?bc) notEqual(?o1, ?o) (?o1 http://knbase.fa.ru#firstValue ?bc) (?o http://knbase.fa.ru#firstRoot ?or) (?o1 http://knbase.fa.ru#firstRoot ?o1r) (?or http://knbase.fa.ru#level ?orl) (?o1r http://knbase.fa.ru#level ?o1rl) greaterThan(?orl ?o1rl)" +
+                "        -> print(?o, ?b, ?bc, ?o1, ?or, ?o1r, ?orl, ?o1rl) remove(3) ]" +
+                "[r4: (?o http://knbase.fa.ru#secondValue  ?c) (?c http://knbase.fa.ru#children ?cc) notEqual(?o1, ?o) (?o1 http://knbase.fa.ru#secondValue ?cc) (?o http://knbase.fa.ru#secondRoot ?or) (?o1 http://knbase.fa.ru#secondRoot ?o1r) (?or http://knbase.fa.ru#level ?orl) (?o1r http://knbase.fa.ru#level ?o1rl) greaterThan(?orl ?o1rl) " +
+                "     -> print(?o, ?c, ?cc, ?o1, ?or, ?o1r, ?orl, ?o1rl) remove(3) ]";
 
         List<Rule> ruleList = Rule.parseRules(rules);
         FBRuleReasoner genericRulesReasoner = new GenericRuleReasoner(ruleList);
+//        genericRulesReasoner.setTraceOn(true);
         InfModel rulesModel = ModelFactory.createInfModel(genericRulesReasoner, example);
 
         System.out.println("Statements");
@@ -227,72 +265,12 @@ public class JenaTest {
 
         System.out.println("Get property rule3");
         System.out.println(Lists.newArrayList(rulesModel.getResource(rule3.getURI()).listProperties()));
-    }
 
-    @Test
-    void testReflection() {
-        var rootruleProperty = example.createProperty(URI + "firstRoot");
-        var firstValueProperty = example.createProperty(URI + "firstValue");
+        System.out.println("Get property rule4");
+        System.out.println(Lists.newArrayList(rulesModel.getResource(rule4.getURI()).listProperties()));
 
-        var nilrule = example.createResource(URI + "nilrule");
-
-        var nilNode = createNode("nil", -1, nilrule);
-        nilrule.addProperty(rootruleProperty, nilNode);
-
-        var node1 = createNode("1", 0, nilrule);
-        var node2 = createNode("2", 2, nilrule);
-        var node3 = createNode("3", 2, nilrule);
-        var node4 = createNode("4", 3, nilrule);
-        var node5 = createNode("5", 3, nilrule);
-        var node11 = createNode("11", 4, nilrule);
-        var node12 = createNode("12", 4, nilrule);
-
-        addChild( node5, node12);
-        addChild( node5, node11);
-        addChild( node1, node3);
-        addChild( node2, node4);
-        addChild( node2, node5);
-        addChild( node1, node2);
-
-        var rule1 = example.createResource(URI + "rule1");
-        rule1.addProperty(firstValueProperty, node1);
-        rule1.addProperty(rootruleProperty, node1);
-
-        var rule2 = example.createResource(URI + "rule2");
-        rule2.addProperty(firstValueProperty, node2);
-        rule2.addProperty(rootruleProperty, node2);
-
-        String rules = "[r1: (?o http://knbase.fa.ru#firstValue ?d) (?d http://knbase.fa.ru#children ?c)" +
-                "            (?o http://knbase.fa.ru#firstRoot ?or) (?or http://knbase.fa.ru#level ?orl)" +
-                "           (?o1 http://knbase.fa.ru#firstValue ?c) (?o1 http://knbase.fa.ru#firstRoot ?o1r) (?o1r http://knbase.fa.ru#level ?o1rl)" +
-                "           greaterThan(?orl, ?o1rl) " +
-                "-> " +
-//                "print(?o, ?d, ?c, ?or, ?orl, ?o1, ?c, ?o1r, ?o1rl) " +
-                "(?o http://knbase.fa.ru#firstValue ?c) remove(4)" +
-                "]";
-
-//        String rules = "[r1: (?o http://knbase.fa.ru#firstValue ?d) (?d http://knbase.fa.ru#children ?c)" +
-//                "            (?o http://knbase.fa.ru#firstRoot ?or) (?or http://knbase.fa.ru#level ?orl)" +
-//                "        -> remove(0)]";
-
-        List<Rule> ruleList = Rule.parseRules(rules);
-        FBRuleReasoner genericRulesReasoner = new GenericRuleReasoner(ruleList);
-//        genericRulesReasoner.setTraceOn(true);
-//        genericRulesReasoner.setDerivationLogging(true);
-        InfModel rulesModel = ModelFactory.createInfModel(genericRulesReasoner, example);
-
-        System.out.println("Statements");
-        var rulesList = rulesModel.listStatements();
-        System.out.println("Statements DONE");
-        while (rulesList.hasNext()) {
-            System.out.println(rulesList.next());
-        }
-
-        System.out.println("Get property rule1");
-        System.out.println(Lists.newArrayList(rulesModel.getResource(rule1.getURI()).listProperties()));
-
-        System.out.println("Get property rule2");
-        System.out.println(Lists.newArrayList(rulesModel.getResource(rule2.getURI()).listProperties()));
+        System.out.println("Get property rule5");
+        System.out.println(Lists.newArrayList(rulesModel.getResource(rule5.getURI()).listProperties()));
     }
 
     private void addChild(Resource parent, Resource child) {
@@ -302,14 +280,13 @@ public class JenaTest {
         child.addProperty(parentProperty, parent);
     }
 
-    private Resource createNode(String index, int level, Resource nilrule) {
+    private Resource createNode(String index, int level, Resource nilrule, Property valueProperty) {
         var node = example.createResource(URI + index);
-        var childrenProperty = example.createProperty(CHILDREN);
         var levelProperty = example.createProperty(LEVEL);
-        var firstValueProperty = example.createProperty(URI + "firstValue");
         node.addProperty(levelProperty, Integer.toString(level), XSDDatatype.XSDinteger);
-//        node.addProperty(childrenProperty, node);
-        nilrule.addProperty(firstValueProperty, node);
+        var childrenProperty = example.createProperty(CHILDREN);
+        node.addProperty(childrenProperty, node);
+        nilrule.addProperty(valueProperty, node);
         return node;
     }
 
